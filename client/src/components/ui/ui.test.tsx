@@ -1,11 +1,11 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import { render, screen, cleanup } from '@testing-library/react';
-import { Button, ButtonLink } from './button.js';
-import { Chip } from './chip.js';
-import { TextField, TextAreaField } from './field.js';
-import { Prose } from './prose.js';
-import { Rule } from './rule.js';
-import { Reveal } from './reveal.js';
+import { Button, ButtonLink } from './button';
+import { Chip } from './chip';
+import { TextField, TextAreaField } from './field';
+import { Prose } from './prose';
+import { Rule } from './rule';
+import { Reveal } from './reveal';
 
 afterEach(cleanup);
 

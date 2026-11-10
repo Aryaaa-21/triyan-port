@@ -5,7 +5,7 @@
  * @vitest-environment node
  */
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { ApiError, CACHE_TAGS, apiFetch } from './api.js';
+import { ApiError, CACHE_TAGS, apiFetch } from './api';
 
 const mockFetch = (body: unknown, init: { status?: number } = {}) => {
   const spy = vi.fn().mockResolvedValue(

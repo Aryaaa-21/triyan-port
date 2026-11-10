@@ -9,7 +9,7 @@ import {
   storeTheme,
   systemTheme,
   themeInitScript,
-} from './theme.js';
+} from './theme';
 
 afterEach(() => {
   // Un-stub first: a stubbed localStorage has no clear().

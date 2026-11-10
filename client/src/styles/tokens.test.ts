@@ -13,8 +13,8 @@
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { contrastRatio } from '../lib/contrast.js';
-import { THEME_META_COLORS } from '../lib/theme.js';
+import { contrastRatio } from '../lib/contrast';
+import { THEME_META_COLORS } from '../lib/theme';
 
 const CLIENT_SRC = join(import.meta.dirname, '..');
 const TOKENS_PATH = join(CLIENT_SRC, 'styles/tokens.css');

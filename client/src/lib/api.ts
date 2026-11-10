@@ -1,5 +1,5 @@
 import type { ApiErrorBody, ApiSuccess } from '@triyan/shared';
-import { serverEnv } from './env.js';
+import { serverEnv } from './env';
 
 export class ApiError extends Error {
   readonly status: number;
