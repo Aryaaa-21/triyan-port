@@ -2,7 +2,30 @@
 
 ## 0. Toolchain — read this first (WSL)
 
-On this machine `node` resolves to the **Windows** binary while `npm` is the **WSL** script:
+**The project lives in the WSL filesystem at `~/triyan`, not on the Windows Desktop.**
+This is deliberate. It was originally on `/mnt/c/.../Desktop/Triyan`, where every file
+operation crosses the Windows/WSL boundary:
+
+| Operation | On `/mnt/c` | In `~/triyan` |
+|---|---|---|
+| `npm install` | ~25 min | **11 s** |
+| `eslint .` | ~2 min | **3 s** |
+| `npm run verify` (lint + typecheck + test + build) | several min | **18 s** |
+
+Open it with the WSL remote rather than through Windows Explorer:
+
+```bash
+cd ~/triyan && code .
+```
+
+From Windows the files are still reachable at `\\wsl$\<distro>\home\<you>\triyan`,
+but **do not edit them through that path or through `/mnt/c`** — use WSL for anything
+that writes.
+
+### The node/npm shadowing trap
+
+On this machine `node` resolves to the **Windows** binary while `npm` is the **WSL**
+script:
 
 ```
 $ which -a node
@@ -25,10 +48,6 @@ Verify — both must agree:
 node -v   # v22.23.1
 npm -v    # 10.9.8
 ```
-
-> The repo is on `/mnt/c`, a Windows drive mounted into WSL. Installs and builds are
-> noticeably slower there. Moving the project into the WSL filesystem (e.g. `~/triyan`)
-> is a large, free speed-up if you are willing to work through WSL rather than Windows.
 
 ## 1. Install
 
@@ -79,6 +98,7 @@ This is the same gate every phase must pass (ARCHITECTURE §12).
 |---|---|
 | `Cannot find module 'C:\home\...'` | Windows/WSL node mismatch — see §0. |
 | `Cannot find module '@triyan/shared'` | Run `npm run build:shared`. The shared package is consumed as compiled output, not source. |
+| Lint reports `a type that cannot be resolved` across the server | Same cause: `shared/dist` is missing. `npm run verify` builds it first; a bare `npm run lint` does not. |
 | `Invalid environment configuration` | The server is telling you precisely which variable is missing. |
 | `MongoDB connection failed` | Atlas IP allowlist, or a password containing characters that need URL-encoding. |
 | `readyz` returns 503 | The process is up but MongoDB is not connected. Expected before `MONGODB_URI` is set. |
