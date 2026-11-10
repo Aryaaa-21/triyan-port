@@ -21,7 +21,13 @@ healthRouter.get('/healthz', (_req, res) => {
 /** Readiness: can the process actually serve traffic? */
 healthRouter.get('/readyz', (_req, res) => {
   const database = databaseState();
+  const configured = Boolean(env.MONGODB_URI);
   const ready = database === 'connected' || env.NODE_ENV === 'test';
+
   noStore(res);
-  res.status(ready ? 200 : 503).json({ status: ready ? 'ready' : 'not-ready', database });
+  res.status(ready ? 200 : 503).json({
+    status: ready ? 'ready' : 'not-ready',
+    database,
+    ...(configured ? {} : { reason: 'MONGODB_URI is not configured' }),
+  });
 });

@@ -4,7 +4,14 @@ import { env } from './config/env.js';
 import { logger } from './config/logger.js';
 
 const main = async (): Promise<void> => {
-  await connectDatabase();
+  if (env.MONGODB_URI) {
+    await connectDatabase();
+  } else {
+    logger.warn(
+      'MONGODB_URI is not set — starting without a database. Routes that need one will ' +
+        'fail and /readyz will report not-ready. Set it in server/.env to connect.',
+    );
+  }
 
   const app = createApp();
   const server = app.listen(env.PORT, () => {

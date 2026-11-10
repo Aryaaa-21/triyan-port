@@ -14,6 +14,8 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  // Next generates an AGENTS.md on dev start; we keep the repo's files deliberate.
+  agentRules: false,
   poweredByHeader: false,
   productionBrowserSourceMaps: false,
 

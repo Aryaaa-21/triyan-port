@@ -50,6 +50,15 @@ describe('server shell', () => {
     expect(res.headers['x-powered-by']).toBeUndefined();
   });
 
+  it('reports not-ready, with a reason, when no database is configured', async () => {
+    const res = await request(app).get('/readyz');
+    // The suite runs with NODE_ENV=test, which is allowed to run without a database.
+    expect([200, 503]).toContain(res.status);
+    const body = json<{ status: string; database: string; reason?: string }>(res);
+    expect(body.database).toBe('disconnected');
+    expect(body.reason).toBe('MONGODB_URI is not configured');
+  });
+
   it('sets hardening headers from helmet', async () => {
     const res = await request(app).get('/healthz');
     expect(res.headers['x-content-type-options']).toBe('nosniff');

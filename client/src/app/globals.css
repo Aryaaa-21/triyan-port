@@ -59,10 +59,12 @@
   --ease-out: var(--curve-out);
   --ease-in-out: var(--curve-in-out);
 
-  --container-poem: var(--measure-poem);
-  --container-prose: var(--measure-prose);
-  --container-wide: var(--measure-wide);
-  --container-full: var(--measure-full);
+  /*
+   * Deliberately no --container-* mappings. Tailwind ships `max-w-prose` (65ch) and
+   * `max-w-full` as static utilities, so mapping the container namespace produced an
+   * API where `max-w-prose` silently kept Tailwind's value and ignored the token.
+   * Reading measures are set through the explicit .measure-* utilities below.
+   */
 }
 
 @layer base {
@@ -210,6 +212,10 @@
 
   .measure-prose {
     max-width: var(--measure-prose);
+  }
+
+  .measure-wide {
+    max-width: var(--measure-wide);
   }
 
   .gutter {

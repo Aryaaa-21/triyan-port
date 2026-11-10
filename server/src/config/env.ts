@@ -64,7 +64,10 @@ const envSchema = z
       }
     };
 
-    if (value.NODE_ENV !== 'test') require('MONGODB_URI', 'to connect to MongoDB');
+    // Production must never boot without a database. Development and test may:
+    // it lets the API shell run with no infrastructure at all, and /readyz
+    // reports the degraded state honestly rather than pretending to be healthy.
+    if (value.NODE_ENV === 'production') require('MONGODB_URI', 'to connect to MongoDB');
 
     if (value.INSTAGRAM_PROVIDER === 'graph') {
       require('INSTAGRAM_APP_ID', 'when INSTAGRAM_PROVIDER=graph');

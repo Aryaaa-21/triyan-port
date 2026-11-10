@@ -8,7 +8,7 @@ import { Rule } from '@/components/ui/rule';
  */
 export default function HomePage() {
   return (
-    <main id="main" className="gutter mx-auto max-w-prose section-gap">
+    <main id="main" className="gutter section-gap mx-auto measure-prose">
       <p className="font-ui text-2xs tracking-widest text-fg-subtle uppercase">Phase 2</p>
       <h1 className="mt-6 font-display text-display font-light tracking-tighter">Triyan</h1>
       <Rule className="my-10" />

@@ -8,7 +8,11 @@ import { logger } from './config/logger.js';
  * performs a synchronisation inline (spec §43). Jobs are registered in Phase 12.
  */
 const main = async (): Promise<void> => {
-  await connectDatabase();
+  if (env.MONGODB_URI) {
+    await connectDatabase();
+  } else {
+    logger.warn('MONGODB_URI is not set — the worker will run no jobs that need a database');
+  }
 
   logger.info(
     { syncEnabled: env.SYNC_ENABLED, syncCron: env.SYNC_CRON, provider: env.INSTAGRAM_PROVIDER },

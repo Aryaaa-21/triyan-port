@@ -102,3 +102,4 @@ This is the same gate every phase must pass (ARCHITECTURE §12).
 | `Invalid environment configuration` | The server is telling you precisely which variable is missing. |
 | `MongoDB connection failed` | Atlas IP allowlist, or a password containing characters that need URL-encoding. |
 | `readyz` returns 503 | The process is up but MongoDB is not connected. Expected before `MONGODB_URI` is set. |
+| A phone-width screenshot shows text overflowing | Headless Chrome enforces a window width of roughly 500px, so `--window-size=390,...` renders wider and crops. Load the page in an `<iframe width="390">` on a harness page to get a true narrow viewport, or use real device emulation. |

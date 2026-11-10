@@ -1,4 +1,11 @@
-import mongoose, { ConnectionStates } from 'mongoose';
+import mongoose from 'mongoose';
+
+/**
+ * `ConnectionStates` is a named export in mongoose's type declarations but not in its
+ * ESM runtime build, so `import { ConnectionStates }` typechecks and then throws at
+ * startup. It is reachable on the default export instead.
+ */
+const { ConnectionStates } = mongoose;
 import { env } from './env.js';
 import { logger } from './logger.js';
 
