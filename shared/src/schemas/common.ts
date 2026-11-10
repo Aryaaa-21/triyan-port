@@ -5,6 +5,7 @@ import {
   EMOTION_KEYS,
   LANGUAGE_KEYS,
   THEME_KEYS,
+  WRITING_STATUSES,
 } from '../taxonomy.js';
 
 export const categoryKeySchema = z.enum(CATEGORY_KEYS);
@@ -12,6 +13,7 @@ export const themeKeySchema = z.enum(THEME_KEYS);
 export const emotionKeySchema = z.enum(EMOTION_KEYS);
 export const languageKeySchema = z.enum(LANGUAGE_KEYS);
 export const contentTypeKeySchema = z.enum(CONTENT_TYPE_KEYS);
+export const writingStatusSchema = z.enum(WRITING_STATUSES);
 
 export const objectIdSchema = z
   .string()

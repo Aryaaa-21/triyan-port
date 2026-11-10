@@ -177,6 +177,16 @@ export type ClassificationMethod = (typeof CLASSIFICATION_METHODS)[number];
  */
 export const CONFIDENCE_REVIEW_THRESHOLD = 0.55;
 
+/* ----------------------------------------------------------- publishing state */
+
+/**
+ * A writing is a draft until it is deliberately published. Modelled as a status
+ * rather than a boolean so SCHEDULED can be added without a data migration, and so
+ * the "drafts never leak" invariant reads clearly in every query.
+ */
+export const WRITING_STATUSES = ['DRAFT', 'PUBLISHED'] as const;
+export type WritingStatus = (typeof WRITING_STATUSES)[number];
+
 /* ------------------------------------------------------------------ instagram */
 
 export const INSTAGRAM_MEDIA_TYPES = ['IMAGE', 'VIDEO', 'CAROUSEL_ALBUM'] as const;

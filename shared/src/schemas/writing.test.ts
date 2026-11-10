@@ -120,7 +120,7 @@ describe('writingInputSchema — poetry formatting is preserved', () => {
 describe('writingInputSchema — defaults and publishing state', () => {
   it('defaults to an unpublished, unfeatured draft', () => {
     const parsed = writingInputSchema.parse(minimal);
-    expect(parsed.published).toBe(false);
+    expect(parsed.status).toBe('DRAFT');
     expect(parsed.featured).toBe(false);
     expect(parsed.bookExclusive).toBe(false);
   });

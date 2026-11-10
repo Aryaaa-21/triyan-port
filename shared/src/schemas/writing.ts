@@ -10,6 +10,7 @@ import {
   paginationSchema,
   slugSchema,
   themeKeySchema,
+  writingStatusSchema,
 } from './common.js';
 
 export const WRITING_SORTS = ['newest', 'oldest', 'title', 'relevance'] as const;
@@ -35,7 +36,7 @@ export const writingInputSchema = z.object({
   emotions: z.array(emotionKeySchema).max(8).default([]),
   tags: z.array(z.string().trim().min(1).max(40)).max(20).default([]),
   featured: z.boolean().default(false),
-  published: z.boolean().default(false),
+  status: writingStatusSchema.default('DRAFT'),
   publishedAt: z.coerce.date().optional(),
   bookExclusive: z.boolean().default(false),
   coverImage: objectIdSchema.optional(),
