@@ -29,7 +29,11 @@ export function Prose({
       className={cn(
         devanagari ? 'font-reading-deva' : 'font-reading',
         variant === 'poem'
-          ? 'measure-poem text-lg leading-poem whitespace-pre-line'
+          ? // `pre-wrap`, not `pre-line`: pre-line preserves newlines but COLLAPSES
+            // runs of spaces, which silently destroys intentional indentation in a
+            // poem. pre-wrap keeps both, and still wraps a line too long for the
+            // measure rather than overflowing it.
+            'measure-poem text-lg leading-poem whitespace-pre-wrap'
           : 'measure-prose text-lg leading-prose',
         'font-normal text-fg',
         '[&>p+p]:mt-6',

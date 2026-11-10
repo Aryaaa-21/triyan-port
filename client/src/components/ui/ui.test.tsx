@@ -95,11 +95,13 @@ describe('Prose', () => {
     expect(node?.className).not.toContain('font-reading-deva');
   });
 
-  it('gives poetry a narrower measure and preserves its line breaks', () => {
+  it('gives poetry a narrower measure and preserves line breaks AND indentation', () => {
     const { container } = render(<Prose variant="poem">a{'\n'}b</Prose>);
     const className = container.firstElementChild?.className ?? '';
     expect(className).toContain('measure-poem');
-    expect(className).toContain('whitespace-pre-line');
+    // pre-line would collapse leading spaces and quietly destroy indentation.
+    expect(className).toContain('whitespace-pre-wrap');
+    expect(className).not.toContain('whitespace-pre-line');
   });
 });
 
