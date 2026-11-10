@@ -1,15 +1,26 @@
+import { Prose } from '@/components/ui/prose';
+import { Rule } from '@/components/ui/rule';
+
 /**
- * Placeholder. Phase 3 installs the real shell (navigation, theme, cursor) and
- * Phase 5 builds the editorial homepage. This exists so Phase 1 has something
- * that builds, renders and is testable.
+ * Placeholder. Phase 3 installs the real shell (navigation, theme toggle, cursor)
+ * and Phase 5 builds the editorial homepage. This renders enough of the design
+ * system to verify it end to end.
  */
 export default function HomePage() {
   return (
-    <main id="main" style={{ padding: '4rem 1.5rem', maxWidth: '42rem', margin: '0 auto' }}>
-      <h1 style={{ fontSize: '1.25rem', fontWeight: 400, letterSpacing: '0.3em' }}>TRIYAN</h1>
-      <p style={{ color: '#8a8a8f', marginTop: '1.5rem', lineHeight: 1.7 }}>
-        Phase 1 — foundations in place. See <code>docs/ROADMAP.md</code>.
-      </p>
+    <main id="main" className="gutter mx-auto max-w-prose section-gap">
+      <p className="font-ui text-2xs tracking-widest text-fg-subtle uppercase">Phase 2</p>
+      <h1 className="mt-6 font-display text-display font-light tracking-tighter">Triyan</h1>
+      <Rule className="my-10" />
+      <Prose>
+        <p>
+          The design system is in place: two environments, five type roles, and a token layer that
+          fails the build if any pair stops being legible.
+        </p>
+        <p className="text-fg-muted">
+          See <code className="font-ui text-sm">docs/ROADMAP.md</code> for what comes next.
+        </p>
+      </Prose>
     </main>
   );
 }

@@ -508,16 +508,28 @@ Environment variables are validated by a zod schema at boot — the server refus
 
 ## 12. Quality gates
 
-**Performance budget (§85)** — enforced in CI, build fails on regression:
+**Performance budget (§85)** — enforced in CI, build fails on regression.
+
+These numbers were **measured, not guessed**. The first draft of this table set a
+120 KB gzip budget for the reading route; measuring the real build showed that is
+*below the framework floor*, so the budget was impossible to meet and would have been
+quietly ignored. Budgets are now expressed as a delta over the measured floor.
+`npm run measure:bundle -w @triyan/client` prints the current figures per route.
+
 | Metric | Budget |
 |---|---|
-| First-load JS, `/writings/[slug]` | ≤ 120 KB gzip |
-| First-load JS, `/` excluding 3D | ≤ 180 KB gzip |
-| 3D chunk (lazy, never blocks LCP) | ≤ 220 KB gzip |
+| Framework floor — Next 16.4.6 + React 19.3.1, Turbopack, measured 2026-11-10 | **131.7 KB gzip** modern, plus a **38.7 KB** legacy polyfill chunk fetched only by browsers that need it |
+| `/writings/[slug]` — delta over floor | ≤ 15 KB gzip |
+| `/` — delta over floor, excluding the 3D chunk | ≤ 40 KB gzip |
+| 3D chunk — lazy, must never block LCP | ≤ 220 KB gzip |
 | LCP (mobile, throttled) | < 2.0 s |
 | CLS | < 0.05 |
 | INP | < 150 ms |
 | Mobile particle count | ≤ 1/3 of desktop; instanced |
+
+Turbopack and the webpack builder were both measured (170.4 KB vs 168.4 KB total);
+the difference is noise, so the project stays on the default Turbopack builder for its
+much faster compile (2.1 s vs 8.3 s).
 
 **Testing (§54, §55)** — vitest + mongodb-memory-server + supertest on the server; vitest + RTL for components; Playwright for the critical flows (read a poem, search, filter, admin login, create+publish a writing, waitlist). Mandatory specific suites: auth, writing CRUD, search, filtering, sync pagination/resume/idempotency, duplicate prevention, classification determinism, correction recording, `bookExclusive` leak prevention, waitlist dedup + rate limit, admin authorization (every admin route asserted to 401 unauthenticated).
 
@@ -534,3 +546,4 @@ Environment variables are validated by a zod schema at boot — the server refus
 | §22 "all posts visible" | True for all **feed** media; Stories excluded, Reel transcripts impossible | API reality, documented rather than faked (§56) |
 | §18 OCR | Deferred to V1.1 behind a provider, flagged `textExtractionPending` in V1 | Accuracy on stylized type is unreliable; shipping it as "done" would be dishonest |
 | §52 analytics | First-party `AnalyticsEvent`, no third-party script, no cookies | Privacy + performance budget |
+| §49/§85 bundle budgets | Re-baselined against a measured framework floor instead of absolute targets | The original 120 KB reading-route figure was below the Next 16 + React 19 floor, so it was unachievable rather than ambitious |

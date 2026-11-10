@@ -18,6 +18,11 @@ const config = [
       'no-console': ['error', { allow: ['warn', 'error'] }],
     },
   },
+  {
+    // Build-time CLI tools report to stdout; that is their whole job.
+    files: ['scripts/**/*.{mjs,ts}'],
+    rules: { 'no-console': 'off' },
+  },
 ];
 
 export default config;

@@ -1,30 +1,159 @@
+@import '../styles/tokens.css';
 @import 'tailwindcss';
 
 /*
- * Phase 2 replaces this with the full VOID / MANUSCRIPT token system
- * (ARCHITECTURE §3.2). Nothing here is intended as final design.
+ * `inline` is what makes theme switching work: the generated utilities keep the
+ * `var(--...)` reference instead of baking in a resolved value, so flipping
+ * `data-theme` on <html> re-resolves every utility without a re-render.
  */
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-raised: var(--bg-raised);
+  --color-surface: var(--surface);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-subtle: var(--fg-subtle);
+  --color-accent: var(--accent);
+  --color-ember: var(--ember);
+  --color-focus: var(--focus);
+
+  --font-display: var(--family-display);
+  --font-reading: var(--family-reading);
+  --font-reading-deva: var(--family-reading-deva);
+  --font-ui: var(--family-ui);
+  --font-abyss: var(--family-abyss);
+  --font-abyss-ui: var(--family-abyss-ui);
+
+  --text-2xs: var(--size-2xs);
+  --text-xs: var(--size-xs);
+  --text-sm: var(--size-sm);
+  --text-base: var(--size-base);
+  --text-lg: var(--size-lg);
+  --text-xl: var(--size-xl);
+  --text-2xl: var(--size-2xl);
+  --text-3xl: var(--size-3xl);
+  --text-4xl: var(--size-4xl);
+  --text-display: var(--size-display);
+  --text-display-xl: var(--size-display-xl);
+
+  --leading-tight: var(--line-tight);
+  --leading-snug: var(--line-snug);
+  --leading-normal: var(--line-normal);
+  --leading-poem: var(--line-poem);
+  --leading-prose: var(--line-prose);
+
+  --tracking-tighter: var(--track-tighter);
+  --tracking-tight: var(--track-tight);
+  --tracking-normal: var(--track-normal);
+  --tracking-wide: var(--track-wide);
+  --tracking-widest: var(--track-widest);
+
+  --radius-none: var(--corner-none);
+  --radius-sm: var(--corner-sm);
+  --radius-md: var(--corner-md);
+  --radius-full: var(--corner-full);
+
+  --ease-void: var(--curve-void);
+  --ease-out: var(--curve-out);
+  --ease-in-out: var(--curve-in-out);
+
+  --container-poem: var(--measure-poem);
+  --container-prose: var(--measure-prose);
+  --container-wide: var(--measure-wide);
+  --container-full: var(--measure-full);
+}
+
 @layer base {
-  :root {
-    color-scheme: dark;
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
   }
 
   html {
     -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
   }
 
   body {
     margin: 0;
-    background: #050505;
-    color: #ededee;
-    font-family: ui-sans-serif, system-ui, sans-serif;
+    min-height: 100dvh;
+    background-color: var(--bg);
+    background-image: var(--vignette);
+    color: var(--fg);
+    font-family: var(--family-ui);
+    font-size: var(--size-base);
+    line-height: var(--line-normal);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* The theme is a change of world, not a hue shift — so it is never animated. */
+  ::selection {
+    background-color: var(--selection-bg);
+    color: var(--selection-fg);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    margin: 0;
+    font-weight: 300;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  a {
+    color: inherit;
+    text-decoration-color: var(--border-strong);
+    text-underline-offset: 0.25em;
+  }
+
+  a:hover {
+    text-decoration-color: currentcolor;
   }
 
   :focus-visible {
-    outline: 2px solid currentColor;
+    outline: 2px solid var(--focus);
     outline-offset: 3px;
   }
 
+  /* Pointer users get no focus ring from a click; keyboard users always do. */
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+    color: inherit;
+  }
+
+  img,
+  svg,
+  video {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+
+  hr {
+    border: 0;
+    border-top: 1px solid var(--border);
+  }
+
+  /*
+   * Reduced motion collapses every zone to opacity-only (ARCHITECTURE §3.4).
+   * Scroll behaviour is reset too, since smooth scrolling is itself motion.
+   */
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
@@ -34,5 +163,60 @@
       transition-duration: 0.01ms !important;
       scroll-behavior: auto !important;
     }
+  }
+}
+
+@layer utilities {
+  /*
+   * Scroll-driven section entrance, used by <Reveal>.
+   *
+   * Content is visible by default and only animates where the browser supports
+   * `animation-timeline` and the reader has not asked for reduced motion. There is
+   * therefore no state in which the writing is invisible.
+   */
+  .reveal {
+    --reveal-step: 0;
+
+    opacity: 1;
+  }
+
+  @keyframes reveal-in {
+    from {
+      opacity: 0;
+      translate: 0 0.75rem;
+    }
+
+    to {
+      opacity: 1;
+      translate: 0 0;
+    }
+  }
+
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .reveal {
+        animation: reveal-in var(--dur-slow) var(--curve-void) both;
+        animation-timeline: view();
+        animation-range: entry calc(4% + (var(--reveal-step) * 5%)) entry
+          calc(55% + (var(--reveal-step) * 5%));
+      }
+    }
+  }
+
+  /* The reading column. Poetry is narrower than prose, deliberately. */
+  .measure-poem {
+    max-width: var(--measure-poem);
+  }
+
+  .measure-prose {
+    max-width: var(--measure-prose);
+  }
+
+  .gutter {
+    padding-inline: var(--space-gutter);
+  }
+
+  .section-gap {
+    padding-block: var(--space-section);
   }
 }

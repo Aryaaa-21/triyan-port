@@ -1,0 +1,229 @@
+/*
+ * TRIYAN — design tokens
+ *
+ * Two environments, not two palettes (ARCHITECTURE §3.1):
+ *
+ *   VOID       night, default. A black void that light emerges from. No shadows —
+ *              depth comes from luminance and vignette.
+ *   MANUSCRIPT day. A printed page. Hairline rules, ink weight, paper warmth.
+ *              Shadows exist here, and only here.
+ *
+ * This file is the only place in the codebase permitted to contain a colour literal.
+ * `tokens.test.ts` enforces that, and also asserts every contrast pair below in both
+ * environments — so a token change that hurts legibility fails the build.
+ *
+ * Resolution order:
+ *   1. :root                                  -> VOID
+ *   2. @media (prefers-color-scheme: light)   -> MANUSCRIPT, first visit only
+ *      on :root:not([data-theme])
+ *   3. :root[data-theme='...']                -> an explicit, persisted choice
+ */
+
+/* ------------------------------------------------------------------ VOID */
+
+:root {
+  color-scheme: dark;
+
+  --bg: #050505;
+  --bg-raised: #0b0b0c;
+  --surface: #121214;
+
+  --border: #232327;
+  --border-strong: #3a3a41;
+
+  --fg: #ededee;
+  --fg-muted: #8a8a8f;
+  --fg-subtle: #6b6b72;
+
+  --accent: #cfc7b8; /* bone */
+  --ember: #b4553f; /* used sparingly, never for body text */
+
+  /* Carries the WCAG 1.4.11 non-text requirement. Borders stay decorative. */
+  --focus: #cfc7b8;
+
+  --vignette: radial-gradient(circle at 50% 0%, rgb(255 255 255 / 4%), transparent 65%);
+  --shadow-raised: none;
+  --shadow-overlay: 0 0 0 1px var(--border), 0 24px 64px -24px rgb(0 0 0 / 90%);
+  --selection-bg: #2a2a30;
+  --selection-fg: #ffffff;
+}
+
+/* ------------------------------------------------------------ MANUSCRIPT */
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    color-scheme: light;
+
+    --bg: #f4f0e8;
+    --bg-raised: #fbf8f2;
+    --surface: #efe9de;
+
+    --border: #ddd5c6;
+    --border-strong: #b9ad98;
+
+    --fg: #1a1917;
+    --fg-muted: #6b6760;
+    --fg-subtle: #857f74;
+
+    --accent: #7a5c3e; /* sepia */
+    --ember: #8a3a2e;
+
+    --focus: #7a5c3e;
+
+    --vignette: none;
+    --shadow-raised: 0 1px 2px rgb(26 25 23 / 5%);
+    --shadow-overlay: 0 1px 1px rgb(26 25 23 / 6%), 0 24px 48px -20px rgb(26 25 23 / 20%);
+    --selection-bg: #e4d9c3;
+    --selection-fg: #1a1917;
+  }
+}
+
+:root[data-theme='manuscript'] {
+  color-scheme: light;
+
+  --bg: #f4f0e8;
+  --bg-raised: #fbf8f2;
+  --surface: #efe9de;
+
+  --border: #ddd5c6;
+  --border-strong: #b9ad98;
+
+  --fg: #1a1917;
+  --fg-muted: #6b6760;
+  --fg-subtle: #857f74;
+
+  --accent: #7a5c3e;
+  --ember: #8a3a2e;
+
+  --focus: #7a5c3e;
+
+  --vignette: none;
+  --shadow-raised: 0 1px 2px rgb(26 25 23 / 5%);
+  --shadow-overlay: 0 1px 1px rgb(26 25 23 / 6%), 0 24px 48px -20px rgb(26 25 23 / 20%);
+  --selection-bg: #e4d9c3;
+  --selection-fg: #1a1917;
+}
+
+/* An explicit choice of night, overriding a light system preference. */
+:root[data-theme='void'] {
+  color-scheme: dark;
+
+  --bg: #050505;
+  --bg-raised: #0b0b0c;
+  --surface: #121214;
+
+  --border: #232327;
+  --border-strong: #3a3a41;
+
+  --fg: #ededee;
+  --fg-muted: #8a8a8f;
+  --fg-subtle: #6b6b72;
+
+  --accent: #cfc7b8;
+  --ember: #b4553f;
+
+  --focus: #cfc7b8;
+
+  --vignette: radial-gradient(circle at 50% 0%, rgb(255 255 255 / 4%), transparent 65%);
+  --shadow-raised: none;
+  --shadow-overlay: 0 0 0 1px var(--border), 0 24px 64px -24px rgb(0 0 0 / 90%);
+  --selection-bg: #2a2a30;
+  --selection-fg: #ffffff;
+}
+
+/* ------------------------------------------------------- type, not colour */
+
+:root {
+  /*
+   * Families are bound to the next/font CSS variables in `lib/fonts.ts`.
+   * Raw tokens avoid Tailwind's --font-* / --text-* / --radius-* / --ease-*
+   * namespaces; globals.css maps them into those namespaces with `@theme inline`,
+   * which is what makes the utilities follow a runtime theme switch.
+   * `--family-reading-deva` is selected automatically for Hindi writings so
+   * Devanagari is set in a face designed for it (ARCHITECTURE §3.3).
+   */
+  --family-display: var(--font-cormorant), ui-serif, Georgia, serif;
+  --family-reading: var(--font-spectral), ui-serif, Georgia, serif;
+  --family-reading-deva: var(--font-tiro-deva), var(--font-spectral), ui-serif, serif;
+  --family-ui: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --family-abyss: var(--font-unifraktur), ui-serif, serif;
+  --family-abyss-ui: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+
+  /* Fluid editorial scale. Display sizes are deliberately large. */
+  --size-2xs: 0.6875rem;
+  --size-xs: 0.75rem;
+  --size-sm: 0.875rem;
+  --size-base: 1rem;
+  --size-lg: clamp(1.0625rem, 0.2vw + 1rem, 1.1875rem);
+  --size-xl: clamp(1.25rem, 0.5vw + 1.125rem, 1.5rem);
+  --size-2xl: clamp(1.5rem, 1vw + 1.25rem, 2rem);
+  --size-3xl: clamp(1.875rem, 2vw + 1.375rem, 2.75rem);
+  --size-4xl: clamp(2.25rem, 3.5vw + 1.5rem, 4rem);
+  --size-display: clamp(2.75rem, 7vw + 1rem, 7rem);
+  --size-display-xl: clamp(3.5rem, 13vw, 12rem);
+
+  --line-tight: 1.08;
+  --line-snug: 1.25;
+  --line-normal: 1.5;
+  --line-poem: 1.85; /* generous: poetry needs air between lines */
+  --line-prose: 1.7;
+
+  --track-tighter: -0.03em;
+  --track-tight: -0.015em;
+  --track-normal: 0;
+  --track-wide: 0.08em;
+  --track-widest: 0.3em; /* the TRIYAN wordmark */
+
+  /* Reading measures. Poetry is narrower than prose on purpose. */
+  --measure-poem: 34rem;
+  --measure-prose: 42rem;
+  --measure-wide: 64rem;
+  --measure-full: 90rem;
+}
+
+/* ------------------------------------------------------ space, form, time */
+
+:root {
+  --space-px: 1px;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-32: 8rem;
+  --space-40: 10rem;
+
+  /* 16px side gutter on phones, opening up on larger screens. */
+  --space-gutter: clamp(1rem, 4vw, 3rem);
+  --space-section: clamp(4rem, 12vh, 10rem);
+
+  /* Editorial, not card-based. */
+  --corner-none: 0;
+  --corner-sm: 2px;
+  --corner-md: 4px;
+  --corner-full: 9999px;
+
+  --dur-instant: 120ms;
+  --dur-base: 320ms;
+  --dur-slow: 720ms;
+  --dur-cinematic: 1800ms;
+
+  --curve-void: cubic-bezier(0.16, 1, 0.3, 1);
+  --curve-out: cubic-bezier(0.33, 1, 0.68, 1);
+  --curve-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  --z-base: 0;
+  --z-raised: 10;
+  --z-sticky: 20;
+  --z-nav: 30;
+  --z-overlay: 40;
+  --z-cursor: 50;
+  --z-intro: 60;
+}
