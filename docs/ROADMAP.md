@@ -1,5 +1,12 @@
 # TRIYAN — Implementation Roadmap
 
+> **Superseded ordering (2026-11-10).** The owner's audit brief reorders delivery so the
+> visual layer — cinematic intro, 3D, cursor, transitions — comes *after* core
+> functionality is stable, rather than at Phase 4. That is the better order: it stops the
+> homepage and archive being built against imagined API shapes and retrofitted later.
+> **`PROJECT_AUDIT.md` → Recommended Execution Order is now authoritative.** The phase
+> table below is retained for its per-phase exit criteria, which still apply.
+
 Each phase ships working, tested, buildable code. A phase closes only when **all six gates** pass:
 `typecheck · lint · tests · production build · a11y (axe) · perf budget`.
 
