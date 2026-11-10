@@ -17,6 +17,18 @@ export const objectIdSchema = z
   .string()
   .regex(/^[0-9a-fA-F]{24}$/, 'Must be a 24-character hex object id');
 
+/**
+ * The one email schema. Normalisation happens *before* validation on purpose:
+ * `z.email()` runs its check against the raw input, so trimming afterwards would
+ * reject a pasted address carrying whitespace and report it as malformed — a login
+ * failure the reader cannot diagnose and cannot fix.
+ */
+export const emailSchema = z
+  .string()
+  .trim()
+  .toLowerCase()
+  .pipe(z.email('That does not look like an email address').max(254));
+
 export const slugSchema = z
   .string()
   .min(1)

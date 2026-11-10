@@ -1,7 +1,8 @@
 import { z } from 'zod';
+import { emailSchema } from './common.js';
 
 export const waitlistSchema = z.object({
-  email: z.email('That does not look like an email address').trim().toLowerCase().max(254),
+  email: emailSchema,
   name: z.string().trim().max(80).optional(),
   consent: z.literal(true, { error: 'Consent is required to join the waitlist' }),
   /** Honeypot: must stay empty. Populated only by bots. */
@@ -10,7 +11,7 @@ export const waitlistSchema = z.object({
 
 export const contactSchema = z.object({
   name: z.string().trim().min(1, 'A name is required').max(80),
-  email: z.email().trim().toLowerCase().max(254),
+  email: emailSchema,
   message: z.string().trim().min(10, 'Say a little more').max(4000),
   website: z.string().max(0).optional(),
 });

@@ -1,7 +1,8 @@
 import { z } from 'zod';
+import { emailSchema } from './common.js';
 
 export const loginSchema = z.object({
-  email: z.email().trim().toLowerCase().max(254),
+  email: emailSchema,
   password: z.string().min(1).max(200),
 });
 
