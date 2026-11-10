@@ -1,5 +1,5 @@
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
-import { About, Book, RefreshToken, SiteSettings, User } from './index.js';
+import { About, Book, Session, SiteSettings, User } from './index.js';
 import { clearTestDatabase, startTestDatabase, stopTestDatabase } from '../test/db.js';
 import { Types } from 'mongoose';
 
@@ -48,7 +48,7 @@ describe('User model', () => {
   });
 });
 
-describe('RefreshToken model', () => {
+describe('Session model', () => {
   const make = (over = {}) => ({
     user: new Types.ObjectId(),
     tokenHash: 'a'.repeat(64),
@@ -58,26 +58,26 @@ describe('RefreshToken model', () => {
   });
 
   it('stores only a hash, never a usable token', async () => {
-    const created = await RefreshToken.create(make());
+    const created = await Session.create(make());
     expect(created.tokenHash).toHaveLength(64);
     expect(created).not.toHaveProperty('token');
   });
 
   it('rejects a duplicate token hash', async () => {
-    await RefreshToken.create(make());
-    await expect(RefreshToken.create(make())).rejects.toThrow(/duplicate key/i);
+    await Session.create(make());
+    await expect(Session.create(make())).rejects.toThrow(/duplicate key/i);
   });
 
   it('has a TTL index so dead sessions expire without a cron job', async () => {
-    const indexes = await RefreshToken.collection.indexes();
+    const indexes = await Session.collection.indexes();
     const ttl = indexes.find((i) => JSON.stringify(i.key) === JSON.stringify({ expiresAt: 1 }));
     expect(ttl?.expireAfterSeconds).toBe(0);
   });
 
   it('groups tokens into a family for reuse detection', async () => {
-    await RefreshToken.create(make({ family: 'f1' }));
-    await RefreshToken.create(make({ tokenHash: 'b'.repeat(64), family: 'f1' }));
-    expect(await RefreshToken.countDocuments({ family: 'f1' })).toBe(2);
+    await Session.create(make({ family: 'f1' }));
+    await Session.create(make({ tokenHash: 'b'.repeat(64), family: 'f1' }));
+    expect(await Session.countDocuments({ family: 'f1' })).toBe(2);
   });
 });
 

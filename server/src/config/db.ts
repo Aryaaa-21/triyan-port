@@ -10,7 +10,21 @@ import { env } from './env.js';
 import { logger } from './logger.js';
 
 mongoose.set('strictQuery', true);
-mongoose.set('sanitizeFilter', true); // structural defence against query-operator injection
+
+/**
+ * `sanitizeFilter` is deliberately NOT enabled globally.
+ *
+ * It wraps any filter value containing a `$` key in `$eq`, indiscriminately — which
+ * neuters the server's own operators as readily as a hostile one. It silently turned
+ * the `bookExclusive: { $ne: true }` guard into a literal comparison, and would have
+ * done the same to `$in`, `$all` and `$text`.
+ *
+ * Operator injection is prevented at the boundary instead, which is where it belongs:
+ * every query parameter and request body is parsed by a zod schema before it reaches
+ * a query, so only validated primitives and enum members are ever interpolated. No
+ * raw `req.query` or `req.body` object is spread into a filter anywhere in this
+ * codebase, and a test asserts that an injected operator is rejected.
+ */
 
 let connecting: Promise<typeof mongoose> | null = null;
 

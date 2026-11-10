@@ -14,14 +14,20 @@
  */
 import { describe, expect, it } from 'vitest';
 
-/** Entry points start listeners, so they are covered by the app suite instead. */
+/**
+ * Entry points run on import — they start listeners or, in the case of the CLI
+ * scripts, parse arguments and exit. They are covered by the app suite and by being
+ * run directly, not by this graph walk.
+ */
 const ENTRY_POINTS = ['/src/api.ts', '/src/worker.ts'];
+const ENTRY_DIRECTORIES = ['/src/scripts/'];
 
 const loaders = import.meta.glob('./src/**/*.ts');
 
 const modules = Object.entries(loaders)
   .filter(([path]) => !path.endsWith('.test.ts'))
   .filter(([path]) => !ENTRY_POINTS.some((entry) => path.endsWith(entry)))
+  .filter(([path]) => !ENTRY_DIRECTORIES.some((dir) => path.includes(dir)))
   .map(([path, load]) => [path.replace('./src/', '').replace(/\.ts$/, ''), load] as const)
   .sort(([a], [b]) => a.localeCompare(b));
 

@@ -11,8 +11,8 @@ export type { WritingAttrs, WritingDoc, WritingModel } from './writing.model.js'
 export { User } from './user.model.js';
 export type { UserAttrs, UserDoc } from './user.model.js';
 
-export { RefreshToken } from './refreshToken.model.js';
-export type { RefreshTokenAttrs } from './refreshToken.model.js';
+export { Session } from './session.model.js';
+export type { SessionAttrs } from './session.model.js';
 
 export { Book } from './book.model.js';
 export type { BookAttrs } from './book.model.js';
