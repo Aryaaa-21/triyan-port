@@ -13,7 +13,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "seed:admin": "tsx --env-file-if-exists=.env src/scripts/seed-admin.ts",
-    "dev:db": "tsx src/scripts/dev-db.ts"
+    "dev:db": "tsx src/scripts/dev-db.ts",
+    "seed:content": "tsx --env-file-if-exists=.env src/scripts/seed-content.ts"
   },
   "dependencies": {
     "@node-rs/argon2": "^2.2.2",

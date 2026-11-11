@@ -47,3 +47,49 @@ export interface AdminUserDto {
   name: string;
   role: string;
 }
+
+export interface BookDto {
+  title: string;
+  subtitle: string;
+  description: string;
+  audience: string;
+  salesLine: string;
+  coverImageUrl: string;
+  purchaseUrl: string;
+  publisher: string;
+  isbn: string;
+  price: string;
+  publicationDate: string | null;
+  formats: string[];
+  reviews: { quote: string; attribution?: string; source?: string }[];
+  excerptSlugs: string[];
+  published: boolean;
+}
+
+export interface AboutDto {
+  displayName: string;
+  literaryIdentity: string;
+  writingSince: string;
+  body: string;
+  statement: string;
+  portraitUrl: string;
+  links: { literaryInstagram: string; personalInstagram: string; email: string };
+}
+
+export interface AbyssDto {
+  name: string;
+  tagline: string;
+  philosophy: string;
+  direction: string;
+  comingSoonNote: string;
+  published: boolean;
+}
+
+export interface SiteSettingsDto {
+  siteTitle: string;
+  tagline: string;
+  defaultSeoDescription: string;
+  defaultOgImageUrl: string;
+  contactFormEnabled: boolean;
+  introEnabled: boolean;
+}

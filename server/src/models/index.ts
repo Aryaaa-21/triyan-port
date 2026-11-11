@@ -20,5 +20,8 @@ export type { BookAttrs } from './book.model.js';
 export { About } from './about.model.js';
 export type { AboutAttrs } from './about.model.js';
 
+export { Abyss } from './abyss.model.js';
+export type { AbyssAttrs } from './abyss.model.js';
+
 export { SiteSettings } from './siteSettings.model.js';
 export type { SiteSettingsAttrs } from './siteSettings.model.js';

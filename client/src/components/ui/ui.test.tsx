@@ -118,19 +118,20 @@ describe('Rule', () => {
 });
 
 describe('Reveal', () => {
-  it('renders its children visibly, with no scripted hidden state', () => {
+  it('renders its children and starts in the out state', () => {
     const { container } = render(<Reveal>Writing</Reveal>);
     expect(screen.getByText('Writing')).toBeTruthy();
-    // The entrance is a CSS scroll-driven animation; nothing may hide the content.
-    const className = container.firstElementChild?.className ?? '';
-    expect(className).toContain('reveal');
-    expect(className).not.toContain('opacity-0');
+    const node = container.firstElementChild as HTMLElement;
+    expect(node.className).toContain('reveal');
+    // Only `html.js` makes `out` actually hide anything, so no-JS readers see it.
+    expect(node.dataset.reveal).toBe('out');
   });
 
   it('expresses stagger as a custom property, not a timer', () => {
     const { container } = render(<Reveal stagger={3}>Writing</Reveal>);
-    const node = container.firstElementChild as HTMLElement;
-    expect(node.style.getPropertyValue('--reveal-step')).toBe('3');
+    expect(
+      (container.firstElementChild as HTMLElement).style.getPropertyValue('--reveal-step'),
+    ).toBe('3');
   });
 
   it('renders as the requested element', () => {

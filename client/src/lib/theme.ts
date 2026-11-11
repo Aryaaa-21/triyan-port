@@ -38,8 +38,9 @@ export const THEME_META_COLORS: Readonly<Record<Theme, string>> = {
  * Any failure (private mode, blocked storage) must leave the page rendering, so the
  * whole body is wrapped in a try/catch and simply falls through to the CSS default.
  */
-export const themeInitScript = `(function(){try{
-var k='${THEME_STORAGE_KEY}',s=localStorage.getItem(k);
+export const themeInitScript = `(function(){
+document.documentElement.classList.add('js');
+try{var k='${THEME_STORAGE_KEY}',s=localStorage.getItem(k);
 if(s==='void'||s==='manuscript'){document.documentElement.setAttribute('data-theme',s);}
 }catch(e){}})();`;
 
@@ -65,7 +66,34 @@ export const systemTheme = (): Theme => {
   return window.matchMedia('(prefers-color-scheme: light)').matches ? 'manuscript' : 'void';
 };
 
+/** Fired after the environment changes so subscribers can re-read it. */
+export const THEME_CHANGE_EVENT = 'triyan:themechange';
+
 export const applyTheme = (theme: Theme): void => {
   if (typeof document === 'undefined') return;
   document.documentElement.setAttribute('data-theme', theme);
+  window.dispatchEvent(new Event(THEME_CHANGE_EVENT));
 };
+
+/**
+ * The resolved environment, read from the DOM — which the pre-paint script has
+ * already set. Exposed as an external store so components can subscribe without
+ * setting state inside an effect.
+ */
+export const subscribeToTheme = (onChange: () => void): (() => void) => {
+  window.addEventListener(THEME_CHANGE_EVENT, onChange);
+  const media = window.matchMedia('(prefers-color-scheme: light)');
+  media.addEventListener('change', onChange);
+  return () => {
+    window.removeEventListener(THEME_CHANGE_EVENT, onChange);
+    media.removeEventListener('change', onChange);
+  };
+};
+
+export const getThemeSnapshot = (): Theme => {
+  const attribute = document.documentElement.getAttribute('data-theme');
+  return isTheme(attribute) ? attribute : systemTheme();
+};
+
+/** The server cannot know the reader's environment, so it commits to nothing. */
+export const getThemeServerSnapshot = (): null => null;

@@ -170,11 +170,12 @@
 
 @layer utilities {
   /*
-   * Scroll-driven section entrance, used by <Reveal>.
+   * Section entrance, used by <Reveal>.
    *
-   * Content is visible by default and only animates where the browser supports
-   * `animation-timeline` and the reader has not asked for reduced motion. There is
-   * therefore no state in which the writing is invisible.
+   * The default is visible. Only `html.js` — set by the pre-paint script, so it is
+   * true before the first frame — permits the hidden start state. A reader without
+   * JavaScript therefore sees every word, and there is no state in which the writing
+   * is stranded invisible.
    */
   .reveal {
     --reveal-step: 0;
@@ -182,26 +183,19 @@
     opacity: 1;
   }
 
-  @keyframes reveal-in {
-    from {
+  @media (prefers-reduced-motion: no-preference) {
+    html.js .reveal[data-reveal='out'] {
       opacity: 0;
       translate: 0 0.75rem;
     }
 
-    to {
+    html.js .reveal[data-reveal='in'] {
       opacity: 1;
       translate: 0 0;
-    }
-  }
-
-  @supports (animation-timeline: view()) {
-    @media (prefers-reduced-motion: no-preference) {
-      .reveal {
-        animation: reveal-in var(--dur-slow) var(--curve-void) both;
-        animation-timeline: view();
-        animation-range: entry calc(4% + (var(--reveal-step) * 5%)) entry
-          calc(55% + (var(--reveal-step) * 5%));
-      }
+      transition:
+        opacity var(--dur-slow) var(--curve-void),
+        translate var(--dur-slow) var(--curve-void);
+      transition-delay: calc(var(--reveal-step) * 70ms);
     }
   }
 
