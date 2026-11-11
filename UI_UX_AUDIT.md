@@ -218,3 +218,24 @@ verified in a real browser.
   original would be sharper on large screens, and dropping it in is a one-file swap.
 - **Verification:** 573 tests pass. Browser E2E passes 31/31, including the new
   "front-page image behind the opening".
+
+## Update — the opening in black and white (2026-11-11)
+
+- **The front-page image is now black and white** (`public/images/abyss-front-bw.jpg`,
+  90 KB, replacing the colour version). It is converted once, offline, from the same
+  straightened image:
+  - a warm-leaning channel mix, so the disk glows and the sky falls away;
+  - a black point, so empty space is true black and meets the page without a seam;
+  - a gentle filmic S-curve, with the white point set above the brightest disk
+    pixels, so the disk's streaks keep their texture instead of clipping to flat white.
+- **Film grain** lies over the opening: a tiled SVG noise, overlay-blended. Blacks
+  stay black, and the grain shows only in the disk and the Milky Way. It shifts in
+  steps like film, and stays still under reduced motion.
+- **The effects on top are pure greys and white.** A unit test keeps every colour in
+  the overlay neutral.
+- Layout, motion and the scroll fall are unchanged.
+- **Verification:**
+  - 574 tests pass.
+  - A browser check at 320, 375, 768, 1440 and 1920 px shows no horizontal overflow
+    and no console errors.
+  - The served image measures as grey (channel difference ≤ 1).

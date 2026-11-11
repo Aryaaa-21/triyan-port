@@ -52,6 +52,16 @@ describe('black hole shader', () => {
     expect(BLACK_HOLE_FRAGMENT).toContain('vec3 overlayLayers(');
   });
 
+  it('keeps the overlay in pure greys, for the black-and-white opening', () => {
+    const start = BLACK_HOLE_FRAGMENT.indexOf('vec3 overlayLayers(');
+    const body = BLACK_HOLE_FRAGMENT.slice(start, BLACK_HOLE_FRAGMENT.indexOf('void main()'));
+    const colours = [...body.matchAll(/vec3\(([\d.,\s]+)\)/g)].map((m) =>
+      (m[1] ?? '').split(',').map((v) => Number(v.trim())),
+    );
+    expect(colours.length).toBeGreaterThan(0);
+    for (const c of colours) expect(new Set(c).size).toBe(1);
+  });
+
   it('crushes empty space to exact black', () => {
     expect(BLACK_HOLE_FRAGMENT).toContain('col *= smoothstep(0.012, 0.03, m);');
   });

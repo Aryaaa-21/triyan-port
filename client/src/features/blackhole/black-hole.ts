@@ -207,7 +207,8 @@ vec3 diskColour(float v) {
  * Over the photograph: only the living layers. Lensed stars twinkle and drift, sparkles
  * pop, shooting stars cross, glittering stars fall in and vanish at the shadow, glints
  * orbit in the disk plane, a light runs round the shadow's rim, and now and then a flare
- * sweeps along the disk. Drawn on black and screen-blended, so it only ever adds light.
+ * sweeps along the disk. Drawn on black and screen-blended, so it only ever adds light;
+ * in pure greys, to sit on a black-and-white photograph.
  */
 vec3 overlayLayers(vec2 p, float r, float t) {
   float px = 1.0 / (uScale * uZoom);
@@ -241,9 +242,9 @@ vec3 overlayLayers(vec2 p, float r, float t) {
           * exp(-pow((p.x - front) / 0.6, 2.0) - pow((p.y + 0.22) / 0.14, 2.0));
   }
 
-  vec3 col = vec3(0.88, 0.92, 1.0) * (1.0 - exp(-sky * 1.45))
-           + vec3(1.0, 0.86, 0.66) * (1.0 - exp(-glitter * 1.45))
-           + vec3(1.0, 0.88, 0.74) * (rim + flare);
+  vec3 col = vec3(0.92) * (1.0 - exp(-sky * 1.45))
+           + vec3(1.0) * (1.0 - exp(-glitter * 1.45))
+           + vec3(0.95) * (rim + flare);
   float m = max(col.r, max(col.g, col.b));
   col *= smoothstep(0.012, 0.03, m);
   return min(col, vec3(1.0));

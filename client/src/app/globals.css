@@ -677,6 +677,40 @@
     opacity: calc(1 - var(--p) * 8);
   }
 
+  /*
+   * Film grain over the black-and-white opening. Overlay-blended, so black stays black
+   * and the texture lives in the disk and the Milky Way. It shifts like film (a step,
+   * not a glide); still under reduced motion. Slightly oversized so it can shift.
+   */
+  .opening-grain {
+    inset: -6%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+    mix-blend-mode: overlay;
+    opacity: 0.5;
+    animation: opening-grain 0.7s steps(1) infinite;
+  }
+
+  @keyframes opening-grain {
+    0% {
+      translate: 0 0;
+    }
+    17% {
+      translate: -3% 2%;
+    }
+    33% {
+      translate: 2% -3%;
+    }
+    50% {
+      translate: -4% -1%;
+    }
+    67% {
+      translate: 3% 3%;
+    }
+    83% {
+      translate: -1% 4%;
+    }
+  }
+
   /* The photograph falls with the stars: the same zoom, about the hole at the centre. */
   .opening-image {
     scale: var(--bh-zoom, 1);
@@ -697,6 +731,10 @@
     .opening-stage {
       position: relative;
       top: 0;
+    }
+
+    .opening-grain {
+      animation: none;
     }
 
     /* The same sentence opens the hero just below; nothing needs revealing here. */

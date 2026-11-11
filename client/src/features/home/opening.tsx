@@ -5,11 +5,16 @@ import { BlackHoleBackground } from '@/features/blackhole/background';
 import WindStreamCursor from '@/components/ui/wind-stream-cursor';
 
 /**
- * The owner's front-page image of the black hole, straightened so the disk lies level
- * and centred on the hole, so it crops cleanly at any aspect ratio. Sizes are in image
- * pixels; `radius` is the shadow's.
+ * The owner's front-page image of the black hole in black and white, straightened so
+ * the disk lies level and centred on the hole, so it crops cleanly at any aspect ratio.
+ * Sizes are in image pixels; `radius` is the shadow's.
  */
-const FRONT = { src: '/images/abyss-front.jpg', width: 1560, height: 1000, radius: 146 } as const;
+const FRONT = {
+  src: '/images/abyss-front-bw.jpg',
+  width: 1560,
+  height: 1000,
+  radius: 146,
+} as const;
 
 /**
  * 01 — Entry: a scroll scene.
@@ -58,6 +63,7 @@ export function HomeOpening({ line }: { line: string }) {
           />
         </div>
         <BlackHoleBackground cover={FRONT} />
+        <div aria-hidden="true" className="opening-grain pointer-events-none absolute" />
         <WindStreamCursor />
 
         <div className="pointer-events-none absolute inset-0">
