@@ -1,7 +1,14 @@
 import Image from '@/lib/image';
 import Link from '@/lib/link';
 import { getCategory, humanizeKey, type InstagramMediaDto } from '@triyan/shared';
-import { fetchInstagramItem, postImage, postKind, postTitle } from '@/features/instagram/api';
+import {
+  archiveSlides,
+  fetchInstagramItem,
+  isArchivePost,
+  postImage,
+  postKind,
+  postTitle,
+} from '@/features/instagram/api';
 import { PostTile } from '@/features/instagram/instagram-grid';
 import { Label } from '@/components/editorial';
 import { ApiError } from '@/lib/api';
@@ -51,7 +58,11 @@ export default function InstagramPostPage() {
 
       <article className="mt-12 grid gap-14 lg:grid-cols-12 lg:gap-8">
         <div className="lg:col-span-7">
-          <Media post={post} title={title} />
+          {isArchivePost(post) ? (
+            <ArchiveMedia post={post} title={title} />
+          ) : (
+            <Media post={post} title={title} />
+          )}
         </div>
 
         <div className="lg:col-span-4 lg:col-start-9">
@@ -134,6 +145,56 @@ export default function InstagramPostPage() {
         </section>
       )}
     </main>
+  );
+}
+
+/**
+ * The archived Instagram card, uncropped. A carousel becomes a strip that is swiped or
+ * scrolled sideways; it needs no script, and every slide stays reachable by keyboard.
+ */
+function ArchiveMedia({ post, title }: { post: InstagramMediaDto; title: string }) {
+  const slides = archiveSlides(post);
+  const alt = post.altText || title;
+  if (slides.length === 1) {
+    const [only] = slides;
+    if (!only) return null;
+    return (
+      <div className="mx-auto max-w-[32rem] border border-border bg-white">
+        <Image
+          src={only.mediaUrl}
+          alt={alt}
+          width={only.mediaWidth}
+          height={only.mediaHeight}
+          priority
+          className="block h-auto w-full"
+        />
+      </div>
+    );
+  }
+  return (
+    <div className="mx-auto max-w-[32rem]">
+      <ul
+        tabIndex={0}
+        aria-label={`${slides.length} slides. Scroll sideways to read them.`}
+        className="flex snap-x snap-mandatory items-start overflow-x-auto border border-border bg-white [scrollbar-width:thin]"
+      >
+        {slides.map((slide, i) => (
+          <li key={slide.mediaUrl} className="w-full shrink-0 snap-center">
+            <Image
+              src={slide.mediaUrl}
+              alt={i === 0 ? alt : `${title}, slide ${i + 1} of ${slides.length}`}
+              width={slide.mediaWidth}
+              height={slide.mediaHeight}
+              priority={i === 0}
+              className="block h-auto w-full"
+            />
+          </li>
+        ))}
+      </ul>
+      <p className="mt-4 font-mono text-2xs tracking-[0.18em] text-fg-subtle uppercase">
+        {slides.length} slides · scroll sideways →
+      </p>
+    </div>
   );
 }
 
