@@ -7,9 +7,9 @@
  * the lensed underside as a smaller arc. Behind: a star field seen through the lens,
  * random sparkles and shooting stars. In front: glittering stars spiralling in and
  * vanishing at the shadow, and glints orbiting in the disk plane. Empty space is
- * exactly black. Coloured like Interstellar's Gargantua: the disk runs from ember at
- * its faint edges through amber and gold to warm white near the shadow; the stars
- * are a faintly cool white, and the stars falling in are gold.
+ * exactly black. Coloured from the owner's front-page reference: the disk runs from a
+ * dusky ember at its faint edges through salmon and peach to cream near the shadow;
+ * the stars are a faintly cool white, and the stars falling in are warm.
  */
 export const BLACK_HOLE_FRAGMENT = /* glsl */ `
 precision highp float;
@@ -187,18 +187,19 @@ float orbiters(vec2 p, float t, float px) {
 }
 
 /**
- * Gargantua's palette: the disk's brightness mapped from deep ember at its faint
- * edges, through amber and gold, to warm white closest to the shadow.
+ * The front-page palette: the disk's brightness mapped from a dusky ember at its faint
+ * edges, through salmon and peach, to cream closest to the shadow.
  */
-vec3 gargantua(float v) {
-  vec3 ember = vec3(0.34, 0.09, 0.02);
-  vec3 amber = vec3(0.93, 0.43, 0.10);
-  vec3 gold = vec3(1.0, 0.73, 0.35);
-  vec3 white = vec3(1.0, 0.96, 0.88);
-  vec3 c = mix(ember, amber, smoothstep(0.0, 0.26, v));
-  c = mix(c, gold, smoothstep(0.22, 0.5, v));
-  c = mix(c, white, smoothstep(0.5, 0.86, v));
-  return c * min(1.0, v * 1.7);
+vec3 diskColour(float v) {
+  // Sampled from the reference, brightest-hued pixels at each level of brightness.
+  vec3 ember = vec3(0.62, 0.34, 0.24);
+  vec3 salmon = vec3(0.93, 0.6, 0.46);
+  vec3 peach = vec3(1.0, 0.8, 0.63);
+  vec3 cream = vec3(1.0, 0.95, 0.86);
+  vec3 c = mix(ember, salmon, smoothstep(0.0, 0.35, v));
+  c = mix(c, peach, smoothstep(0.3, 0.6, v));
+  c = mix(c, cream, smoothstep(0.6, 0.9, v));
+  return c * min(1.0, v * 1.6);
 }
 
 void main() {
@@ -319,11 +320,11 @@ void main() {
   // Gentle Doppler asymmetry: the approaching side a touch brighter.
   I *= 1.0 - 0.06 * clamp(p.x / 2.5, -1.0, 1.0);
 
-  // The disk in Gargantua's colours; stars a faintly cool white; the stars falling
-  // in, gold. Each layer gets the same soft highlight roll-off.
-  vec3 col = gargantua(1.0 - exp(-I * 1.8))
-           + vec3(0.86, 0.92, 1.0) * (1.0 - exp(-sky * 1.45))
-           + vec3(1.0, 0.86, 0.6) * (1.0 - exp(-glitter * 1.45));
+  // The disk in the front-page colours; stars a faintly cool white; the stars falling
+  // in, warm. Each layer gets the same soft highlight roll-off.
+  vec3 col = diskColour(1.0 - exp(-I * 1.6))
+           + vec3(0.88, 0.92, 1.0) * (1.0 - exp(-sky * 1.45))
+           + vec3(1.0, 0.86, 0.66) * (1.0 - exp(-glitter * 1.45));
   // A black toe: the faint tails of glows and spikes are crushed to exactly zero.
   float m = max(col.r, max(col.g, col.b));
   col *= smoothstep(0.012, 0.03, m);

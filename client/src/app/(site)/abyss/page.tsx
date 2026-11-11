@@ -41,7 +41,7 @@ export default async function AbyssPage() {
         {/* The black hole behind the mark: a living background, above the name. */}
         <BlackHoleBackground radius={0.2} offset={[0, 0.4]} />
         <div className="relative mx-auto w-full max-w-[90rem]">
-          <h1 className="font-abyss pb-[0.8em] pl-[0.18em] text-[clamp(3.5rem,12vw,10.5rem)] leading-[1.15] font-normal whitespace-nowrap">
+          <h1 className="font-abyss pb-[1.1em] pl-[0.18em] text-[clamp(3.5rem,12vw,10.5rem)] leading-[1.15] font-normal whitespace-nowrap">
             <SplitText text={wordmark(name)} step={90} />
           </h1>
           {abyss?.tagline && (

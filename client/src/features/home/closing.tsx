@@ -33,7 +33,7 @@ export function AbyssDoor({ abyss }: { abyss: AbyssDto | null }) {
           <Reveal variant="blur">
             <h2
               id="abyss-heading"
-              className="font-abyss pb-[0.8em] pl-[0.18em] text-[clamp(4rem,12vw,10rem)] leading-[1.15] font-normal"
+              className="font-abyss pb-[1.1em] pl-[0.18em] text-[clamp(4rem,12vw,10rem)] leading-[1.15] font-normal"
             >
               {wordmark(abyss.name)}
             </h2>
@@ -136,7 +136,7 @@ export function Exit() {
             aria-hidden="true"
             className="exit-line mx-auto mt-6 block h-20 w-px bg-border-strong"
           />
-          <p className="mt-6 font-abyss text-4xl text-fg-muted">Abyss</p>
+          <p className="mt-6 font-abyss text-4xl text-fg-muted">abyss</p>
         </Reveal>
       </div>
     </section>

@@ -192,7 +192,7 @@ function MenuLink({
           active ? 'text-fg' : 'text-fg-muted group-hover:text-fg',
         )}
       >
-        {label === 'ABYSS' ? 'Abyss' : label}
+        {label === 'ABYSS' ? 'abyss' : label}
       </span>
     </Link>
   );

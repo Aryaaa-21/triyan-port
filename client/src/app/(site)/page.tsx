@@ -58,9 +58,7 @@ export default async function HomePage() {
 
   return (
     <main id="main">
-      <HomeOpening
-        statement={about?.statement || 'An archive of everything that words cannot contain.'}
-      />
+      <HomeOpening line="A soul is deeper than the abyss…" />
       <HomeHero about={about} />
       <WordsWall writings={wall} />
       <ArchiveIntro />
