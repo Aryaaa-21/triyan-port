@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { z } from 'zod';
 import {
   CATEGORY_KEYS,
+  CONFIDENCE_REVIEW_THRESHOLD,
   EMOTION_KEYS,
   LANGUAGE_KEYS,
   THEME_KEYS,
@@ -20,8 +21,8 @@ import { InstagramMedia } from '../models/index.js';
  *
  * The posts are described in `server/data/instagram-archive.json`; their images are
  * static files under `client/public/archive/instagram`. Each post was sorted into its
- * category by reading the image itself, so it is stored as an already-reviewed
- * classification that neither a sync nor "reclassify" will overwrite.
+ * category by reading the image itself, so neither a sync nor "reclassify" will
+ * overwrite it. Low-confidence ones are flagged for review in the admin.
  *
  * Safe to run again: posts are matched on their Instagram shortcode. Anything an
  * admin changed afterwards (featured, hidden, a corrected category) is left alone.
@@ -112,7 +113,8 @@ const main = async () => {
       emotions: c.emotions,
       language: c.language,
       confidence: c.confidence,
-      needsReview: false,
+      // A toss-up between two categories goes to the admin review queue like any other.
+      needsReview: c.confidence < CONFIDENCE_REVIEW_THRESHOLD,
       method: 'LLM' as const,
       classifierVersion: archive.classifierVersion,
       classifiedAt: now,
