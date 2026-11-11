@@ -140,6 +140,8 @@ Triyan's own answers replaced or tightened the copy across the site.
   unnecessary personal information.
 - Follower and view counts: the owner does not want to be presented as a social media
   poet.
+  (Later the owner supplied a bio for About that mentions 65,000 followers in their own
+  words; it is shown beneath the portrait exactly as given.)
 - Working titles are kept exactly as written, including "alot".
 
 **Also fixed**

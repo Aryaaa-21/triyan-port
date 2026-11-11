@@ -6,7 +6,14 @@ import { siteUrl } from '@/lib/env';
 import { ArrowLink, ContentPending, Label, SectionIntro } from '@/components/editorial';
 import { SplitText } from '@/components/motion/split-text';
 import { Reveal } from '@/components/ui/reveal';
-import { FOR_THE_READER, JOURNEY, REMEMBER, THEMES } from '@/content/triyan';
+import {
+  FOR_THE_READER,
+  JOURNEY,
+  PORTRAIT_BIO,
+  PORTRAIT_BIO_CLOSE,
+  REMEMBER,
+  THEMES,
+} from '@/content/triyan';
 
 export const metadata: Metadata = {
   title: 'About',
@@ -78,6 +85,14 @@ export default async function AboutPage() {
                 </p>
               </div>
             )}
+            <Reveal stagger={2}>
+              <div className="mt-10 max-w-md">
+                <p className="font-reading text-lg leading-prose text-fg-muted">{PORTRAIT_BIO}</p>
+                <p className="mt-6 font-display text-2xl leading-snug font-light text-fg italic">
+                  {PORTRAIT_BIO_CLOSE}
+                </p>
+              </div>
+            </Reveal>
           </div>
         </header>
 

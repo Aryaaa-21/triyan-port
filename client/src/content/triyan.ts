@@ -4,9 +4,17 @@
  * Question numbers refer to that questionnaire.
  *
  * Deliberately absent: age ("since I was 10" would publish a birth year — Q12 asks
- * for no unnecessary personal information) and follower/view counts (Q12: the site
- * must not present Triyan as "just another social media poet").
+ * for no unnecessary personal information). Follower counts were left out too (Q12:
+ * not "just another social media poet"), until the owner supplied the bio below,
+ * which mentions one in their own words.
  */
+
+/** The owner's bio, shown beneath the portrait on About, word for word as supplied. */
+export const PORTRAIT_BIO =
+  'With more than 65,000 followers on Instagram, his writing has reached readers across the world. Yet, for Triyan, writing has never been about numbers. It is an attempt to understand the human condition through the emotions we carry, the people we lose, and the memories that refuse to leave.';
+
+/** The bio's closing line, set apart. */
+export const PORTRAIT_BIO_CLOSE = 'Because the human soul is deeper than the abyss.';
 
 /** Q9 — what readers should feel. */
 export const FOR_THE_READER =
