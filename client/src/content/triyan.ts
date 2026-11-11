@@ -9,6 +9,10 @@
  * which mentions one in their own words.
  */
 
+/** The opening of the owner's bio (homepage, beneath the portrait on smaller screens). */
+export const BIO_INTRO =
+  'Triyan Shaw is a writer and poet whose work explores love, grief, loneliness, loss, and the darker facets of human emotion. He began writing at a young age, first in Hindi and later in English, finding in poetry a way to articulate what often remains unspoken.';
+
 /** The owner's bio, shown beneath the portrait on About, word for word as supplied. */
 export const PORTRAIT_BIO =
   'With more than 65,000 followers on Instagram, his writing has reached readers across the world. Yet, for Triyan, writing has never been about numbers. It is an attempt to understand the human condition through the emotions we carry, the people we lose, and the memories that refuse to leave.';

@@ -7,6 +7,7 @@ import { ArrowLink, ContentPending, Label, SectionIntro } from '@/components/edi
 import { SplitText } from '@/components/motion/split-text';
 import { Reveal } from '@/components/ui/reveal';
 import {
+  BIO_INTRO,
   FOR_THE_READER,
   JOURNEY,
   PORTRAIT_BIO,
@@ -87,7 +88,10 @@ export default async function AboutPage() {
             )}
             <Reveal stagger={2}>
               <div className="mt-10 max-w-md">
-                <p className="font-reading text-lg leading-prose text-fg-muted">{PORTRAIT_BIO}</p>
+                <div className="space-y-6 font-reading text-lg leading-prose text-fg-muted">
+                  <p>{BIO_INTRO}</p>
+                  <p>{PORTRAIT_BIO}</p>
+                </div>
                 <p className="mt-6 font-display text-2xl leading-snug font-light text-fg italic">
                   {PORTRAIT_BIO_CLOSE}
                 </p>
