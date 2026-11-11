@@ -6,15 +6,8 @@ import { siteUrl } from '@/lib/env';
 import { ArrowLink, ContentPending, Label, SectionIntro } from '@/components/editorial';
 import { SplitText } from '@/components/motion/split-text';
 import { Reveal } from '@/components/ui/reveal';
-import {
-  BIO_INTRO,
-  FOR_THE_READER,
-  JOURNEY,
-  PORTRAIT_BIO,
-  PORTRAIT_BIO_CLOSE,
-  REMEMBER,
-  THEMES,
-} from '@/content/triyan';
+import { TriyanBio } from '@/features/content/triyan-bio';
+import { FOR_THE_READER, JOURNEY, REMEMBER, THEMES } from '@/content/triyan';
 
 export const metadata: Metadata = {
   title: 'About',
@@ -50,8 +43,10 @@ export default async function AboutPage() {
       />
       <div className="mx-auto max-w-[90rem] pt-16 pb-32 sm:pt-24">
         {/* ---------------------------------------------------------- name */}
-        <header className="grid gap-16 lg:grid-cols-12 lg:gap-8">
-          <div className="lg:col-span-7">
+        {/* Large screens: label, name, roles and bio on one left edge; the portrait to
+            the right, level with the name. Smaller screens: name, portrait, bio. */}
+        <header className="grid gap-16 lg:grid-cols-12 lg:gap-x-8 lg:gap-y-20">
+          <div className="lg:col-span-7 lg:row-start-1">
             <Label as="p">{about?.literaryIdentity || 'Triyan Writes'}</Label>
             <h1 className="mt-8 font-display text-[clamp(4rem,11.5vw,11rem)] leading-[0.82] font-light tracking-[-0.04em] whitespace-nowrap uppercase">
               <SplitText text={name} step={70} />
@@ -65,7 +60,7 @@ export default async function AboutPage() {
             </Reveal>
           </div>
 
-          <div className="lg:col-span-4 lg:col-start-9">
+          <div className="lg:col-span-4 lg:col-start-9 lg:row-span-2 lg:row-start-1">
             {about?.portraitUrl ? (
               <Reveal variant="clip">
                 <div className="relative aspect-[3/4] w-full bg-surface">
@@ -86,18 +81,11 @@ export default async function AboutPage() {
                 </p>
               </div>
             )}
-            <Reveal stagger={2}>
-              <div className="mt-10 max-w-md">
-                <div className="space-y-6 font-reading text-lg leading-prose text-fg-muted">
-                  <p>{BIO_INTRO}</p>
-                  <p>{PORTRAIT_BIO}</p>
-                </div>
-                <p className="mt-6 font-display text-2xl leading-snug font-light text-fg italic">
-                  {PORTRAIT_BIO_CLOSE}
-                </p>
-              </div>
-            </Reveal>
           </div>
+
+          <Reveal stagger={2} className="lg:col-span-6 lg:row-start-2">
+            <TriyanBio />
+          </Reveal>
         </header>
 
         {/* ------------------------------------------------------ the writer */}
