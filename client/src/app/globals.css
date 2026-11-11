@@ -678,19 +678,20 @@
   }
 
   /*
-   * Film grain over the black-and-white opening. Overlay-blended, so black stays black
-   * and the texture lives in the disk and the Milky Way. It shifts like film (a step,
-   * not a glide); still under reduced motion. Slightly oversized so it can shift.
+   * Film grain over the black-and-white scenes (<FilmGrain/>). Overlay-blended, so black
+   * stays black and the texture lives in the light — the disk, the Milky Way. It shifts
+   * like film (a step, not a glide); still under reduced motion. Slightly oversized so
+   * it can shift; its wrapper clips it.
    */
-  .opening-grain {
+  .film-grain {
     inset: -6%;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
     mix-blend-mode: overlay;
     opacity: 0.5;
-    animation: opening-grain 0.7s steps(1) infinite;
+    animation: film-grain 0.7s steps(1) infinite;
   }
 
-  @keyframes opening-grain {
+  @keyframes film-grain {
     0% {
       translate: 0 0;
     }
@@ -733,7 +734,7 @@
       top: 0;
     }
 
-    .opening-grain {
+    .film-grain {
       animation: none;
     }
 
@@ -745,6 +746,38 @@
 
   [data-webgl='none'] {
     background: var(--cursor-ink-inverse) url('/images/black-hole.jpg') center / cover no-repeat;
+  }
+
+  /*
+   * Typewriter: what is not yet typed is only transparent, so nothing reflows. The
+   * caret takes no width, for the same reason; it blinks like a cursor at rest.
+   */
+  .typewriter-rest {
+    color: transparent;
+  }
+
+  .typewriter-caret {
+    position: relative;
+    display: inline-block;
+    width: 0;
+    height: 1em;
+  }
+
+  .typewriter-caret::after {
+    content: '';
+    position: absolute;
+    left: 0.05em;
+    bottom: -0.14em;
+    width: max(2px, 0.045em);
+    height: 1.02em;
+    background: currentColor;
+    animation: caret-blink 1.05s steps(1) infinite;
+  }
+
+  @keyframes caret-blink {
+    50% {
+      opacity: 0;
+    }
   }
 
   /* Companion cursor. Never replaces the system cursor. */

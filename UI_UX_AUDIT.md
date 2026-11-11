@@ -239,3 +239,22 @@ verified in a real browser.
   - A browser check at 320, 375, 768, 1440 and 1920 px shows no horizontal overflow
     and no console errors.
   - The served image measures as grey (channel difference ≤ 1).
+
+## Update — monochrome black hole everywhere, typewriter statement (2026-11-11)
+
+- **The ABYSS page's black hole is black and white too.** The shader's disk runs from deep
+  grey through smoke and silver to white, and every star is white. A test checks that
+  every colour in the shader is a grey. Its no-WebGL still was re-rendered to match.
+- **Film grain is shared.** `<FilmGrain/>` lies over the homepage opening and the ABYSS
+  hero.
+- **"A soul is deeper than the abyss…"** stays on one line from 1024px up.
+- **The statement now opens the archive.** "An archive of everything that words cannot
+  contain. Poetry on love and its absence, on grief, mortality and existence." moved out
+  of the Triyan section into its own band just before the archive, with generous space
+  above and below.
+  - It types itself out as it comes into view: an uneven, human rhythm with pauses at
+    punctuation, and a blinking caret.
+  - What is not yet typed is only transparent, so the band never reflows, and screen
+    readers and no-JavaScript visitors get the whole sentence.
+  - Under reduced motion it is simply shown.
+- **Triyan's bio** follows the portrait on all screen sizes, and on About.

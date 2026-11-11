@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import Image from 'next/image';
 import { SplitText } from '@/components/motion/split-text';
+import { FilmGrain } from '@/components/ui/film-grain';
 import { BlackHoleBackground } from '@/features/blackhole/background';
 import WindStreamCursor from '@/components/ui/wind-stream-cursor';
 
@@ -63,7 +64,7 @@ export function HomeOpening({ line }: { line: string }) {
           />
         </div>
         <BlackHoleBackground cover={FRONT} />
-        <div aria-hidden="true" className="opening-grain pointer-events-none absolute" />
+        <FilmGrain />
         <WindStreamCursor />
 
         <div className="pointer-events-none absolute inset-0">
@@ -87,7 +88,7 @@ export function HomeOpening({ line }: { line: string }) {
           </p>
 
           {/* Revealed in the dark, once the fall is complete. */}
-          <p className="opening-statement gutter absolute inset-x-0 top-1/2 mx-auto max-w-3xl -translate-y-1/2 text-center font-display text-[clamp(1.75rem,4.2vw,3.5rem)] leading-tight font-light text-white/90">
+          <p className="opening-statement gutter absolute inset-x-0 top-1/2 mx-auto max-w-3xl lg:max-w-none lg:whitespace-nowrap -translate-y-1/2 text-center font-display text-[clamp(1.75rem,4.2vw,3.5rem)] leading-tight font-light text-white/90">
             {line}
           </p>
         </div>

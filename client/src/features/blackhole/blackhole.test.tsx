@@ -41,9 +41,9 @@ describe('black hole shader', () => {
       expect(BLACK_HOLE_FRAGMENT).toContain(`${fn}(`);
     }
   });
-  it('colours the disk in the front-page palette: ember, salmon, peach, cream', () => {
+  it('draws the disk in greys: shadow, smoke, silver, white', () => {
     expect(BLACK_HOLE_FRAGMENT).toContain('vec3 diskColour(float v)');
-    for (const stop of ['ember', 'salmon', 'peach', 'cream'])
+    for (const stop of ['shadow', 'smoke', 'silver', 'white'])
       expect(BLACK_HOLE_FRAGMENT).toContain(stop);
   });
 
@@ -52,10 +52,8 @@ describe('black hole shader', () => {
     expect(BLACK_HOLE_FRAGMENT).toContain('vec3 overlayLayers(');
   });
 
-  it('keeps the overlay in pure greys, for the black-and-white opening', () => {
-    const start = BLACK_HOLE_FRAGMENT.indexOf('vec3 overlayLayers(');
-    const body = BLACK_HOLE_FRAGMENT.slice(start, BLACK_HOLE_FRAGMENT.indexOf('void main()'));
-    const colours = [...body.matchAll(/vec3\(([\d.,\s]+)\)/g)].map((m) =>
+  it('is black and white throughout: every colour in it is a grey', () => {
+    const colours = [...BLACK_HOLE_FRAGMENT.matchAll(/vec3\(([\d.,\s]+)\)/g)].map((m) =>
       (m[1] ?? '').split(',').map((v) => Number(v.trim())),
     );
     expect(colours.length).toBeGreaterThan(0);

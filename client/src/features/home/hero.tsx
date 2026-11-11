@@ -10,12 +10,11 @@ import { BIO_INTRO, PORTRAIT_BIO, PORTRAIT_BIO_CLOSE } from '@/content/triyan';
  * 02 — Triyan. Identity through type, not a greeting. The left carries the name;
  * the right is the portrait when one exists, and otherwise a quiet composition of
  * the two facts the page can state with certainty: since 2016, in two languages.
- * The statement and the owner's bio follow: directly under the portrait on smaller
- * screens, as a reading column beneath both on large ones.
+ * The owner's bio follows: directly under the portrait on smaller screens, as a
+ * reading column beneath both on large ones. (The statement now opens the archive.)
  */
 export function HomeHero({ about }: { about: AboutDto | null }) {
   const since = about?.writingSince || '2016';
-  const statement = `${about?.statement || 'An archive of everything that words cannot contain.'} Poetry on love and its absence, on grief, mortality and existence.`;
   return (
     <section
       id="triyan"
@@ -82,12 +81,11 @@ export function HomeHero({ about }: { about: AboutDto | null }) {
             )}
           </div>
 
-          {/* The statement, then Triyan's bio: right under the portrait on smaller screens,
-              a reading column beneath the name and portrait on large ones. */}
+          {/* Triyan's bio: right under the portrait on smaller screens, a reading column
+              beneath the name and portrait on large ones. */}
           <Reveal stagger={2} className="lg:col-span-7 lg:col-start-5 lg:mt-12">
             <div className="max-w-2xl">
-              <p className="font-reading text-xl leading-prose text-fg-muted">{statement}</p>
-              <div className="mt-10 space-y-6 font-reading text-lg leading-prose text-fg-muted">
+              <div className="space-y-6 font-reading text-lg leading-prose text-fg-muted">
                 <p>{BIO_INTRO}</p>
                 <p>{PORTRAIT_BIO}</p>
               </div>

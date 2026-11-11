@@ -8,6 +8,7 @@ import { HomeOpening } from '@/features/home/opening';
 import { HomeHero } from '@/features/home/hero';
 import { WordsWall } from '@/features/home/words-wall';
 import { ArchiveIntro } from '@/features/home/archive-intro';
+import { ArchiveStatement } from '@/features/home/archive-statement';
 import { BookFeature } from '@/features/home/book-feature';
 import { InstagramFeature } from '@/features/home/instagram-feature';
 import { AboutIntro, AbyssDoor, ContactDoor, Exit } from '@/features/home/closing';
@@ -61,6 +62,9 @@ export default async function HomePage() {
       <HomeOpening line="A soul is deeper than the abyss…" />
       <HomeHero about={about} />
       <WordsWall writings={wall} />
+      <ArchiveStatement
+        statement={about?.statement || 'An archive of everything that words cannot contain.'}
+      />
       <ArchiveIntro />
       <BookFeature book={book} />
       <InstagramFeature posts={posts} profileUrl={about?.links.literaryInstagram} />

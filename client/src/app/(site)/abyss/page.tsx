@@ -7,6 +7,7 @@ import { Reveal } from '@/components/ui/reveal';
 import { ShirtSilhouette } from '@/features/abyss/silhouette';
 import { Waitlist } from '@/features/abyss/waitlist';
 import WindStreamCursor from '@/components/ui/wind-stream-cursor';
+import { FilmGrain } from '@/components/ui/film-grain';
 import { BlackHoleBackground } from '@/features/blackhole/background';
 import { ABYSS_DIFFERENT, ABYSS_FEELING, ABYSS_FOR, ABYSS_WHY, VENTURES } from '@/content/triyan';
 
@@ -40,6 +41,7 @@ export default async function AbyssPage() {
         <WindStreamCursor />
         {/* The black hole behind the mark: a living background, above the name. */}
         <BlackHoleBackground radius={0.2} offset={[0, 0.4]} />
+        <FilmGrain />
         <div className="relative mx-auto w-full max-w-[90rem]">
           <h1 className="font-abyss pb-[1.1em] pl-[0.18em] text-[clamp(3.5rem,12vw,10.5rem)] leading-[1.15] font-normal whitespace-nowrap">
             <SplitText text={wordmark(name)} step={90} />
