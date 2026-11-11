@@ -47,6 +47,11 @@ describe('black hole shader', () => {
       expect(BLACK_HOLE_FRAGMENT).toContain(stop);
   });
 
+  it('can draw only the living layers, over a photograph of the hole', () => {
+    expect(BLACK_HOLE_FRAGMENT).toContain('uniform float uOverlay');
+    expect(BLACK_HOLE_FRAGMENT).toContain('vec3 overlayLayers(');
+  });
+
   it('crushes empty space to exact black', () => {
     expect(BLACK_HOLE_FRAGMENT).toContain('col *= smoothstep(0.012, 0.03, m);');
   });
@@ -99,11 +104,13 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-const mount = async () => {
+const PHOTO = { width: 1560, height: 1000, radius: 146 };
+
+const mount = async (props: { cover?: typeof PHOTO } = {}) => {
   const { BlackHoleBackground } = await import('./background');
   return render(
-    <section style={{ position: 'relative', width: 800, height: 600 }}>
-      <BlackHoleBackground />
+    <section data-scroll-scene style={{ position: 'relative', width: 800, height: 600 }}>
+      <BlackHoleBackground {...props} />
     </section>,
   );
 };
@@ -141,5 +148,20 @@ describe('BlackHoleBackground', () => {
     webglAvailable = false;
     const { container } = await mount();
     expect((container.firstElementChild as HTMLElement).dataset.webgl).toBe('none');
+  });
+
+  it('over a photograph, screen-blends its effects and lets the photo stand alone without WebGL', async () => {
+    vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(null);
+    const { container } = await mount({ cover: PHOTO });
+    const scene = container.firstElementChild as HTMLElement;
+    expect(scene.querySelector('canvas')?.className).toContain('mix-blend-screen');
+    expect(scene.dataset.webgl).toBeUndefined();
+  });
+
+  it('gives the scroll scene its progress and zoom, so the photo can fall with the stars', async () => {
+    const { container } = await mount({ cover: PHOTO });
+    const scene = container.firstElementChild as HTMLElement;
+    expect(scene.style.getPropertyValue('--bh-progress')).toBe('0.0000');
+    expect(scene.style.getPropertyValue('--bh-zoom')).toBe('1.0000');
   });
 });

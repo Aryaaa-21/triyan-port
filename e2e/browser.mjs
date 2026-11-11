@@ -275,7 +275,9 @@ await rm.close();
         const c = document.querySelector('.opening canvas.black-hole');
         const host = c?.parentElement;
         if (host?.dataset.webgl === 'none') return 'fallback';
-        return c?.getAttribute('data-ready') === 'true' ? 'animated' : false;
+        if (c?.getAttribute('data-ready') === 'true') return 'animated';
+        // Over the photograph, no WebGL means no effects: the photo stands alone.
+        return c && !globalThis.WebGLRenderingContext ? 'fallback' : false;
       },
       null,
       { timeout: 15000 },
@@ -287,6 +289,19 @@ await rm.close();
     `black hole behind the opening (${state})`,
     `black hole ${state}`,
   );
+  // The owner's front-page image is the opening's backdrop; the effects only add to it.
+  const photo = await bp
+    .waitForFunction(
+      () => {
+        const img = document.querySelector('.opening-image img');
+        return Boolean(img?.complete && img.naturalWidth > 0);
+      },
+      null,
+      { timeout: 15000 },
+    )
+    .then(() => true)
+    .catch(() => false);
+  check(photo, 'front-page image behind the opening', 'front-page image missing');
   const enter = bp.getByRole('link', { name: /enter/i }).first();
   check(await enter.isVisible(), 'opening stays usable over the background', 'opening link hidden');
   await bc.close();

@@ -677,9 +677,15 @@
     opacity: calc(1 - var(--p) * 8);
   }
 
+  /* The photograph falls with the stars: the same zoom, about the hole at the centre. */
+  .opening-image {
+    scale: var(--bh-zoom, 1);
+  }
+
   /* Deep in the fall the screen goes fully dark, so the line reads on pure black —
      brightness, not opacity, so it tracks the scroll without the fade-in's easing. */
-  .opening .black-hole {
+  .opening .black-hole,
+  .opening-image {
     filter: brightness(clamp(0, calc((0.74 - var(--p)) * 5), 1));
   }
 

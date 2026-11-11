@@ -181,3 +181,38 @@ verified in a real browser.
   (the API still validates), taking `/abyss` from 186 to 153 KB.
 - **Verification:** 569 tests pass. Browser E2E passes, including "black hole behind
   the opening (animated)", the switch, and 13 routes × 9 widths.
+
+## Update — the owner's front-page image as the opening (2026-11-11)
+
+- **The opening's backdrop is now the owner's own image** (`frontpage.png`), not a
+  drawing of it. The original is only 533 × 346, so it was prepared once, offline:
+  - the light screenshot border was trimmed;
+  - it was rotated 10.4° so the disk lies level (it crops cleanly at any aspect ratio);
+  - it was centred on the hole and enlarged 3× (Lanczos, light sharpening);
+  - the corners the rotation exposed were filled by mirroring the sky.
+  The colours are untouched. It is `public/images/abyss-front.jpg` (1560 × 1000,
+  137 KB), served through `next/image` as AVIF/WebP, preloaded, with a `sizes` hint
+  that accounts for tall phone screens.
+- **The effects run on top of it.** The black-hole shader gained an overlay mode that
+  draws only the living layers, screen-blended so they only add light:
+  - twinkling lensed stars, sparkles and shooting stars;
+  - glittering stars that spiral in and vanish at the shadow, and glints orbiting in
+    the disk plane;
+  - a light running round the upper rim of the shadow;
+  - an occasional flare along the disk.
+  The shader is sized to the hole in the photo (cover-fit, radius 146 image px), so
+  the stars vanish exactly at its edge.
+- **"abyss" sits in the middle of the hole.** "Welcome to" is above the arch and
+  "Triyan Writes" below the lower arc, all in units of the hole's radius as displayed.
+- **Scrolling** zooms the photo with the stars (the same `--bh-zoom`) into the shadow,
+  then the line "A soul is deeper than the abyss…" appears in the dark.
+- **Without WebGL, or under reduced motion,** the photo stands alone (reduced motion
+  gets one still frame of the effects).
+- **Unchanged:**
+  - The ABYSS page keeps the drawn black hole, in the front-page colours.
+  - The wordmark is lowercase "abyss", as in the owner's logo, which is also the site
+    icon.
+- **Caveat:** the source is small. It holds up as a background, but a higher-resolution
+  original would be sharper on large screens, and dropping it in is a one-file swap.
+- **Verification:** 573 tests pass. Browser E2E passes 31/31, including the new
+  "front-page image behind the opening".

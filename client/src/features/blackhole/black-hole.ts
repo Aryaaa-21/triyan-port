@@ -19,6 +19,7 @@ uniform float uScale;   // pixels per shadow radius
 uniform float uZoom;    // 1 = rest; grows as the camera falls in (scroll)
 uniform vec2 uOffset;   // where the hole sits, in shadow radii from the centre
 uniform vec2 uPointer;  // -0.5..0.5, for parallax
+uniform float uOverlay; // 1 = only the living layers, drawn over a photograph of the hole
 
 float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
 float noise(vec2 p) {
@@ -202,14 +203,66 @@ vec3 diskColour(float v) {
   return c * min(1.0, v * 1.6);
 }
 
+/**
+ * Over the photograph: only the living layers. Lensed stars twinkle and drift, sparkles
+ * pop, shooting stars cross, glittering stars fall in and vanish at the shadow, glints
+ * orbit in the disk plane, a light runs round the shadow's rim, and now and then a flare
+ * sweeps along the disk. Drawn on black and screen-blended, so it only ever adds light.
+ */
+vec3 overlayLayers(vec2 p, float r, float t) {
+  float px = 1.0 / (uScale * uZoom);
+  float sky = 0.0;
+  if (r > 1.0) {
+    float thetaE = 1.2;
+    vec2 q = p - p * (thetaE * thetaE) / (r * r);
+    q += vec2(0.018 * t, 0.004 * t) - uPointer * 0.25;
+    float S = uScale / 170.0;
+    // The photograph has its own stars, so the added field is lighter.
+    sky = 0.7 * starField(q * S, t, px * S) + glitterPops(q * S, t, px * S) + shootingStars(p, t, px);
+    sky *= smoothstep(1.0, 1.08, r);
+  }
+  float glitter = infall(p, t, px) + orbiters(p, t, px);
+
+  // A light running round the rim of the shadow — which in the photograph is a touch
+  // wider than tall — over the upper edge only, where no disk passes in front of it.
+  vec2 e = vec2(p.x / 1.016, p.y / 0.945);
+  float ang = atan(e.y, e.x);
+  float lap = mod(ang - t * 0.55 + 3.14159, 6.28318) - 3.14159;
+  float rim = exp(-pow((length(e) - 1.03) / 0.02, 2.0)) * 0.9 * exp(-lap * lap / 0.06)
+            * smoothstep(-0.12, 0.08, e.y);
+
+  // Now and then a flare sweeps along the disk, which lies just below the centre.
+  float flare = 0.0;
+  float cycle = floor(t / 4.3);
+  if (hash(vec2(cycle, 91.0)) > 0.45) {
+    float k = fract(t / 4.3);
+    float front = mix(-4.5, 4.5, k);
+    flare = 0.3 * sin(k * 3.14159)
+          * exp(-pow((p.x - front) / 0.6, 2.0) - pow((p.y + 0.22) / 0.14, 2.0));
+  }
+
+  vec3 col = vec3(0.88, 0.92, 1.0) * (1.0 - exp(-sky * 1.45))
+           + vec3(1.0, 0.86, 0.66) * (1.0 - exp(-glitter * 1.45))
+           + vec3(1.0, 0.88, 0.74) * (rim + flare);
+  float m = max(col.r, max(col.g, col.b));
+  col *= smoothstep(0.012, 0.03, m);
+  return min(col, vec3(1.0));
+}
+
 void main() {
   float t = uTime;
   vec2 p = (gl_FragCoord.xy - 0.5 * uRes) / (uScale * uZoom);
   // The camera breathes: a slow drift and roll, and a touch of pointer parallax.
-  p -= uOffset + vec2(sin(t * 0.11), cos(t * 0.09)) * 0.025 + uPointer * 0.05;
-  float roll = 0.012 * sin(t * 0.13);
+  // Over a photograph the hole cannot move, so neither does the camera.
+  float moving = 1.0 - uOverlay;
+  p -= uOffset + (vec2(sin(t * 0.11), cos(t * 0.09)) * 0.025 + uPointer * 0.05) * moving;
+  float roll = 0.012 * sin(t * 0.13) * moving;
   p = mat2(cos(roll), -sin(roll), sin(roll), cos(roll)) * p;
   float r = length(p);
+  if (uOverlay > 0.5) {
+    gl_FragColor = vec4(overlayLayers(p, r, t), 1.0);
+    return;
+  }
   float ax = abs(p.x);
 
   // ---- geometry, in units of the shadow radius ------------------------------
@@ -345,6 +398,12 @@ export interface BlackHoleOptions {
   offset: [number, number];
   /** Device-pixel-ratio cap: lower on modest devices. */
   dprCap: number;
+  /**
+   * Drawing over a photograph instead: its natural size and the shadow's radius in it,
+   * all in image pixels. The photo is shown with object-fit: cover, centred on the hole;
+   * only the living layers are drawn, and the hole's size follows the photo's.
+   */
+  cover?: { width: number; height: number; radius: number };
   onFirstFrame?: () => void;
 }
 
@@ -402,6 +461,7 @@ export const createBlackHole = (
   const uZoom = u('uZoom');
   const uOffset = u('uOffset');
   const uPointer = u('uPointer');
+  const uOverlay = u('uOverlay');
 
   let zoom = 1;
   let px = 0;
@@ -425,8 +485,12 @@ export const createBlackHole = (
   ro.observe(canvas);
 
   const draw = (seconds: number) => {
-    const cssMin = Math.min(canvas.clientWidth, canvas.clientHeight);
-    const radiusCss = Math.max(options.radius * cssMin, options.minRadiusPx);
+    const cw = canvas.clientWidth;
+    const ch = canvas.clientHeight;
+    const { cover } = options;
+    const radiusCss = cover
+      ? cover.radius * Math.max(cw / cover.width, ch / cover.height)
+      : Math.max(options.radius * Math.min(cw, ch), options.minRadiusPx);
     // Pointer parallax eases toward its target rather than snapping.
     sx += (px - sx) * 0.06;
     sy += (py - sy) * 0.06;
@@ -436,6 +500,7 @@ export const createBlackHole = (
     gl.uniform1f(uZoom, zoom);
     gl.uniform2f(uOffset, options.offset[0], options.offset[1]);
     gl.uniform2f(uPointer, sx, sy);
+    gl.uniform1f(uOverlay, cover ? 1 : 0);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     if (first) {
       first = false;
