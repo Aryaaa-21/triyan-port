@@ -12,7 +12,7 @@ import WindStreamCursor from '@/components/ui/wind-stream-cursor';
  * Sizes are in image pixels; `radius` is the shadow's.
  */
 const FRONT = {
-  src: '/images/abyss-front-bw.jpg',
+  src: '/images/landing-bw.jpg',
   width: 1560,
   height: 1000,
   radius: 146,

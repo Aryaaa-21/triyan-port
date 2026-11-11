@@ -258,3 +258,13 @@ verified in a real browser.
     readers and no-JavaScript visitors get the whole sentence.
   - Under reduced motion it is simply shown.
 - **Triyan's bio** follows the portrait on all screen sizes, and on About.
+
+## Update — new landing image (2026-11-11)
+
+- The opening's photo is now the owner's `landing page.jpg` (735 × 490, a cleaner and
+  larger original), as `public/images/landing-bw.jpg`.
+  - It had the same treatment as before: straightened (11.7°) and centred on the hole.
+  - It needed only 2.1× enlargement, not 3×, so it is sharper.
+  - The same black-and-white conversion was applied.
+- It was scaled so the hole lands at exactly the previous size and position, so the
+  layout, text, effects and phone fit are unchanged. Nothing else was touched.
