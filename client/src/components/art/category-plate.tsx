@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import Image from '@/lib/image';
 import type { CategoryKey } from '@triyan/shared';
 import { cn } from '@/lib/cn';
 import { CategoryArt } from './category-art';

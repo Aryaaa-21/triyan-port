@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import Image from 'next/image';
+import Image from '@/lib/image';
 import { SplitText } from '@/components/motion/split-text';
 import { FilmGrain } from '@/components/ui/film-grain';
 import { ScrollCue } from './scroll-cue';

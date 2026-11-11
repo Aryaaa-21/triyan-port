@@ -17,21 +17,31 @@ The literary home of **Triyan** — poet, writer, artist — and of **ABYSS**.
 
 ## Stack
 
-An npm-workspaces monorepo:
+A **MERN** app in an npm-workspaces monorepo:
 
-- **client** — Next.js 16 (App Router), React 19, TypeScript, Tailwind v4, a WebGL shader
-  for the black hole → **Vercel**
-- **server** — Express 5, TypeScript, Mongoose 9, an Instagram sync worker → **Railway**
+- **MongoDB** — the archive (Mongoose 9); Atlas in production
+- **Express** — the API (`/api/v1`), `/sitemap.xml`, `/robots.txt`, and in production the
+  site itself, from one origin (`server/`)
+- **React** — the site: React 19 + React Router 7, built with Vite, Tailwind v4, and a
+  WebGL shader for the black hole (`client/`)
+- **Node** — 22
 - **shared** — zod schemas, taxonomy and types used by both
-- **data** — MongoDB Atlas
 - **Instagram** — official Instagram API with Instagram Login only. No scraping.
 
 ## Quick start
 
+From an Ubuntu (WSL) terminal — see [`docs/SETUP.md`](docs/SETUP.md):
+
 ```bash
-nvm use            # Node 22
 npm install
-npm run verify     # lint, typecheck, tests, build
+npm run dev:db      # a local MongoDB (in memory) on :27017 — in its own terminal
+npm run dev         # API on :4000 and the site on http://localhost:3000
 ```
 
-Then follow [`docs/SETUP.md`](docs/SETUP.md) to run the API and website locally.
+Production-style, one process serving the site and the API:
+
+```bash
+npm run build && npm start    # http://localhost:4000
+```
+
+`npm run verify` runs lint, typecheck, tests and the production build.

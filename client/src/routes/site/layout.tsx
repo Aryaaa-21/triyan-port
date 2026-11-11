@@ -1,0 +1,56 @@
+import { Outlet, useLoaderData, useLocation, useNavigation } from 'react-router';
+import { SiteHeader } from '@/components/site/site-header';
+import { SiteFooter } from '@/components/site/site-footer';
+import { fetchAboutSafely } from '@/features/content/api';
+import { Cursor } from '@/components/motion/cursor';
+import { ArtDefs } from '@/components/art';
+import WritingsLoading from './writings-loading';
+import WritingLoading from './writing-loading';
+
+/**
+ * The public shell. Admin lives in its own route group with no header or footer,
+ * so the two surfaces cannot drift into each other.
+ */
+export const loader = () => fetchAboutSafely();
+
+/** The about record only feeds the footer's links: no need to refetch it on every page. */
+export const shouldRevalidate = () => false;
+
+/** Archive pages show their own quiet skeleton while the next one loads. */
+const pendingFor = (path: string) =>
+  path === '/writings' ? (
+    <WritingsLoading />
+  ) : path.startsWith('/writings/') ? (
+    <WritingLoading />
+  ) : null;
+
+export default function SiteLayout() {
+  const about = useLoaderData<typeof loader>();
+  const { pathname } = useLocation();
+  const navigation = useNavigation();
+  const pendingPath = navigation.state === 'loading' ? navigation.location.pathname : null;
+  const pending = pendingPath && pendingPath !== pathname ? pendingFor(pendingPath) : null;
+
+  return (
+    <>
+      <div id="site" className="flex min-h-dvh flex-col">
+        <ArtDefs />
+        <Cursor />
+        <SiteHeader />
+        <div className="flex-1">
+          {/* Re-keyed on every navigation, which is what gives each page its entrance.
+              The transition is CSS-only and disappears under reduced motion. */}
+          <div key={pathname} className="page-enter">
+            {pending ?? <Outlet />}
+          </div>
+        </div>
+        <SiteFooter
+          {...(about?.links.literaryInstagram
+            ? { literaryInstagram: about.links.literaryInstagram }
+            : {})}
+          {...(about?.links.email ? { email: about.links.email } : {})}
+        />
+      </div>
+    </>
+  );
+}

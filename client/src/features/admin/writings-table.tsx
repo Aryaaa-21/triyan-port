@@ -1,7 +1,5 @@
-'use client';
-
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import Link from '@/lib/link';
+import { useRouter } from '@/lib/navigation';
 import { useState, useTransition } from 'react';
 import type { WritingDto } from '@triyan/shared';
 import { adminApi, AdminError } from '@/features/admin/client';

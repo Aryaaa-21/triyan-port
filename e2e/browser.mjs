@@ -36,6 +36,17 @@ const check = (cond, ok, bad) => (cond ? pass(ok) : fail(bad));
 
 const ctx = await browser.newContext();
 const page = await ctx.newPage();
+// The site renders in the browser (React): after a navigation, wait until the page's
+// data has loaded and its <main> is on screen before looking at it.
+{
+  const proto = Object.getPrototypeOf(page);
+  const goto = proto.goto;
+  proto.goto = async function (...args) {
+    const response = await goto.apply(this, args);
+    await this.waitForSelector('main#main', { timeout: 15000 }).catch(() => undefined);
+    return response;
+  };
+}
 const errors = [];
 page.on(
   'console',

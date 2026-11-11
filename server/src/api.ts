@@ -4,6 +4,11 @@ import { env } from './config/env.js';
 import { logger } from './config/logger.js';
 
 const main = async (): Promise<void> => {
+  // Production must never run without a database. Development may: the API shell runs
+  // with no infrastructure at all, and /readyz reports the degraded state honestly.
+  if (env.NODE_ENV === 'production' && !env.MONGODB_URI) {
+    throw new Error('MONGODB_URI is required to run the API in production');
+  }
   if (env.MONGODB_URI) {
     await connectDatabase();
     // Models are registered by now (app.ts imports every route, and so every model).

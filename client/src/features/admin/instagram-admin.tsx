@@ -1,6 +1,4 @@
-'use client';
-
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/lib/navigation';
 import { useState, useTransition } from 'react';
 import {
   CATEGORIES,
@@ -51,6 +49,7 @@ export function InstagramControls({ status }: { status: SyncStatusDto }) {
         </Row>
         <Row label="Health">{status.health}</Row>
         <Row label="Stored">{status.totalStored}</Row>
+        {status.archiveStored > 0 && <Row label="From the archive">{status.archiveStored}</Row>}
         <Row label="Last success">{when(status.lastSuccessAt)}</Row>
         <Row label="Last attempt">{when(status.lastAttemptAt)}</Row>
         <Row label="Rate limited until">{when(status.rateLimitedUntil)}</Row>

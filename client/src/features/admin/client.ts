@@ -1,5 +1,3 @@
-'use client';
-
 import type {
   AdminUserDto,
   InstagramMediaDto,
@@ -9,8 +7,8 @@ import type {
 } from '@triyan/shared';
 
 /**
- * Browser-side admin client. Every call goes through the same-origin proxy so the
- * session cookie is first-party.
+ * Browser-side admin client. The site and the API share an origin, so the session
+ * cookie is first-party.
  */
 
 export class AdminError extends Error {
@@ -34,7 +32,7 @@ interface Envelope<T> {
 }
 
 const call = async <T>(path: string, init: RequestInit = {}): Promise<Envelope<T>> => {
-  const response = await fetch(`/api/admin${path}`, {
+  const response = await fetch(`/api/v1${path}`, {
     ...init,
     headers: { 'content-type': 'application/json', ...(init.headers ?? {}) },
     credentials: 'same-origin',

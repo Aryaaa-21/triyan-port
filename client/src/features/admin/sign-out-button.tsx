@@ -1,6 +1,4 @@
-'use client';
-
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/lib/navigation';
 import { adminApi } from '@/features/admin/client';
 
 export function SignOutButton() {

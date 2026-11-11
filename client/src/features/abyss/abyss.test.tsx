@@ -26,7 +26,7 @@ describe('Waitlist', () => {
     fillAndSubmit('Reader@Example.test', true);
     await waitFor(() => expect(screen.getByRole('status').textContent).toMatch(/entered/i));
     const [url, init] = fetchSpy.mock.calls[0] as [string, RequestInit];
-    expect(url).toBe('/api/public/waitlist');
+    expect(url).toBe('/api/v1/waitlist');
     expect(JSON.parse(String(init.body))).toMatchObject({
       email: 'reader@example.test',
       consent: true,

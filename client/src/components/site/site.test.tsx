@@ -3,8 +3,8 @@ import { cleanup, render, screen, fireEvent } from '@testing-library/react';
 import { SiteFooter } from './site-footer';
 import { NAV_LINKS } from './nav-links';
 
-// next/navigation is not available outside the app runtime.
-vi.mock('next/navigation', () => ({
+// The header reads the current path through the site's navigation hooks.
+vi.mock('@/lib/navigation', () => ({
   usePathname: () => '/writings',
   useRouter: () => ({ push: vi.fn(), replace: vi.fn(), refresh: vi.fn() }),
   useSearchParams: () => new URLSearchParams(),

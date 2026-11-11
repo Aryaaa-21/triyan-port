@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import Image from '@/lib/image';
 import type { BookDto } from '@triyan/shared';
 import { ArrowLink, SectionIntro } from '@/components/editorial';
 import { Reveal } from '@/components/ui/reveal';

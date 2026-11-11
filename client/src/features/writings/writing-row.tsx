@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from '@/lib/link';
 import { getCategory, type WritingDto } from '@triyan/shared';
 
 const LANGUAGE_LABEL: Record<string, string> = {

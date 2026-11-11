@@ -1,26 +1,20 @@
 # Local setup
 
-## 0. Toolchain — read this first (WSL)
+## 0. Where the code lives (WSL)
 
-**The project lives in the WSL filesystem at `~/triyan`, not on the Windows Desktop.**
-This is deliberate. It was originally on `/mnt/c/.../Desktop/Triyan`, where every file
-operation crosses the Windows/WSL boundary:
+The project is in the Windows Desktop folder, so it can be seen and opened from
+Explorer:
 
-| Operation | On `/mnt/c` | In `~/triyan` |
-|---|---|---|
-| `npm install` | ~25 min | **11 s** |
-| `eslint .` | ~2 min | **3 s** |
-| `npm run verify` (lint + typecheck + test + build) | several min | **18 s** |
+- Windows: `C:\Users\Arya Bhagat\Desktop\triyan\triyan-port`
+- Ubuntu (WSL): `/mnt/c/Users/Arya Bhagat/Desktop/triyan/triyan-port`
 
-Open it with the WSL remote rather than through Windows Explorer:
+**Run every `npm` command from an Ubuntu (WSL) terminal**, never from PowerShell:
+the installed packages include Linux builds of native tools (Tailwind, Vite, argon2),
+which Windows Node cannot load. Files on the Windows drive are slower for Node than
+the WSL filesystem, so installs and builds take longer here; the dev server watches
+for edits by polling, so changes made from Windows editors are picked up.
 
-```bash
-cd ~/triyan && code .
-```
-
-From Windows the files are still reachable at `\\wsl$\<distro>\home\<you>\triyan`,
-but **do not edit them through that path or through `/mnt/c`** — use WSL for anything
-that writes.
+Open it in VS Code with `code .` from that folder in Ubuntu.
 
 ### The node/npm shadowing trap
 
@@ -60,16 +54,14 @@ npm run build:shared # @triyan/shared must be compiled before the others typeche
 
 ```bash
 cp server/.env.example server/.env
-cp client/.env.example client/.env.local
+cp client/.env.example client/.env.local   # optional
 ```
-
-Then fill in:
 
 | Variable | Where it comes from |
 |---|---|
-| `MONGODB_URI` | MongoDB Atlas → Connect → Drivers. Create a database user, allow your IP. |
-| `REVALIDATE_SECRET` | `openssl rand -hex 32`. Must be **identical** in `server/.env` and `client/.env.local`. |
-| `INSTAGRAM_*` | Leave `INSTAGRAM_PROVIDER=mock` until Phase 11. See `docs/INSTAGRAM.md`. |
+| `MONGODB_URI` | Locally, `npm run dev:db` prints it (`mongodb://127.0.0.1:27017`). In production, MongoDB Atlas → Connect → Drivers. |
+| `INSTAGRAM_*` | Leave `INSTAGRAM_PROVIDER=mock` until the Meta credentials exist. See `docs/INSTAGRAM.md`. |
+| `VITE_SITE_URL` (client, optional) | The public address, for canonical links. Defaults to wherever the site is served. |
 
 The server validates its environment at boot and **refuses to start** on a missing or
 malformed value, printing exactly which variable is wrong.
@@ -77,9 +69,21 @@ malformed value, printing exactly which variable is wrong.
 ## 3. Run
 
 ```bash
-npm run dev          # shared (watch) + server :4000 + client :3000
-npm run dev:server   # server only
-npm run dev:client   # client only
+npm run dev:db       # local MongoDB (in memory) on :27017 — own terminal; data is lost on exit
+npm run dev          # shared (watch) + API :4000 + site :3000 (Vite, proxying /api to :4000)
+```
+
+Open <http://localhost:3000>. The first time, seed an admin and the confirmed content:
+
+```bash
+ADMIN_SEED_PASSWORD='…' npm run seed:admin -w @triyan/server -- --email you@example.com
+npm run seed:content -w @triyan/server
+```
+
+Production-style (one Express process serves the built site and the API):
+
+```bash
+npm run build && npm start   # http://localhost:4000
 ```
 
 Health checks: <http://localhost:4000/healthz> · <http://localhost:4000/readyz>

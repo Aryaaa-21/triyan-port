@@ -1,7 +1,5 @@
-'use client';
-
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import Link from '@/lib/link';
+import { usePathname } from '@/lib/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { NAV_LINKS } from './nav-links';

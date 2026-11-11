@@ -1,6 +1,4 @@
-'use client';
-
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/lib/navigation';
 import { useState, useTransition } from 'react';
 import type { ContactMessageDto } from '@triyan/shared';
 import { adminApi, AdminError } from '@/features/admin/client';

@@ -1,0 +1,27 @@
+/*
+ * The site's families, self-hosted (Fontsource for the Google faces, Aquiline Two from
+ * the repository). Each `--font-*` name is consumed by `--family-*` in tokens.css;
+ * components never name a family directly.
+ */
+@font-face {
+  /*
+   * ABYSS wordmark only. Aquiline Two, by Manfred Klein + CybaPee (based on Aquiline
+   * by Expert Software), "100% Free" on DaFont; embedding unrestricted (fsType 0).
+   * Subset to Latin, WOFF2 (36 KB).
+   */
+  font-family: 'Aquiline Two';
+  src: url('../fonts/aquiline-two.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --font-cormorant: 'Cormorant Garamond';
+  --font-spectral: 'Spectral';
+  --font-tiro-deva: 'Tiro Devanagari Hindi';
+  --font-geist: 'Geist';
+  --font-geist-mono: 'Geist Mono';
+  --font-aquiline: 'Aquiline Two';
+  --font-archivo: 'Archivo';
+}

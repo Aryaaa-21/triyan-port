@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from '@/lib/link';
 import { CATEGORIES } from '@triyan/shared';
 import { CategoryPlate } from '@/components/art';
 import { cn } from '@/lib/cn';

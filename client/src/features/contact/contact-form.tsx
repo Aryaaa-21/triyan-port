@@ -1,5 +1,3 @@
-'use client';
-
 import { useState } from 'react';
 import { contactSchema } from '@triyan/shared';
 import { TextAreaField, TextField } from '@/components/ui/field';
@@ -46,7 +44,7 @@ export function ContactForm({ deliverable = true }: { deliverable?: boolean }) {
 
     setState('sending');
     try {
-      const response = await fetch('/api/public/contact', {
+      const response = await fetch('/api/v1/contact', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify(parsed.data),

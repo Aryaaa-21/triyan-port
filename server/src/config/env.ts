@@ -27,6 +27,12 @@ const envSchema = z
     MONGODB_URI: z.string().min(1).optional(),
     MONGODB_DB_NAME: z.string().min(1).default('triyan_dev'),
 
+    /**
+     * The built website (client/dist). When it exists, this server serves the site as
+     * well as the API — one origin, one process. Defaults to ../client/dist.
+     */
+    CLIENT_DIST: z.string().min(1).optional(),
+
     /** Origins permitted to call the API with credentials. Comma-separated. */
     CORS_ORIGINS: csv,
     PUBLIC_SITE_URL: z.url().default('http://localhost:3000'),
@@ -64,10 +70,9 @@ const envSchema = z
       }
     };
 
-    // Production must never boot without a database. Development and test may:
-    // it lets the API shell run with no infrastructure at all, and /readyz
-    // reports the degraded state honestly rather than pretending to be healthy.
-    if (value.NODE_ENV === 'production') require('MONGODB_URI', 'to connect to MongoDB');
+    // A database is not required here: the long-running API refuses to start without
+    // one in production (api.ts), while the serverless function still serves the site,
+    // with /readyz reporting the missing database honestly.
 
     if (value.INSTAGRAM_PROVIDER === 'graph') {
       require('INSTAGRAM_APP_ID', 'when INSTAGRAM_PROVIDER=graph');

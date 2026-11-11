@@ -63,7 +63,7 @@ describe('Cursor', () => {
 
   it('does not hide the system cursor anywhere', async () => {
     const { readFileSync } = await import('node:fs');
-    const css = readFileSync(`${process.cwd()}/src/app/globals.css`, 'utf8');
+    const css = readFileSync(`${process.cwd()}/src/styles/globals.css`, 'utf8');
     expect(css).not.toMatch(/cursor:\s*none/);
   });
 });

@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from '@/lib/link';
 import { NAV_LINKS } from './nav-links';
 
 interface FooterProps {

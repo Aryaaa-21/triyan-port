@@ -1,17 +1,13 @@
 import type { AboutDto, AbyssDto, BookDto, SiteSettingsDto } from '@triyan/shared';
-import { apiFetch, CACHE_TAGS } from '@/lib/api';
+import { apiFetch } from '@/lib/api';
 
-export const fetchBook = () =>
-  apiFetch<BookDto>('/api/v1/book', { tags: [CACHE_TAGS.book], revalidate: 300 });
+export const fetchBook = () => apiFetch<BookDto>('/api/v1/book');
 
-export const fetchAbout = () =>
-  apiFetch<AboutDto>('/api/v1/about', { tags: [CACHE_TAGS.about], revalidate: 300 });
+export const fetchAbout = () => apiFetch<AboutDto>('/api/v1/about');
 
-export const fetchAbyss = () =>
-  apiFetch<AbyssDto>('/api/v1/abyss', { tags: [CACHE_TAGS.abyss], revalidate: 300 });
+export const fetchAbyss = () => apiFetch<AbyssDto>('/api/v1/abyss');
 
-export const fetchSettings = () =>
-  apiFetch<SiteSettingsDto>('/api/v1/settings', { tags: [CACHE_TAGS.settings], revalidate: 300 });
+export const fetchSettings = () => apiFetch<SiteSettingsDto>('/api/v1/settings');
 
 /**
  * Content fetchers used by the shared layout must never take the page down with

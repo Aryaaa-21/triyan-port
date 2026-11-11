@@ -1,5 +1,5 @@
 import type { PageMeta, SitemapEntry, WritingDto } from '@triyan/shared';
-import { apiFetch, CACHE_TAGS } from '@/lib/api';
+import { apiFetch } from '@/lib/api';
 
 export interface ArchiveQuery {
   q?: string;
@@ -24,25 +24,12 @@ const toSearchParams = (query: ArchiveQuery): string => {
 };
 
 export const fetchWritings = async (query: ArchiveQuery = {}) =>
-  apiFetch<WritingDto[], PageMeta>(`/api/v1/writings${toSearchParams(query)}`, {
-    tags: [CACHE_TAGS.writings],
-    revalidate: 120,
-  });
+  apiFetch<WritingDto[], PageMeta>(`/api/v1/writings${toSearchParams(query)}`);
 
 export const fetchWriting = async (slug: string) =>
-  apiFetch<WritingDto>(`/api/v1/writings/${encodeURIComponent(slug)}`, {
-    tags: [CACHE_TAGS.writings, CACHE_TAGS.writing(slug)],
-    revalidate: 300,
-  });
+  apiFetch<WritingDto>(`/api/v1/writings/${encodeURIComponent(slug)}`);
 
 export const fetchRelated = async (slug: string) =>
-  apiFetch<WritingDto[]>(`/api/v1/writings/${encodeURIComponent(slug)}/related`, {
-    tags: [CACHE_TAGS.writings, CACHE_TAGS.writing(slug)],
-    revalidate: 300,
-  });
+  apiFetch<WritingDto[]>(`/api/v1/writings/${encodeURIComponent(slug)}/related`);
 
-export const fetchSitemapEntries = async () =>
-  apiFetch<SitemapEntry[]>('/api/v1/sitemap-entries', {
-    tags: [CACHE_TAGS.writings],
-    revalidate: 600,
-  });
+export const fetchSitemapEntries = async () => apiFetch<SitemapEntry[]>('/api/v1/sitemap-entries');

@@ -1,5 +1,5 @@
 import type { CursorMeta, InstagramMediaDto } from '@triyan/shared';
-import { apiFetch, CACHE_TAGS } from '@/lib/api';
+import { apiFetch } from '@/lib/api';
 
 export interface InstagramQuery {
   cursor?: string;
@@ -8,6 +8,7 @@ export interface InstagramQuery {
   productType?: string;
   limit?: string;
   featured?: string;
+  sort?: string;
 }
 
 const qs = (query: InstagramQuery) => {
@@ -18,15 +19,11 @@ const qs = (query: InstagramQuery) => {
 };
 
 export const fetchInstagram = (query: InstagramQuery = {}) =>
-  apiFetch<InstagramMediaDto[], CursorMeta>(`/api/v1/instagram${qs(query)}`, {
-    tags: [CACHE_TAGS.instagram],
-    revalidate: 120,
-  });
+  apiFetch<InstagramMediaDto[], CursorMeta>(`/api/v1/instagram${qs(query)}`);
 
 export const fetchInstagramItem = (id: string) =>
   apiFetch<InstagramMediaDto, { related: InstagramMediaDto[] }>(
     `/api/v1/instagram/${encodeURIComponent(id)}`,
-    { tags: [CACHE_TAGS.instagram, CACHE_TAGS.instagramItem(id)], revalidate: 300 },
   );
 
 /** For the homepage and layout: an unreachable API yields nothing, never an error page. */
@@ -51,6 +48,27 @@ export const postImage = (post: InstagramMediaDto): string =>
   post.mediaType === 'VIDEO'
     ? post.thumbnailUrl
     : post.mediaUrl || post.children[0]?.mediaUrl || post.children[0]?.thumbnailUrl || '';
+
+/**
+ * A post from the owner's screenshot archive: the image is the whole Instagram card
+ * (name, picture, counts) at a known size, and is shown uncropped.
+ */
+export const isArchivePost = (post: InstagramMediaDto): boolean =>
+  post.provider === 'archive' && post.mediaWidth > 0 && post.mediaHeight > 0;
+
+/** The slides of an archive post, in order. A single post is one slide. */
+export const archiveSlides = (post: InstagramMediaDto) =>
+  post.children.length > 0
+    ? post.children
+    : [
+        {
+          mediaType: post.mediaType,
+          mediaUrl: post.mediaUrl,
+          thumbnailUrl: post.thumbnailUrl,
+          mediaWidth: post.mediaWidth,
+          mediaHeight: post.mediaHeight,
+        },
+      ];
 
 export const postKind = (post: InstagramMediaDto): string =>
   post.productType === 'REELS'

@@ -1,6 +1,4 @@
-'use client';
-
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from '@/lib/navigation';
 import { useEffect, useRef, useState, useTransition } from 'react';
 
 /**

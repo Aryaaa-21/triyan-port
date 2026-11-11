@@ -2,10 +2,10 @@
   "name": "triyan",
   "private": true,
   "version": "0.1.0",
-  "description": "The literary home of Triyan, and of ABYSS.",
+  "description": "The literary home of Triyan, and of ABYSS. A MERN app: MongoDB, Express, React, Node.",
   "license": "UNLICENSED",
   "engines": {
-    "node": ">=22.0.0"
+    "node": "22.x"
   },
   "workspaces": [
     "shared",
@@ -16,8 +16,10 @@
     "build:shared": "npm run build -w @triyan/shared",
     "build": "npm run build:shared && npm run build -w @triyan/server && npm run build -w @triyan/client",
     "dev": "npm run build:shared && concurrently -n shared,server,client -c magenta,cyan,white \"npm:dev -w @triyan/shared\" \"npm:dev -w @triyan/server\" \"npm:dev -w @triyan/client\"",
+    "dev:db": "npm run dev:db -w @triyan/server",
     "dev:server": "npm run build:shared && npm run dev -w @triyan/server",
     "dev:client": "npm run build:shared && npm run dev -w @triyan/client",
+    "start": "npm run start:api -w @triyan/server",
     "typecheck": "npm run build:shared && npm run typecheck --workspaces --if-present",
     "lint": "eslint . && npm run lint -w @triyan/client && prettier --check .",
     "format": "prettier --write .",

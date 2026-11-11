@@ -1,0 +1,15 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "MONGOMS_DISABLE_POSTINSTALL=1 npm ci",
+  "buildCommand": "npm run build",
+  "outputDirectory": "client/dist",
+  "functions": {
+    "api/index.mjs": { "maxDuration": 30, "includeFiles": "client/dist/index.html" }
+  },
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api" },
+    { "source": "/(sitemap\\.xml|robots\\.txt|healthz|readyz)", "destination": "/api" },
+    { "source": "/(.*)", "destination": "/api" }
+  ]
+}

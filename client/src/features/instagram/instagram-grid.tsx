@@ -1,8 +1,8 @@
-import Image from 'next/image';
-import Link from 'next/link';
+import Image from '@/lib/image';
+import Link from '@/lib/link';
 import { getCategory, type InstagramMediaDto } from '@triyan/shared';
 import { cn } from '@/lib/cn';
-import { postImage, postKind, postTitle } from './api';
+import { archiveSlides, isArchivePost, postImage, postKind, postTitle } from './api';
 import { CategoryArt } from '@/components/art';
 
 /**
@@ -12,6 +12,24 @@ import { CategoryArt } from '@/components/art';
  * and screen-reader order match the timeline.
  */
 export function InstagramGrid({ posts }: { posts: InstagramMediaDto[] }) {
+  // Archive posts are whole Instagram cards and must not be cropped, so they get an
+  // even grid that keeps each card's own shape. Reading order is still the timeline.
+  if (posts.some(isArchivePost)) {
+    return (
+      <ul className="grid grid-cols-1 items-start gap-x-6 gap-y-14 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-10 lg:gap-y-20">
+        {posts.map((post, i) => (
+          <li key={post._id}>
+            {isArchivePost(post) ? (
+              <ArchiveCard post={post} eager={i < 3} />
+            ) : (
+              <PostTile post={post} />
+            )}
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
   const rows: InstagramMediaDto[][] = [];
   for (let i = 0; i < posts.length; i += 3) rows.push(posts.slice(i, i + 3));
 
@@ -51,6 +69,54 @@ export function InstagramGrid({ posts }: { posts: InstagramMediaDto[] }) {
   );
 }
 
+const tileDate = (iso: string) =>
+  new Date(iso).toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' });
+
+/**
+ * One archive post: the screenshot exactly as Instagram showed it, set on the page
+ * like a card laid on a table. The image carries the name and the counts itself.
+ */
+export function ArchiveCard({ post, eager = false }: { post: InstagramMediaDto; eager?: boolean }) {
+  const category = post.classification.primaryCategory
+    ? getCategory(post.classification.primaryCategory)
+    : undefined;
+  const title = postTitle(post);
+  const slides = archiveSlides(post);
+
+  return (
+    <Link
+      href={`/instagram/${post._id}`}
+      data-cursor="view"
+      className="group flex flex-col no-underline"
+    >
+      <div className="relative overflow-hidden border border-border bg-white transition-[translate,box-shadow,border-color] duration-700 ease-void group-hover:-translate-y-1.5 group-hover:border-border-strong group-hover:shadow-[0_28px_60px_-28px_rgb(0_0_0/0.9)] group-focus-visible:border-border-strong">
+        <Image
+          src={post.thumbnailUrl || post.mediaUrl}
+          alt={post.altText || title}
+          width={post.mediaWidth}
+          height={post.mediaHeight}
+          unoptimized
+          priority={eager}
+          sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 92vw"
+          className="block h-auto w-full"
+        />
+        {slides.length > 1 && (
+          <span className="absolute top-3 right-3 bg-black/75 px-2 py-1 font-mono text-2xs tracking-[0.14em] text-white">
+            1 / {slides.length}
+          </span>
+        )}
+      </div>
+      <p className="mt-5 line-clamp-2 font-display text-xl leading-snug font-light text-fg-muted transition-colors duration-500 group-hover:text-fg">
+        {title}
+      </p>
+      <p className="mt-2 font-mono text-2xs tracking-[0.18em] text-fg-subtle uppercase">
+        {postKind(post)} · <time dateTime={post.timestamp}>{tileDate(post.timestamp)}</time>
+        {category && <span> · {category.label}</span>}
+      </p>
+    </Link>
+  );
+}
+
 export function PostTile({
   post,
   feature = false,
@@ -58,6 +124,11 @@ export function PostTile({
   post: InstagramMediaDto;
   feature?: boolean;
 }) {
+  if (isArchivePost(post)) return <ArchiveCard post={post} />;
+  return <SyncedTile post={post} feature={feature} />;
+}
+
+function SyncedTile({ post, feature }: { post: InstagramMediaDto; feature: boolean }) {
   const image = postImage(post);
   const category = post.classification.primaryCategory
     ? getCategory(post.classification.primaryCategory)

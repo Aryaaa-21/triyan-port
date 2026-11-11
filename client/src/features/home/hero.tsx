@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import Image from '@/lib/image';
 import type { AboutDto } from '@triyan/shared';
 import { SplitText } from '@/components/motion/split-text';
 import { SectionIntro } from '@/components/editorial';

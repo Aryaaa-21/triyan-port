@@ -7,6 +7,14 @@
 
 ## 0. Decisions already taken (and why)
 
+> **Update 2026-11-11: the site is now MERN.** At the owner's request the client moved
+> from Next.js to a React single-page app (React 19 + React Router 7, built by Vite),
+> served by the Express server from the same origin. This supersedes **D1** (no
+> server rendering: each page sets its own head with React 19, and Express serves
+> `/sitemap.xml` and `/robots.txt`) and **D5** (no proxy is needed: the site and the API
+> share an origin, so the admin cookie is first-party). Deployment is one Vercel
+> project with the API as a serverless function (`docs/DEPLOYMENT.md`).
+
 | # | Decision | Rationale |
 |---|---|---|
 | D1 | **Monorepo: `/client` Next.js 15 App Router + `/server` Express + TypeScript + Mongoose** | The spec mandates Express/Mongoose (§42) but also demands per-page metadata, OG tags, structured data and a sitemap that do not depend on client JS (§47). A client-rendered SPA cannot satisfy §47 for a growing archive. Next.js server-renders the public site by calling the Express API; Express remains the single owner of the database, Instagram sync, jobs and admin auth. |

@@ -1,5 +1,4 @@
 import type { ApiErrorBody, ApiSuccess } from '@triyan/shared';
-import { serverEnv } from './env';
 
 export class ApiError extends Error {
   readonly status: number;
@@ -14,32 +13,25 @@ export class ApiError extends Error {
 }
 
 interface ApiRequestOptions {
-  /** ISR cache tags, invalidated by the server after an admin mutation. */
-  tags?: string[];
-  revalidate?: number | false;
   method?: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
   body?: unknown;
-  /** Set for admin traffic proxied through this origin. */
   headers?: Record<string, string>;
   signal?: AbortSignal;
 }
 
 /**
- * Server-side API client. Every public page renders through this, so a page is
- * cacheable by default and the site stays readable when the API is unavailable
- * (ARCHITECTURE §2.4).
+ * The browser's API client. The Express server serves the site and the API from one
+ * origin, so requests are relative and the session cookie is first-party.
  */
 export const apiFetch = async <T, M = undefined>(
   path: string,
   options: ApiRequestOptions = {},
 ): Promise<ApiSuccess<T, M>> => {
-  const { API_BASE_URL } = serverEnv();
-  const { tags, revalidate = 300, method = 'GET', body, headers = {}, signal } = options;
+  const { method = 'GET', body, headers = {}, signal } = options;
 
-  const url = `${API_BASE_URL}${path.startsWith('/') ? path : `/${path}`}`;
-
-  const response = await fetch(url, {
+  const response = await fetch(path.startsWith('/') ? path : `/${path}`, {
     method,
+    credentials: 'same-origin',
     headers: {
       accept: 'application/json',
       ...(body === undefined ? {} : { 'content-type': 'application/json' }),
@@ -47,8 +39,7 @@ export const apiFetch = async <T, M = undefined>(
     },
     ...(body === undefined ? {} : { body: JSON.stringify(body) }),
     ...(signal ? { signal } : {}),
-    next: method === 'GET' ? { revalidate, ...(tags ? { tags } : {}) } : undefined,
-    ...(method === 'GET' ? {} : { cache: 'no-store' }),
+    ...(method === 'GET' ? {} : { cache: 'no-store' as const }),
   });
 
   if (!response.ok) {
@@ -68,16 +59,3 @@ export const apiFetch = async <T, M = undefined>(
 
   return (await response.json()) as ApiSuccess<T, M>;
 };
-
-/** Cache tags used across the site. Mirrors ARCHITECTURE §2.3. */
-export const CACHE_TAGS = {
-  writings: 'writings',
-  writing: (slug: string) => `writing:${slug}`,
-  instagram: 'instagram',
-  instagramItem: (id: string) => `instagram:${id}`,
-  taxonomy: 'taxonomy',
-  book: 'book',
-  about: 'about',
-  abyss: 'abyss',
-  settings: 'settings',
-} as const;

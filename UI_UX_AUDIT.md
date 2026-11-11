@@ -268,3 +268,32 @@ verified in a real browser.
   - The same black-and-white conversion was applied.
 - It was scaled so the hole lands at exactly the previous size and position, so the
   layout, text, effects and phone fit are unchanged. Nothing else was touched.
+
+## Update — Next.js → MERN (2026-11-11)
+
+At the owner's request the website is now a plain React app: React 19 + React Router 7,
+built by Vite and served by the Express server. MongoDB, Express, React, Node. **The
+UI is unchanged.** Every page, component, style, font and animation is the same code,
+only rewired.
+
+- **Pages:** each page's data loads in a React Router `loader` (the same API calls the
+  server components made), so a page never shows half-empty.
+  - Every page except the homepage loads its code on demand.
+  - Moving between pages needs no full reload.
+- **Head:** each page renders its title, description, canonical link, robots and
+  social cards with React 19.
+- **Express serves:**
+  - the built site, with immutable caching for fingerprinted assets;
+  - `/sitemap.xml` and `/robots.txt`;
+  - a real **404 status** for addresses that are not pages, including missing
+    writings and posts.
+- **Same origin:** the site and the API share an origin, so the admin proxy is gone
+  and requests from the site's own origin are always accepted.
+- **Fonts:** the same families, now self-hosted through Fontsource; Aquiline Two is
+  unchanged.
+- **First-load JavaScript:** 151 KB gzip (Next.js: 152 KB).
+- **Verification:**
+  - Tests: shared 163 · client 159 · server 273.
+  - The browser end-to-end suite passes **31/31** against the production build served
+    by Express. That covers 13 routes × 9 widths, admin flows, reduced motion, the
+    black hole and no console errors.

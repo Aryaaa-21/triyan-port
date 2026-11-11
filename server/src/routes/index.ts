@@ -5,6 +5,7 @@ import { adminWritingRouter, writingRouter } from './writing.routes.js';
 import { contentRouter } from './content.routes.js';
 import { adminInstagramRouter, instagramRouter } from './instagram.routes.js';
 import { adminInboxRouter } from './inbox.routes.js';
+import { siteRouter } from './site.routes.js';
 
 /** Versioned API surface. */
 export const apiRouter = Router();
@@ -23,4 +24,5 @@ apiRouter.use('/admin', adminInboxRouter);
 
 export const rootRouter = Router();
 rootRouter.use(healthRouter);
+rootRouter.use(siteRouter);
 rootRouter.use('/api/v1', apiRouter);

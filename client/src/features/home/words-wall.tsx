@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from '@/lib/link';
 import { getCategory, type WritingDto } from '@triyan/shared';
 import { ArrowLink, ContentPending, SectionIntro } from '@/components/editorial';
 import { Reveal } from '@/components/ui/reveal';

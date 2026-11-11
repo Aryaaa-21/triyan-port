@@ -1,28 +1,31 @@
-import next from 'eslint-config-next';
+import js from '@eslint/js';
+import globals from 'globals';
+import tseslint from 'typescript-eslint';
+import reactHooks from 'eslint-plugin-react-hooks';
 
 /**
- * `eslint-config-next` v16 exports a flat-config array (next, next/typescript, settings).
- *
- * Only non-type-aware rules are added here: Next ships its own parser, which does not
- * forward `parserOptions.project` to @typescript-eslint, so any rule needing type
- * information throws. The client's type safety comes from `npm run typecheck`
- * (`tsc --noEmit`) instead; the shared and server workspaces do run fully
- * type-checked linting from the root config.
+ * The client: React in the browser. typescript-eslint's recommended rules plus React's
+ * hooks rules (including the React Compiler checks). Type safety itself comes from
+ * `npm run typecheck`.
  */
-const config = [
-  { ignores: ['.next/**', 'node_modules/**', 'next-env.d.ts'] },
-  ...next,
+export default tseslint.config(
+  { ignores: ['dist/**', 'node_modules/**'] },
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
+  reactHooks.configs.flat['recommended-latest'] ?? reactHooks.configs['recommended-latest'],
   {
-    files: ['**/*.{ts,tsx,mts,mjs}'],
+    languageOptions: { globals: { ...globals.browser } },
     rules: {
       'no-console': ['error', { allow: ['warn', 'error'] }],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+      ],
     },
   },
   {
-    // Build-time CLI tools report to stdout; that is their whole job.
-    files: ['scripts/**/*.{mjs,ts}'],
+    files: ['vite.config.ts', 'vitest.config.mts', 'scripts/**/*.{mjs,ts}'],
+    languageOptions: { globals: { ...globals.node } },
     rules: { 'no-console': 'off' },
   },
-];
-
-export default config;
+);

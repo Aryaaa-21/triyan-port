@@ -1,5 +1,3 @@
-'use client';
-
 import { useState } from 'react';
 
 type State = 'idle' | 'sending' | 'joined' | 'failed';
@@ -35,7 +33,7 @@ export function Waitlist({ open = true }: { open?: boolean }) {
     setError('');
     setState('sending');
     try {
-      const response = await fetch('/api/public/waitlist', {
+      const response = await fetch('/api/v1/waitlist', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify(payload),
