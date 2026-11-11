@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { NAV_LINKS } from './nav-links';
 import { ThemeToggle } from './theme-toggle';
 import { cn } from '@/lib/cn';
@@ -50,7 +51,7 @@ export function SiteHeader() {
   const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
   return (
-    <header className="gutter sticky top-0 z-nav bg-bg/85 backdrop-blur-sm">
+    <header className="gutter sticky top-0 z-(--z-nav) bg-bg/85 backdrop-blur-sm">
       <div className="mx-auto flex max-w-6xl items-center justify-between py-5">
         <Link
           href="/"
@@ -91,43 +92,49 @@ export function SiteHeader() {
         </div>
       </div>
 
-      {open && (
-        <div
-          id="mobile-nav"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Navigation"
-          className="fixed inset-0 z-overlay flex flex-col bg-bg"
-        >
-          <div className="gutter flex items-center justify-between py-5">
-            <span className="font-ui text-2xs tracking-widest text-fg uppercase">Triyan</span>
-            <button
-              ref={closeRef}
-              type="button"
-              onClick={() => setOpen(false)}
-              className="font-ui text-2xs tracking-widest text-fg uppercase"
-            >
-              Close
-            </button>
-          </div>
-
-          <nav aria-label="Primary" className="gutter flex flex-1 flex-col justify-center gap-7">
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                aria-current={isActive(link.href) ? 'page' : undefined}
-                className={cn(
-                  'font-display text-4xl font-light no-underline',
-                  isActive(link.href) ? 'text-fg' : 'text-fg-muted',
-                )}
+      {/*
+        Portalled to <body>: the header's backdrop-filter makes it the containing block
+        for fixed descendants, which would trap a "full-screen" panel inside the header.
+      */}
+      {open &&
+        createPortal(
+          <div
+            id="mobile-nav"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Navigation"
+            className="fixed inset-0 z-(--z-overlay) flex flex-col bg-bg"
+          >
+            <div className="gutter flex items-center justify-between py-5">
+              <span className="font-ui text-2xs tracking-widest text-fg uppercase">Triyan</span>
+              <button
+                ref={closeRef}
+                type="button"
+                onClick={() => setOpen(false)}
+                className="font-ui text-2xs tracking-widest text-fg uppercase"
               >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-        </div>
-      )}
+                Close
+              </button>
+            </div>
+
+            <nav aria-label="Primary" className="gutter flex flex-1 flex-col justify-center gap-7">
+              {NAV_LINKS.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  aria-current={isActive(link.href) ? 'page' : undefined}
+                  className={cn(
+                    'font-display text-4xl font-light no-underline',
+                    isActive(link.href) ? 'text-fg' : 'text-fg-muted',
+                  )}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+          </div>,
+          document.body,
+        )}
     </header>
   );
 }

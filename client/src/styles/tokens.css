@@ -142,10 +142,12 @@
    * `--family-reading-deva` is selected automatically for Hindi writings so
    * Devanagari is set in a face designed for it (ARCHITECTURE §3.3).
    */
-  --family-display: var(--font-cormorant), ui-serif, Georgia, serif;
-  --family-reading: var(--font-spectral), ui-serif, Georgia, serif;
+  /* Every stack falls back to the Devanagari face glyph by glyph, so a Hindi title
+     or caption renders correctly anywhere, not only on the reading page. */
+  --family-display: var(--font-cormorant), var(--font-tiro-deva), ui-serif, Georgia, serif;
+  --family-reading: var(--font-spectral), var(--font-tiro-deva), ui-serif, Georgia, serif;
   --family-reading-deva: var(--font-tiro-deva), var(--font-spectral), ui-serif, serif;
-  --family-ui: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --family-ui: var(--font-geist), var(--font-tiro-deva), ui-sans-serif, system-ui, sans-serif;
   --family-abyss: var(--font-unifraktur), ui-serif, serif;
   --family-abyss-ui: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
 

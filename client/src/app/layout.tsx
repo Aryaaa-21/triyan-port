@@ -36,7 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <a
           href="#main"
-          className="sr-only focus-visible:not-sr-only focus-visible:absolute focus-visible:top-4 focus-visible:left-4 focus-visible:z-nav focus-visible:bg-surface focus-visible:px-4 focus-visible:py-2 focus-visible:text-sm"
+          className="sr-only focus-visible:not-sr-only focus-visible:absolute focus-visible:top-4 focus-visible:left-4 focus-visible:z-(--z-nav) focus-visible:bg-surface focus-visible:px-4 focus-visible:py-2 focus-visible:text-sm"
         >
           Skip to content
         </a>
