@@ -23,8 +23,10 @@ export default function GlobalError({
       id="main"
       className="gutter mx-auto measure-prose flex min-h-[70vh] flex-col justify-center"
     >
-      <p className="font-ui text-2xs tracking-widest text-fg-subtle uppercase">Something broke</p>
-      <h1 className="mt-6 font-display text-4xl leading-tight font-light tracking-tight">
+      <p className="font-mono text-2xs tracking-[0.18em] text-fg-subtle uppercase">
+        Something broke
+      </p>
+      <h1 className="mt-6 font-display text-[clamp(2.5rem,5vw,4rem)] leading-tight font-light tracking-tight">
         The archive is briefly out of reach.
       </h1>
       <p className="mt-6 font-reading text-lg leading-prose text-fg-muted">
@@ -34,13 +36,13 @@ export default function GlobalError({
         <button
           type="button"
           onClick={reset}
-          className="font-ui text-2xs tracking-widest text-fg uppercase hover:text-accent"
+          className="font-mono text-xs tracking-[0.2em] text-fg uppercase hover:text-accent"
         >
           Try again
         </button>
       </div>
       {error.digest && (
-        <p className="mt-8 font-ui text-2xs text-fg-subtle">Reference: {error.digest}</p>
+        <p className="mt-8 font-mono text-2xs text-fg-subtle">Reference: {error.digest}</p>
       )}
     </main>
   );

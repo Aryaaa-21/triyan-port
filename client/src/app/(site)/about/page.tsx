@@ -1,8 +1,11 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import { fetchAboutSafely } from '@/features/content/api';
 import { siteUrl } from '@/lib/env';
-import { Rule } from '@/components/ui/rule';
+import { ArrowLink, ContentPending, Label, SectionIntro } from '@/components/editorial';
+import { SplitText } from '@/components/motion/split-text';
+import { Reveal } from '@/components/ui/reveal';
 
 export const metadata: Metadata = {
   title: 'About',
@@ -12,17 +15,47 @@ export const metadata: Metadata = {
   openGraph: { type: 'profile', url: `${siteUrl}/about`, title: 'About Triyan' },
 };
 
+/** The subjects the writing keeps returning to, as supplied by Triyan. */
+const THEMES = [
+  'love',
+  'unrequited love',
+  'heartbreak',
+  'grief',
+  'absence',
+  'longing',
+  'loneliness',
+  'melancholy',
+  'mortality',
+  'nostalgia',
+  'suffering',
+  'hope',
+  'despair',
+  'faith',
+  'existence',
+  'human contradiction',
+];
+
+/**
+ * A literary timeline, not a CV. Only one date is confirmed — 2016 — so it is the
+ * only date shown; the rest are chapters, in order, without invented years.
+ */
+const journey = (since: string) => [
+  { mark: since, title: 'The beginning', note: 'The writing begins.' },
+  { mark: '—', title: 'Triyan Writes', note: 'The name the work is gathered under.' },
+  { mark: '—', title: 'Leaving and Living', note: 'A collection of poetry.' },
+  { mark: '—', title: 'ABYSS', note: 'What comes next.' },
+];
+
 export default async function AboutPage() {
   const about = await fetchAboutSafely();
+  const name = about?.displayName || 'Triyan';
+  const since = about?.writingSince || '2016';
 
-  /**
-   * Person structured data, built only from what the owner supplied. No birth date,
-   * no awards, no affiliation — those were never given and are not inferred.
-   */
+  /** Person structured data, built only from what the owner supplied. */
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Person',
-    name: about?.displayName || 'Triyan',
+    name,
     alternateName: about?.literaryIdentity || 'Triyan Writes',
     url: `${siteUrl}/about`,
     jobTitle: 'Poet',
@@ -32,52 +65,209 @@ export default async function AboutPage() {
   const paragraphs = (about?.body ?? '').split('\n').filter((line) => line.trim().length > 0);
 
   return (
-    <main id="main" className="gutter mx-auto measure-prose pt-20 pb-32">
+    <main id="main" className="gutter">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      <div className="mx-auto max-w-[90rem] pt-16 pb-32 sm:pt-24">
+        {/* ---------------------------------------------------------- name */}
+        <header className="grid gap-16 lg:grid-cols-12 lg:gap-8">
+          <div className="lg:col-span-7">
+            <Label as="p">{about?.literaryIdentity || 'Triyan Writes'}</Label>
+            <h1 className="mt-8 font-display text-[clamp(4.5rem,16vw,14rem)] leading-[0.82] font-light tracking-[-0.04em] uppercase">
+              <SplitText text={name} step={70} />
+            </h1>
+            <Reveal stagger={2}>
+              <ul className="mt-12 space-y-1 font-display text-[clamp(1.75rem,3.5vw,2.75rem)] leading-tight font-light text-fg-muted italic">
+                <li>writer</li>
+                <li className="pl-[1.2em]">poet</li>
+              </ul>
+            </Reveal>
+          </div>
 
-      <p className="font-ui text-2xs tracking-widest text-fg-subtle uppercase">
-        {about?.literaryIdentity || 'Triyan Writes'}
-      </p>
-      <h1 className="mt-6 font-display text-display leading-tight font-light tracking-tighter">
-        {about?.displayName || 'Triyan'}
-      </h1>
+          <div className="lg:col-span-4 lg:col-start-9">
+            {about?.portraitUrl ? (
+              <Reveal variant="clip">
+                <div className="relative aspect-[3/4] w-full bg-surface">
+                  <Image
+                    src={about.portraitUrl}
+                    alt={`Portrait of ${name}`}
+                    fill
+                    priority
+                    sizes="(min-width: 1024px) 30vw, 90vw"
+                    className="object-cover grayscale"
+                  />
+                </div>
+              </Reveal>
+            ) : (
+              <div className="portrait-void relative flex aspect-[3/4] w-full items-end bg-surface p-6">
+                <p className="font-mono text-2xs tracking-[0.18em] text-fg-subtle uppercase">
+                  Portrait to be added
+                </p>
+              </div>
+            )}
+          </div>
+        </header>
 
-      <Rule className="my-12" />
-
-      {paragraphs.length > 0 ? (
-        <div className="font-reading text-lg leading-prose text-fg-muted">
-          {paragraphs.map((paragraph, index) => (
-            <p key={index} className={index === 0 ? '' : 'mt-6'}>
-              {paragraph}
-            </p>
-          ))}
-        </div>
-      ) : (
-        <p className="font-reading text-lg text-fg-subtle">This page is waiting for its words.</p>
-      )}
-
-      <Rule className="my-14" />
-
-      <div className="flex flex-wrap gap-x-8 gap-y-4">
-        <Link
-          href="/writings"
-          className="font-ui text-2xs tracking-widest text-fg uppercase no-underline hover:text-accent"
+        {/* ------------------------------------------------------ the writer */}
+        <section
+          aria-labelledby="writer-heading"
+          className="mt-32 grid gap-12 lg:mt-48 lg:grid-cols-12 lg:gap-8"
         >
-          Read the archive →
-        </Link>
-        {about?.links.literaryInstagram && (
-          <a
-            href={about.links.literaryInstagram}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-ui text-2xs tracking-widest text-fg-subtle uppercase no-underline hover:text-fg"
+          <div className="lg:col-span-4">
+            <SectionIntro label="Identity" className="mb-8" />
+            <h2 id="writer-heading" className="font-display text-4xl font-light tracking-tight">
+              The writer
+            </h2>
+          </div>
+          <div className="lg:col-span-6 lg:col-start-6">
+            {paragraphs.length > 0 ? (
+              <div className="space-y-7 font-reading text-xl leading-prose text-fg-muted [&>p:first-child]:font-display [&>p:first-child]:text-3xl [&>p:first-child]:leading-snug [&>p:first-child]:font-light [&>p:first-child]:text-fg">
+                {paragraphs.map((paragraph, index) => (
+                  <p key={index}>{paragraph}</p>
+                ))}
+              </div>
+            ) : (
+              <ContentPending>The biography will be added here.</ContentPending>
+            )}
+          </div>
+        </section>
+
+        {/* --------------------------------------------------------- journey */}
+        <section aria-labelledby="journey-heading" className="mt-32 lg:mt-48">
+          <SectionIntro label="Writing journey" className="mb-16" />
+          <h2 id="journey-heading" className="sr-only">
+            Writing journey
+          </h2>
+          <ol className="journey relative lg:ml-[33%]">
+            {journey(since).map((step, i) => (
+              <Reveal
+                as="li"
+                key={step.title}
+                stagger={i}
+                className="relative grid grid-cols-[5.5rem_1fr] gap-6 pb-16 last:pb-0 sm:grid-cols-[8rem_1fr]"
+              >
+                <span className="font-display text-3xl font-light text-fg-subtle tabular-nums">
+                  {step.mark}
+                </span>
+                <div>
+                  <p
+                    className={
+                      step.title === 'ABYSS'
+                        ? 'font-abyss text-4xl text-fg'
+                        : 'font-display text-4xl leading-tight font-light text-fg'
+                    }
+                  >
+                    {step.title}
+                  </p>
+                  <p className="mt-3 font-reading text-lg text-fg-muted">{step.note}</p>
+                </div>
+              </Reveal>
+            ))}
+          </ol>
+        </section>
+
+        {/* ---------------------------------------------------------- themes */}
+        <section aria-labelledby="themes-heading" className="mt-32 lg:mt-48">
+          <SectionIntro label="What it returns to" className="mb-16" />
+          <h2 id="themes-heading" className="sr-only">
+            Themes
+          </h2>
+          <Reveal variant="blur">
+            <ul className="flex flex-wrap items-baseline gap-x-[0.5em] gap-y-2 font-display text-[clamp(2rem,5vw,4.5rem)] leading-[1.1] font-light tracking-tight">
+              {THEMES.map((theme, i) => (
+                <li
+                  key={theme}
+                  className={
+                    i % 3 === 1
+                      ? 'text-fg-subtle italic'
+                      : i % 3 === 2
+                        ? 'text-fg-muted'
+                        : 'text-fg'
+                  }
+                >
+                  {theme}
+                  {i < THEMES.length - 1 && (
+                    <span aria-hidden="true" className="text-fg-subtle">
+                      ,
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </Reveal>
+        </section>
+
+        {/* ------------------------------------------------------ philosophy */}
+        {about?.statement && (
+          <section
+            aria-labelledby="philosophy-heading"
+            className="mt-32 border-t border-border pt-20 lg:mt-48"
           >
-            @triyanwrites ↗
-          </a>
+            <h2
+              id="philosophy-heading"
+              className="font-mono text-2xs tracking-[0.18em] text-fg-subtle uppercase"
+            >
+              Philosophy
+            </h2>
+            <Reveal variant="blur">
+              <blockquote className="mt-12 max-w-5xl font-display text-[clamp(2.25rem,5vw,4.5rem)] leading-[1.05] font-light tracking-tight">
+                {about.statement}
+              </blockquote>
+            </Reveal>
+          </section>
         )}
+
+        {/* ---------------------------------------------------- current work */}
+        <section
+          aria-labelledby="now-heading"
+          className="mt-32 border-t border-border pt-20 lg:mt-48"
+        >
+          <h2
+            id="now-heading"
+            className="font-mono text-2xs tracking-[0.18em] text-fg-subtle uppercase"
+          >
+            Current work
+          </h2>
+          <div className="mt-12 grid gap-px bg-border sm:grid-cols-3">
+            {[
+              { href: '/writings', title: 'The archive', note: 'Every published writing.' },
+              { href: '/book', title: 'Leaving and Living', note: 'The book.' },
+              { href: '/abyss', title: 'ABYSS', note: 'The world beyond the words.' },
+            ].map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="group block bg-bg p-8 no-underline sm:p-10"
+              >
+                <span
+                  className={
+                    item.title === 'ABYSS'
+                      ? 'font-abyss text-3xl text-fg'
+                      : 'font-display text-3xl font-light text-fg'
+                  }
+                >
+                  {item.title}
+                </span>
+                <span className="mt-3 block font-reading text-base text-fg-muted">{item.note}</span>
+                <span
+                  aria-hidden="true"
+                  className="mt-8 block font-mono text-xs text-fg-subtle transition-transform duration-500 group-hover:translate-x-1.5"
+                >
+                  →
+                </span>
+              </Link>
+            ))}
+          </div>
+          {about?.links.literaryInstagram && (
+            <div className="mt-12">
+              <ArrowLink href={about.links.literaryInstagram} external tone="quiet">
+                @triyanwrites
+              </ArrowLink>
+            </div>
+          )}
+        </section>
       </div>
     </main>
   );

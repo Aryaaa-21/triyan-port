@@ -2,6 +2,7 @@ import {
   Archivo,
   Cormorant_Garamond,
   Geist,
+  Geist_Mono,
   Spectral,
   Tiro_Devanagari_Hindi,
   UnifrakturMaguntia,
@@ -51,6 +52,14 @@ export const geist = Geist({
   display: 'swap',
 });
 
+/** Metadata: dates, categories, numbering, small labels. */
+export const geistMono = Geist_Mono({
+  subsets: ['latin'],
+  weight: ['400'],
+  variable: '--font-geist-mono',
+  display: 'swap',
+});
+
 /** ABYSS wordmark only — never body text. */
 export const unifraktur = UnifrakturMaguntia({
   subsets: ['latin'],
@@ -74,6 +83,7 @@ export const fontVariables = [
   spectral.variable,
   tiroDevanagari.variable,
   geist.variable,
+  geistMono.variable,
   unifraktur.variable,
   archivo.variable,
 ].join(' ');

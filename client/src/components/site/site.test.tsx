@@ -16,7 +16,7 @@ describe('navigation destinations', () => {
   it('exposes the core destinations exactly once each', () => {
     const hrefs = NAV_LINKS.map((l) => l.href);
     expect(new Set(hrefs).size).toBe(hrefs.length);
-    expect(hrefs).toEqual(['/writings', '/book', '/about', '/instagram', '/abyss', '/contact']);
+    expect(hrefs).toEqual(['/writings', '/about', '/book', '/abyss', '/instagram', '/contact']);
   });
 
   it('every destination is an internal absolute path', () => {

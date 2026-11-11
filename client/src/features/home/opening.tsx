@@ -2,7 +2,7 @@ import { SplitText } from '@/components/motion/split-text';
 import { CosmicField } from '@/features/cosmos/cosmic-field';
 
 /**
- * The opening: "Welcome to Abyss ~ Triyan" over a slow drift through stars.
+ * 01 — Entry: "Welcome to Abyss", then "Triyan Writes", over a slow drift through stars.
  *
  * The text and the static backdrop are server-rendered and readable instantly.
  * The WebGL field is an enhancement layered underneath; if it never loads, the
@@ -29,20 +29,20 @@ export function HomeOpening() {
       />
 
       <div className="relative text-center">
-        <p className="font-ui text-2xs tracking-widest text-fg-subtle uppercase">
+        <p className="font-mono text-2xs tracking-[0.18em] text-fg-subtle uppercase">
           <SplitText text="Welcome to" delay={200} step={35} />
         </p>
-        <h2 className="mt-6 font-abyss text-7xl leading-none font-normal sm:text-9xl">
+        <p className="mt-6 font-abyss text-7xl leading-none font-normal sm:text-9xl">
           <SplitText text="Abyss" delay={650} step={110} />
-        </h2>
-        <p className="mt-8 font-display text-xl font-light tracking-[0.4em] text-fg-muted">
-          <SplitText text="~ Triyan" delay={1350} step={60} />
+        </p>
+        <p className="mt-10 font-mono text-xs tracking-[0.5em] text-fg-muted uppercase">
+          <SplitText text="Triyan Writes" delay={1500} step={55} />
         </p>
       </div>
 
       <a
-        href="#hero"
-        className="opening-cue absolute bottom-8 left-1/2 -translate-x-1/2 font-ui text-2xs tracking-widest text-fg-subtle uppercase no-underline hover:text-fg"
+        href="#triyan"
+        className="opening-cue absolute bottom-8 left-1/2 -translate-x-1/2 font-mono text-2xs tracking-[0.3em] text-fg-subtle uppercase no-underline hover:text-fg"
       >
         Enter
         <span

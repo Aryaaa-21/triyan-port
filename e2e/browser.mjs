@@ -16,7 +16,7 @@ const OUT = process.env.OUT ?? 'e2e/screenshots';
 const ADMIN_EMAIL = process.env.E2E_ADMIN_EMAIL;
 const ADMIN_PASSWORD = process.env.E2E_ADMIN_PASSWORD;
 fs.mkdirSync(OUT, { recursive: true });
-const WIDTHS = [320, 375, 390, 414, 768, 1024, 1280, 1440, 1920];
+const WIDTHS = [320, 375, 390, 430, 768, 1024, 1280, 1440, 1920];
 const browser = await chromium.launch(
   process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {},
 );
@@ -57,9 +57,7 @@ page.on('pageerror', (e) => errors.push(`${page.url()} ${e.message}`));
 await page.goto(`${BASE}/writings?language=ENGLISH`);
 const writingLink = page.locator('main a[href^="/writings/"]').first();
 const writing = await writingLink.getAttribute('href');
-const searchWord = ((await writingLink.locator('h2').innerText()).match(/[A-Za-z]{4,}/) ?? [
-  'a',
-])[0];
+const searchWord = ((await writingLink.innerText()).match(/[A-Za-z]{4,}/) ?? ['a'])[0];
 await page.goto(`${BASE}/writings?language=HINDI`);
 const hindiWriting = await page.locator('main a[href^="/writings/"]').first().getAttribute('href');
 await page.goto(`${BASE}/instagram`);
@@ -85,6 +83,12 @@ for (const route of ROUTES) {
     await page.setViewportSize({ width: w, height: 900 });
     const res = await page.goto(BASE + route, { waitUntil: 'load' });
     await page.waitForTimeout(250);
+    // Streamed routes show a loading state first; judge the page once it has arrived.
+    await page
+      .waitForFunction(() => !document.querySelector('[aria-busy="true"]'), null, {
+        timeout: 10000,
+      })
+      .catch(() => undefined);
     const status = res?.status();
     const expect = route === '/nope-404' ? 404 : 200;
     if (status !== expect) fail(`${route} @${w} status ${status}`);

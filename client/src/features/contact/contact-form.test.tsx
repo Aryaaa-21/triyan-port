@@ -61,7 +61,44 @@ describe('ContactForm', () => {
     await waitFor(() => {
       expect(screen.getByRole('status')).toBeTruthy();
     });
-    expect(screen.getByText(/was received/i)).toBeTruthy();
+    expect(screen.getByText(/was sent/i)).toBeTruthy();
+  });
+
+  it('never claims success when the API cannot deliver the message', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue(
+        new Response(JSON.stringify({ data: { received: true, delivery: 'PENDING_TRANSPORT' } }), {
+          status: 200,
+        }),
+      ),
+    );
+
+    render(<ContactForm />);
+    fill({
+      name: 'A reader',
+      email: 'reader@example.test',
+      message: 'Something here landed and I wanted to say so.',
+    });
+    submit();
+
+    await waitFor(() => {
+      expect(screen.getByRole('alert').textContent).toMatch(/not connected/i);
+    });
+    expect(screen.queryByText(/was sent/i)).toBeNull();
+  });
+
+  it('is closed, and sends nothing, while delivery is unavailable', () => {
+    const fetchSpy = vi.fn();
+    vi.stubGlobal('fetch', fetchSpy);
+
+    render(<ContactForm deliverable={false} />);
+    expect(screen.getByRole('note').textContent).toMatch(/not connected/i);
+    expect((screen.getByRole('button', { name: /send/i }) as HTMLButtonElement).disabled).toBe(
+      true,
+    );
+    submit();
+    expect(fetchSpy).not.toHaveBeenCalled();
   });
 
   it('reports a failure without exposing internals', async () => {

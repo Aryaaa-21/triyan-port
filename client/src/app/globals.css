@@ -23,6 +23,7 @@
   --font-reading: var(--family-reading);
   --font-reading-deva: var(--family-reading-deva);
   --font-ui: var(--family-ui);
+  --font-mono: var(--family-mono);
   --font-abyss: var(--family-abyss);
   --font-abyss-ui: var(--family-abyss-ui);
 
@@ -68,6 +69,12 @@
 }
 
 @layer base {
+  /* Category artwork paints with the theme's own ink and ground. */
+  :root {
+    --art-ink: var(--fg);
+    --art-ground: var(--surface);
+  }
+
   *,
   *::before,
   *::after {
@@ -189,6 +196,42 @@
       translate: 0 0.75rem;
     }
 
+    /*
+     * Clip the children, not the observed element: a target clipped to nothing has no
+     * visible area, so IntersectionObserver would never report it arriving.
+     */
+    html.js .reveal[data-variant='clip'][data-reveal='out'] {
+      opacity: 1;
+      translate: 0 0;
+    }
+
+    html.js .reveal[data-variant='clip'][data-reveal='out'] > * {
+      clip-path: inset(100% 0 0 0);
+    }
+
+    html.js .reveal[data-variant='blur'][data-reveal='out'] {
+      translate: 0 0;
+      filter: blur(10px);
+    }
+
+    html.js .reveal[data-variant='clip'][data-reveal='in'] {
+      transition: none;
+    }
+
+    html.js .reveal[data-variant='clip'][data-reveal='in'] > * {
+      clip-path: inset(0 0 0 0);
+      transition: clip-path 1.4s var(--curve-void);
+      transition-delay: calc(var(--reveal-step) * 90ms);
+    }
+
+    html.js .reveal[data-variant='blur'][data-reveal='in'] {
+      filter: blur(0);
+      transition:
+        opacity 1.4s var(--curve-void),
+        filter 1.4s var(--curve-void);
+      transition-delay: calc(var(--reveal-step) * 90ms);
+    }
+
     html.js .reveal[data-reveal='in'] {
       opacity: 1;
       translate: 0 0;
@@ -271,6 +314,296 @@
     -webkit-text-stroke: 1px color-mix(in oklab, var(--fg) 14%, transparent);
   }
 
+  /* Header: integrated with the page at the top, a quiet dark layer once scrolled. */
+  .site-header[data-scrolled='true'] {
+    background-color: color-mix(in oklab, var(--bg) 82%, transparent);
+    border-bottom-color: var(--border);
+    backdrop-filter: blur(10px);
+  }
+
+  /* Active and hovered nav items get a hairline that draws in from the left. */
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -6px;
+    height: 1px;
+    background: currentcolor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.6s var(--curve-void);
+  }
+
+  .nav-link:hover::after,
+  .nav-link[aria-current='page']::after {
+    transform: scaleX(1);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .menu-panel {
+      animation: page-in 0.5s var(--curve-void) both;
+    }
+
+    .menu-item {
+      animation: page-in 0.7s var(--curve-void) both;
+      animation-delay: calc(var(--menu-step, 0) * 45ms + 80ms);
+    }
+  }
+
+  /* The reserved portrait space: depth, not a grey box. */
+  .portrait-void {
+    background:
+      radial-gradient(
+        ellipse at 50% 35%,
+        color-mix(in oklab, var(--fg) 7%, transparent),
+        transparent 65%
+      ),
+      var(--surface);
+  }
+
+  /* The journey's spine: a hairline down the left of the chapters. */
+  .journey::before {
+    content: '';
+    position: absolute;
+    top: 0.75rem;
+    bottom: 0.75rem;
+    left: -2rem;
+    width: 1px;
+    background: var(--border-strong);
+  }
+
+  @media (max-width: 1023px) {
+    .journey::before {
+      display: none;
+    }
+  }
+
+  /* Category artwork: film grain over everything, and motion only when asked for. */
+  .art-grain {
+    opacity: 0.18;
+    mix-blend-mode: overlay;
+  }
+
+  /* Hover: the picture comes slightly closer, and its weather starts to move. */
+  .category-art g {
+    transform-box: view-box;
+  }
+
+  .art-use {
+    transform-origin: center;
+  }
+
+  .art-drift {
+    transform-origin: 200px 230px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .art-use {
+      transition: transform 1.8s var(--curve-void);
+    }
+
+    .group:hover .art-use,
+    .group:focus-visible .art-use {
+      transform: scale(1.05);
+    }
+
+    .group:hover .art-rain,
+    .group:focus-visible .art-rain {
+      animation: art-fall 1.6s linear infinite;
+    }
+
+    .group:hover .art-drift,
+    .group:focus-visible .art-drift {
+      animation: art-turn 40s linear infinite;
+    }
+
+    @keyframes art-fall {
+      to {
+        transform: translateY(18px);
+      }
+    }
+
+    @keyframes art-turn {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  }
+
+  /* The ABYSS door is night even by day, and so is any art inside it. */
+  .abyss-door {
+    --art-ink: var(--cursor-ink);
+    --art-ground: var(--cursor-ink-inverse);
+  }
+
+  /* The reading band fades into the page so the poem starts on a quiet ground. */
+  .reading-band::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 55%, var(--bg));
+  }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /*
+   * The words wall's atmosphere panel: whichever title is hovered or focused, its
+   * shelf's artwork comes up beside the wall. With nothing hovered, the first one
+   * rests faintly. One rule per category, because CSS cannot compare attributes.
+   */
+  .wall-art {
+    opacity: 0;
+    transition: opacity 1s var(--curve-void);
+  }
+
+  .words-wall:not(:has(.word:is(:hover, :focus-visible))) .wall-art[data-default] {
+    opacity: 0.35;
+  }
+
+  .words-wall:has(.word[data-category='LOVE_LONGING']:is(:hover, :focus-visible))
+    .wall-art[data-category='LOVE_LONGING'] {
+    opacity: 1;
+  }
+
+  .words-wall:has(.word[data-category='ABSENCE_LOSS']:is(:hover, :focus-visible))
+    .wall-art[data-category='ABSENCE_LOSS'] {
+    opacity: 1;
+  }
+
+  .words-wall:has(.word[data-category='GRIEF_MELANCHOLY']:is(:hover, :focus-visible))
+    .wall-art[data-category='GRIEF_MELANCHOLY'] {
+    opacity: 1;
+  }
+
+  .words-wall:has(.word[data-category='EXISTENTIALISM']:is(:hover, :focus-visible))
+    .wall-art[data-category='EXISTENTIALISM'] {
+    opacity: 1;
+  }
+
+  .words-wall:has(.word[data-category='MORTALITY_NOTHINGNESS']:is(:hover, :focus-visible))
+    .wall-art[data-category='MORTALITY_NOTHINGNESS'] {
+    opacity: 1;
+  }
+
+  .words-wall:has(.word[data-category='HOPE_DESPAIR']:is(:hover, :focus-visible))
+    .wall-art[data-category='HOPE_DESPAIR'] {
+    opacity: 1;
+  }
+
+  .words-wall:has(.word[data-category='HUMAN_CONDITION']:is(:hover, :focus-visible))
+    .wall-art[data-category='HUMAN_CONDITION'] {
+    opacity: 1;
+  }
+
+  .words-wall:has(.word[data-category='PHILOSOPHICAL_REFLECTIONS']:is(:hover, :focus-visible))
+    .wall-art[data-category='PHILOSOPHICAL_REFLECTIONS'] {
+    opacity: 1;
+  }
+
+  /* Hollow numerals for facts set as display type. */
+  .outline-numeral {
+    color: transparent;
+    -webkit-text-stroke: 1px var(--fg-muted);
+  }
+
+  /* The ABYSS door is always night, whichever world the rest of the page is in. */
+  .abyss-door .abyss-outline {
+    -webkit-text-stroke-color: color-mix(in oklab, white 11%, transparent);
+  }
+
+  /*
+   * The words wall. On devices that can hover, one title comes forward and the rest
+   * recede, and its excerpt opens. Touch devices see every title at full strength
+   * and lose nothing: the excerpt is a grace note, not information.
+   */
+  @media (hover: hover) and (pointer: fine) {
+    .word {
+      transition: opacity 0.7s var(--curve-void);
+    }
+
+    .words-wall:has(.word:hover, .word:focus-visible) .word:not(:hover, :focus-visible) {
+      opacity: 0.32;
+    }
+
+    .word-excerpt {
+      display: grid;
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition:
+        max-height 0.8s var(--curve-void),
+        opacity 0.6s var(--curve-void);
+    }
+
+    .word:hover .word-excerpt,
+    .word:focus-visible .word-excerpt {
+      max-height: 8rem;
+      opacity: 1;
+    }
+  }
+
+  /* Archive rows: the excerpt opens under the pointer on desktop; on phones it is always there. */
+  @media (hover: hover) and (pointer: fine) and (min-width: 768px) {
+    .archive-excerpt {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition:
+        max-height 0.8s var(--curve-void),
+        opacity 0.6s var(--curve-void);
+    }
+
+    .archive-row:hover .archive-excerpt,
+    .archive-row:focus-visible .archive-excerpt {
+      max-height: 6rem;
+      opacity: 1;
+    }
+
+    .archive-list:has(.archive-row:hover) .archive-row:not(:hover) {
+      opacity: 0.55;
+    }
+
+    .archive-row {
+      transition: opacity 0.6s var(--curve-void);
+    }
+  }
+
+  .filter-link[aria-current='true']::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -5px;
+    height: 1px;
+    background: currentcolor;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .skeleton-row span {
+      animation: breathe 2.4s var(--curve-in-out) infinite;
+    }
+
+    @keyframes breathe {
+      50% {
+        opacity: 0.45;
+      }
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .exit-line {
+      transform-origin: top;
+      animation: cue 3.2s var(--curve-in-out) infinite both;
+    }
+  }
+
   /* Companion cursor. Never replaces the system cursor. */
   .cursor {
     position: fixed;
@@ -289,60 +622,73 @@
 
   .cursor-ring {
     position: absolute;
-    width: 28px;
-    height: 28px;
+    width: 6px;
+    height: 6px;
     translate: -50% -50%;
     border: 1px solid var(--cursor-ink);
     border-radius: 9999px;
+    background: var(--cursor-ink);
     transition:
-      width 0.35s var(--curve-void),
-      height 0.35s var(--curve-void),
-      background-color 0.35s,
-      border-color 0.35s;
+      width 0.45s var(--curve-void),
+      height 0.45s var(--curve-void),
+      background-color 0.45s,
+      border-color 0.45s;
   }
 
   .cursor-label {
     position: absolute;
     translate: -50% -50%;
-    font-family: var(--family-ui);
+    font-family: var(--family-mono);
     font-size: 9px;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
     color: var(--cursor-ink-inverse);
     opacity: 0;
-    transition: opacity 0.25s;
+    transition: opacity 0.3s;
   }
 
+  .cursor[data-state='writing'] .cursor-label::after {
+    content: 'Read';
+  }
+
+  .cursor[data-state='view'] .cursor-label::after {
+    content: 'View';
+  }
+
+  /* Links: a hollow ring. */
   .cursor[data-state='link'] .cursor-ring,
   .cursor[data-state='magnetic'] .cursor-ring {
-    width: 52px;
-    height: 52px;
+    width: 34px;
+    height: 34px;
+    background: transparent;
   }
 
+  /* Navigation: a subtle expansion, nothing more. */
   .cursor[data-state='nav'] .cursor-ring {
-    width: 8px;
-    height: 8px;
-    background: var(--cursor-ink);
+    width: 12px;
+    height: 12px;
   }
 
   .cursor[data-state='interactive'] .cursor-ring {
-    width: 40px;
-    height: 40px;
+    width: 26px;
+    height: 26px;
+    background: transparent;
     border-style: dashed;
   }
 
-  .cursor[data-state='writing'] .cursor-ring {
-    width: 72px;
-    height: 72px;
-    background: var(--cursor-ink);
+  .cursor[data-state='writing'] .cursor-ring,
+  .cursor[data-state='view'] .cursor-ring {
+    width: 64px;
+    height: 64px;
   }
 
-  .cursor[data-state='writing'] .cursor-label {
+  .cursor[data-state='writing'] .cursor-label,
+  .cursor[data-state='view'] .cursor-label {
     opacity: 1;
   }
 
   .cursor[data-pressed='true'] .cursor-ring {
-    scale: 0.85;
+    scale: 0.8;
   }
 
   /* The reading column. Poetry is narrower than prose, deliberately. */

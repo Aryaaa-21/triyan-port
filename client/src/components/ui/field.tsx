@@ -3,10 +3,11 @@ import { useId } from 'react';
 import { cn } from '@/lib/cn';
 
 const control = cn(
-  'w-full rounded-sm border border-border bg-bg-raised px-3.5 py-2.5',
-  'font-ui text-sm text-fg placeholder:text-fg-subtle',
+  'w-full border-0 border-b border-border-strong bg-transparent px-0 py-3',
+  'font-reading text-lg text-fg placeholder:text-fg-subtle',
   'transition-colors duration-[var(--dur-base)] ease-void',
-  'hover:border-border-strong focus:border-focus',
+  'hover:border-fg-subtle focus:border-focus focus:outline-none',
+  'disabled:cursor-not-allowed disabled:opacity-50',
   'aria-[invalid=true]:border-ember',
 );
 
@@ -83,10 +84,13 @@ function Label({
   children: string;
 }) {
   return (
-    <label htmlFor={htmlFor} className="font-ui text-2xs tracking-widest text-fg-muted uppercase">
+    <label
+      htmlFor={htmlFor}
+      className="font-mono text-2xs tracking-[0.18em] text-fg-muted uppercase"
+    >
       {children}
       {required && (
-        <span className="text-ember" aria-hidden="true">
+        <span className="text-fg-subtle" aria-hidden="true">
           {' '}
           *
         </span>

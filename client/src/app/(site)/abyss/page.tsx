@@ -4,6 +4,8 @@ import { siteUrl } from '@/lib/env';
 import { SplitText } from '@/components/motion/split-text';
 import { Parallax } from '@/components/motion/parallax';
 import { Reveal } from '@/components/ui/reveal';
+import { ShirtSilhouette } from '@/features/abyss/silhouette';
+import { Waitlist } from '@/features/abyss/waitlist';
 
 export const metadata: Metadata = {
   title: 'ABYSS',
@@ -16,104 +18,127 @@ export const metadata: Metadata = {
   },
 };
 
+const mono = 'font-abyss-ui text-2xs tracking-[0.35em] uppercase text-white/50';
+
 /**
- * ABYSS is introduced, not sold. There is no cart, no product and no price,
- * because none exists. The register is harder than the literary pages —
- * blackletter, hairlines, outlined type — inside the same token system.
+ * ABYSS: the next universe. Always night, whichever world the rest of the site is
+ * in — a doorway, not another page of the archive. It is introduced, not sold:
+ * no products, prices or cart exist, so none are shown.
  */
 export default async function AbyssPage() {
   const abyss = await fetchAbyssSafely();
   const name = abyss?.name || 'ABYSS';
+  const philosophy = abyss?.philosophy || 'because once you enter the abyss you cannot leave.';
 
   return (
-    <main id="main" className="overflow-x-clip pb-32">
+    <main id="main" className="abyss-door -mt-px overflow-x-clip bg-black text-white">
       {/* ------------------------------------------------------------ mark */}
-      <section className="gutter relative flex min-h-[80svh] flex-col justify-center">
+      <section className="gutter relative isolate flex min-h-[92svh] flex-col justify-end pb-20">
         <Parallax
           speed={-0.25}
-          className="pointer-events-none absolute inset-x-0 top-1/2 -z-10 -translate-y-1/2 text-center"
+          className="pointer-events-none absolute inset-x-0 top-[42%] -z-10 -translate-y-1/2 text-center"
         >
-          <span className="abyss-outline font-abyss text-[38vw] leading-none select-none">
+          <span className="abyss-outline font-abyss text-[40vw] leading-none select-none">
             {name}
           </span>
         </Parallax>
-        <div className="mx-auto w-full max-w-6xl">
-          <h1 className="font-abyss text-7xl leading-none font-normal sm:text-9xl lg:text-[11rem]">
+        <div className="mx-auto w-full max-w-[90rem]">
+          <h1 className="font-abyss text-[clamp(5rem,19vw,17rem)] leading-[0.85] font-normal">
             <SplitText text={name} step={90} />
           </h1>
           {abyss?.tagline && (
-            <p className="mt-10 font-abyss-ui text-sm tracking-[0.3em] text-fg-muted uppercase">
+            <p className="mt-10 max-w-3xl font-display text-[clamp(1.75rem,4vw,3.5rem)] leading-tight font-light text-white/80 italic">
               {abyss.tagline}
             </p>
           )}
         </div>
       </section>
 
-      {/* ------------------------------------------------------ philosophy */}
-      {abyss?.philosophy && (
-        <section className="gutter">
-          <div className="mx-auto max-w-6xl border-t border-border-strong py-24 sm:py-32">
-            <p className="font-abyss-ui text-2xs tracking-[0.3em] text-fg-subtle uppercase">
-              Philosophy
-            </p>
-            <Reveal>
-              <blockquote className="mt-10 max-w-4xl font-display text-4xl leading-tight font-light tracking-tight text-fg sm:text-6xl">
-                {abyss.philosophy}
-              </blockquote>
-            </Reveal>
-          </div>
-        </section>
-      )}
-
-      {/* ------------------------------------------------------------- now */}
-      {abyss?.direction && (
-        <section className="gutter">
-          <div className="mx-auto grid max-w-6xl gap-10 border-t border-border-strong py-24 sm:grid-cols-[12rem_1fr]">
-            <p className="font-abyss-ui text-2xs tracking-[0.3em] text-fg-subtle uppercase">Now</p>
-            <Reveal>
-              <p className="max-w-prose font-reading text-xl leading-prose text-fg-muted">
-                {abyss.direction}
-              </p>
-            </Reveal>
-          </div>
-        </section>
-      )}
-
-      {/* ---------------------------------------------------------- future */}
-      <section aria-labelledby="abyss-future" className="gutter">
-        <div className="mx-auto max-w-6xl border-t border-border-strong py-24">
-          <h2
-            id="abyss-future"
-            className="font-abyss-ui text-2xs tracking-[0.3em] text-fg-subtle uppercase"
-          >
-            What comes next
+      {/* ------------------------------------------------------- manifesto */}
+      <section aria-labelledby="manifesto" className="gutter border-t border-white/10">
+        <div className="mx-auto grid max-w-[90rem] gap-12 py-32 lg:grid-cols-12 lg:gap-8 lg:py-48">
+          <h2 id="manifesto" className={`${mono} lg:col-span-3`}>
+            Manifesto
           </h2>
-          {/*
-          Reserved spaces, deliberately empty. Nothing is listed because nothing has
-          been released; these fill from the CMS when it has.
-        */}
-          <div className="mt-10 grid gap-px border border-border-strong bg-border-strong sm:grid-cols-2">
-            {[
-              {
-                label: 'Garments',
-                note: 'Released pieces will be shown here, when there are any.',
-              },
-              {
-                label: 'Ventures',
-                note: 'Future work under the ABYSS name will be announced here.',
-              },
-            ].map((space) => (
-              <div key={space.label} className="flex min-h-64 flex-col justify-between bg-bg p-8">
-                <p className="font-abyss text-4xl">{space.label}</p>
-                <p className="max-w-xs font-ui text-xs text-fg-subtle">{space.note}</p>
-              </div>
-            ))}
-          </div>
-          {abyss?.comingSoonNote && (
-            <p className="mt-12 font-abyss-ui text-xs tracking-[0.3em] text-fg-subtle uppercase">
-              {abyss.comingSoonNote}
+          <Reveal variant="blur" className="lg:col-span-9">
+            <p className="font-display text-[clamp(2.5rem,7vw,6.5rem)] leading-[0.98] font-light tracking-tight">
+              {philosophy.split(' the abyss ').length === 2 ? (
+                <>
+                  {philosophy.split(' the abyss ')[0]}
+                  <br />
+                  <span className="pl-[1.5em] font-abyss font-normal">the abyss</span>
+                  <br />
+                  <span className="text-white/60 italic">{philosophy.split(' the abyss ')[1]}</span>
+                </>
+              ) : (
+                philosophy
+              )}
+            </p>
+          </Reveal>
+          {abyss?.direction && (
+            <p className="max-w-xl font-reading text-xl leading-prose text-white/65 lg:col-span-6 lg:col-start-4">
+              {abyss.direction}
             </p>
           )}
+        </div>
+      </section>
+
+      {/* -------------------------------------------------------- clothing */}
+      <section aria-labelledby="clothing" className="gutter border-t border-white/10">
+        <div className="mx-auto max-w-[90rem] py-32 lg:py-48">
+          <div className="grid gap-16 lg:grid-cols-12 lg:items-center lg:gap-8">
+            <div className="lg:col-span-6">
+              <Reveal variant="clip">
+                <figure className="relative bg-white/[0.03] p-8 sm:p-14">
+                  <ShirtSilhouette className="mx-auto w-full max-w-md" />
+                  <figcaption className={`${mono} mt-8 flex justify-between`}>
+                    <span>Silhouette study</span>
+                    <span>Not a product photograph</span>
+                  </figcaption>
+                </figure>
+              </Reveal>
+            </div>
+            <div className="lg:col-span-5 lg:col-start-8">
+              <h2 id="clothing" className={mono}>
+                Clothing
+              </h2>
+              <p className="mt-8 font-display text-[clamp(2.5rem,5vw,4.5rem)] leading-[0.95] font-light tracking-tight">
+                Oversized
+                <br />
+                <span className="font-abyss font-normal">gothic</span> shirts
+              </p>
+              <dl className="mt-14 grid grid-cols-[8rem_1fr] gap-y-5 border-t border-white/10 pt-8">
+                <dt className={mono}>Collection</dt>
+                <dd className="font-reading text-lg text-white/75">The first — not yet released</dd>
+                <dt className={mono}>Next</dt>
+                <dd className="font-reading text-lg text-white/75">To come</dd>
+                <dt className={mono}>Available</dt>
+                <dd className="font-reading text-lg text-white/75">
+                  {abyss?.comingSoonNote || 'Nothing is for sale yet.'}
+                </dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* -------------------------------------------------------- ventures */}
+      <section aria-labelledby="beyond" className="gutter border-t border-white/10">
+        <div className="mx-auto grid max-w-[90rem] gap-12 py-32 lg:grid-cols-12 lg:gap-8">
+          <h2 id="beyond" className={`${mono} lg:col-span-3`}>
+            Beyond clothing
+          </h2>
+          <p className="max-w-3xl font-display text-[clamp(1.75rem,3.5vw,3rem)] leading-tight font-light text-white/80 lg:col-span-8">
+            Literature, philosophy, visual art, creative expression — the wider body of work ABYSS
+            is meant to grow into.
+          </p>
+        </div>
+      </section>
+
+      {/* -------------------------------------------------------- waitlist */}
+      <section aria-label="Waitlist" className="gutter border-t border-white/10">
+        <div className="mx-auto max-w-[90rem] py-32 lg:py-48">
+          <Waitlist />
         </div>
       </section>
     </main>

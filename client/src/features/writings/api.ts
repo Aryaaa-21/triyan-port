@@ -11,6 +11,7 @@ export interface ArchiveQuery {
   featured?: string;
   sort?: string;
   page?: string;
+  limit?: string;
 }
 
 const toSearchParams = (query: ArchiveQuery): string => {

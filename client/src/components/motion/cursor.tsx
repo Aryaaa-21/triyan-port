@@ -9,15 +9,17 @@ import { useEffect, useRef } from 'react';
  * mounts at all.
  *
  * States come from the nearest `data-cursor` attribute, or from the element type:
- *   link · writing ("Read") · nav · interactive · magnetic (pulls toward the target)
+ *   link · writing ("Read") · view ("View", images) · nav · interactive · magnetic
  */
-type State = 'default' | 'link' | 'writing' | 'nav' | 'interactive' | 'magnetic';
+type State = 'default' | 'link' | 'writing' | 'view' | 'nav' | 'interactive' | 'magnetic';
 
 const stateFor = (target: Element | null): { state: State; el: Element | null } => {
   const explicit = target?.closest('[data-cursor]');
   if (explicit) return { state: explicit.getAttribute('data-cursor') as State, el: explicit };
   const nav = target?.closest('header a, header button');
   if (nav) return { state: 'nav', el: nav };
+  const image = target?.closest('a img, a picture');
+  if (image) return { state: 'view', el: image };
   const link = target?.closest('a');
   if (link) return { state: 'link', el: link };
   const control = target?.closest('button, input, textarea, select, label, summary');
@@ -98,7 +100,7 @@ export function Cursor() {
   return (
     <div ref={ref} aria-hidden="true" className="cursor" data-visible="false" data-state="default">
       <span className="cursor-ring" />
-      <span className="cursor-label">Read</span>
+      <span className="cursor-label" />
     </div>
   );
 }

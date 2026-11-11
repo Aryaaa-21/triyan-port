@@ -2,11 +2,12 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { CATEGORIES, LANGUAGE_KEYS, type InstagramMediaDto } from '@triyan/shared';
 import { fetchInstagram, type InstagramQuery } from '@/features/instagram/api';
-import { PostTile } from '@/features/instagram/post-tile';
+import { InstagramGrid } from '@/features/instagram/instagram-grid';
+import { ArrowLink, ContentPending, Label, SectionIntro } from '@/components/editorial';
+import { cn } from '@/lib/cn';
 import { fetchAboutSafely } from '@/features/content/api';
 import { ApiError } from '@/lib/api';
 import { siteUrl } from '@/lib/env';
-import { Rule } from '@/components/ui/rule';
 
 export const metadata: Metadata = {
   title: 'Instagram',
@@ -23,7 +24,7 @@ interface PageProps {
 const first = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v);
 
 const TYPES = [
-  { key: '', label: 'Everything' },
+  { key: '', label: 'All' },
   { key: 'FEED', label: 'Posts' },
   { key: 'REELS', label: 'Reels' },
 ] as const;
@@ -58,118 +59,127 @@ export default async function InstagramPage({ searchParams }: PageProps) {
     return s ? `/instagram?${s}` : '/instagram';
   };
 
+  const filtered = Boolean(query.category || query.language || query.productType);
+
   return (
-    <main id="main" className="gutter mx-auto max-w-6xl pt-24 pb-32 sm:pt-32">
-      <header className="max-w-3xl">
-        <p className="font-ui text-2xs tracking-widest text-fg-subtle uppercase">@triyanwrites</p>
-        <h1 className="mt-4 font-display text-4xl font-light tracking-tight sm:text-6xl">
-          Visual memory
-        </h1>
-        <p className="mt-6 max-w-prose font-reading text-lg text-fg-muted">
-          Everything posted to Instagram, kept here and sorted by what it is about. Each post links
-          back to the original.
-        </p>
-      </header>
+    <main id="main" className="gutter">
+      <div className="mx-auto max-w-[90rem] pt-16 pb-32 sm:pt-24">
+        <header className="grid gap-10 lg:grid-cols-12 lg:items-end lg:gap-8">
+          <div className="lg:col-span-8">
+            <Label as="p">Triyan Writes</Label>
+            <h1 className="mt-8 font-display text-[clamp(3rem,10vw,9rem)] leading-[0.88] font-light tracking-[-0.03em]">
+              @triyanwrites
+            </h1>
+          </div>
+          <p className="font-display text-[clamp(1.5rem,2.5vw,2.25rem)] leading-tight font-light text-fg-muted italic lg:col-span-4 lg:pb-3">
+            words beyond the page
+          </p>
+        </header>
 
-      <Rule className="my-10" />
-
-      <nav aria-label="Filter by type">
-        <ul className="flex flex-wrap gap-x-5 gap-y-3">
-          {TYPES.map((t) => (
-            <li key={t.key || 'all'}>
-              <Filter
-                href={href({ productType: t.key || undefined })}
-                active={(query.productType ?? '') === t.key}
-              >
-                {t.label}
-              </Filter>
-            </li>
-          ))}
-        </ul>
-      </nav>
-      <nav aria-label="Filter by category" className="mt-4">
-        <ul className="flex flex-wrap gap-x-5 gap-y-3">
-          <li>
-            <Filter href={href({ category: undefined })} active={!query.category}>
-              All themes
-            </Filter>
-          </li>
-          {CATEGORIES.map((c) => (
-            <li key={c.key}>
-              <Filter href={href({ category: c.key })} active={query.category === c.key}>
-                {c.label}
-              </Filter>
-            </li>
-          ))}
-        </ul>
-      </nav>
-      <nav aria-label="Filter by language" className="mt-4">
-        <ul className="flex flex-wrap gap-x-5 gap-y-3">
-          {LANGUAGE_KEYS.filter((l) => l !== 'UNKNOWN').map((l) => (
-            <li key={l}>
-              <Filter
-                href={href({ language: query.language === l ? undefined : l })}
-                active={query.language === l}
-              >
-                {l.charAt(0) + l.slice(1).toLowerCase()}
-              </Filter>
-            </li>
-          ))}
-        </ul>
-      </nav>
-
-      <Rule className="my-10" />
-
-      {failed ? (
-        <Empty
-          heading="Instagram is out of reach"
-          body="The archive could not be loaded just now. Nothing is lost; try again shortly."
-        />
-      ) : posts.length === 0 ? (
-        <Empty
-          heading={
-            query.category || query.language || query.productType
-              ? 'Nothing in this corner'
-              : 'Not connected yet'
-          }
-          body={
-            query.category || query.language || query.productType
-              ? 'No post carries that filter. Try another.'
-              : 'Posts appear here once the Instagram archive has been synchronised.'
-          }
-          link={about?.links.literaryInstagram}
-        />
-      ) : (
-        <>
-          <ul className="grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
-            {posts.map((post) => (
-              <li key={post._id}>
-                <PostTile post={post} />
+        <div className="mt-20 grid gap-8 border-y border-border py-8 lg:grid-cols-12 lg:gap-8">
+          <nav aria-label="Filter by type" className="lg:col-span-3">
+            <Label as="p">Form</Label>
+            <ul className="mt-4 flex flex-wrap gap-x-6 gap-y-3">
+              {TYPES.map((t) => (
+                <li key={t.key || 'all'}>
+                  <Filter
+                    href={href({ productType: t.key || undefined })}
+                    active={(query.productType ?? '') === t.key}
+                  >
+                    {t.label}
+                  </Filter>
+                </li>
+              ))}
+            </ul>
+          </nav>
+          <nav aria-label="Filter by category" className="lg:col-span-6">
+            <Label as="p">Category</Label>
+            <ul className="mt-4 flex flex-wrap gap-x-6 gap-y-3">
+              <li>
+                <Filter href={href({ category: undefined })} active={!query.category}>
+                  All
+                </Filter>
               </li>
-            ))}
-          </ul>
-          <div className="mt-20 flex flex-wrap items-center justify-between gap-6">
-            {query.cursor ? (
-              <Link
-                href={href({})}
-                className="font-ui text-2xs tracking-widest text-fg-subtle uppercase no-underline hover:text-fg"
-              >
-                ← Newest
-              </Link>
-            ) : (
-              <span />
-            )}
-            {nextCursor && (
-              <Link
-                href={`${href({})}${href({}).includes('?') ? '&' : '?'}cursor=${encodeURIComponent(nextCursor)}`}
-                className="font-ui text-2xs tracking-widest text-fg uppercase no-underline hover:text-ember"
-              >
-                Older posts →
-              </Link>
+              {CATEGORIES.map((c) => (
+                <li key={c.key}>
+                  <Filter
+                    href={href({ category: query.category === c.key ? undefined : c.key })}
+                    active={query.category === c.key}
+                  >
+                    {c.label}
+                  </Filter>
+                </li>
+              ))}
+            </ul>
+          </nav>
+          <nav aria-label="Filter by language" className="lg:col-span-3">
+            <Label as="p">Language</Label>
+            <ul className="mt-4 flex flex-wrap gap-x-6 gap-y-3">
+              {LANGUAGE_KEYS.filter((l) => l !== 'UNKNOWN').map((l) => (
+                <li key={l}>
+                  <Filter
+                    href={href({ language: query.language === l ? undefined : l })}
+                    active={query.language === l}
+                  >
+                    {l.charAt(0) + l.slice(1).toLowerCase()}
+                  </Filter>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
+
+        <SectionIntro
+          label={query.cursor ? 'All work · earlier' : 'All work'}
+          className="mt-20 mb-14"
+        />
+
+        {failed ? (
+          <ContentPending label="Out of reach">
+            The archive could not be loaded just now. Nothing is lost; try again shortly.
+          </ContentPending>
+        ) : posts.length === 0 ? (
+          <div className="space-y-8">
+            <ContentPending label={filtered ? 'Nothing in this corner' : 'Not yet connected'}>
+              {filtered
+                ? 'No post carries that filter. Try another.'
+                : 'Posts will gather here once the Instagram archive has been connected.'}
+            </ContentPending>
+            {!filtered && about?.links.literaryInstagram && (
+              <ArrowLink href={about.links.literaryInstagram} external tone="quiet">
+                Visit @triyanwrites
+              </ArrowLink>
             )}
           </div>
-        </>
-      )}
+        ) : (
+          <>
+            <InstagramGrid posts={posts} />
+            <nav
+              aria-label="Pages"
+              className="mt-24 flex items-center justify-between border-t border-border pt-8"
+            >
+              {query.cursor ? (
+                <Link
+                  href={href({})}
+                  className="font-mono text-xs tracking-[0.2em] text-fg-subtle uppercase no-underline hover:text-fg"
+                >
+                  ← Newest
+                </Link>
+              ) : (
+                <span />
+              )}
+              {nextCursor && (
+                <Link
+                  href={`${href({})}${href({}).includes('?') ? '&' : '?'}cursor=${encodeURIComponent(nextCursor)}`}
+                  className="font-mono text-xs tracking-[0.2em] text-fg uppercase no-underline hover:text-accent"
+                >
+                  Older posts →
+                </Link>
+              )}
+            </nav>
+          </>
+        )}
+      </div>
     </main>
   );
 }
@@ -186,37 +196,14 @@ function Filter({
   return (
     <Link
       href={href}
+      scroll={false}
       aria-current={active ? 'true' : undefined}
-      className={`font-ui text-2xs tracking-widest uppercase no-underline ${active ? 'text-fg' : 'text-fg-subtle hover:text-fg-muted'}`}
+      className={cn(
+        'filter-link relative font-mono text-2xs tracking-[0.18em] uppercase no-underline transition-colors duration-500',
+        active ? 'text-fg' : 'text-fg-subtle hover:text-fg',
+      )}
     >
       {children}
     </Link>
-  );
-}
-
-function Empty({
-  heading,
-  body,
-  link,
-}: {
-  heading: string;
-  body: string;
-  link?: string | undefined;
-}) {
-  return (
-    <div className="py-16">
-      <p className="font-display text-2xl font-light text-fg-muted">{heading}</p>
-      <p className="mt-3 max-w-prose font-reading text-base text-fg-subtle">{body}</p>
-      {link && (
-        <a
-          href={link}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-8 inline-block font-ui text-2xs tracking-widest text-fg-subtle uppercase no-underline hover:text-fg"
-        >
-          @triyanwrites on Instagram ↗
-        </a>
-      )}
-    </div>
   );
 }

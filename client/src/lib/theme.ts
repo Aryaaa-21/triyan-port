@@ -29,8 +29,8 @@ export const THEME_LABELS: Readonly<Record<Theme, string>> = {
  * so the two can never drift apart.
  */
 export const THEME_META_COLORS: Readonly<Record<Theme, string>> = {
-  void: '#050505',
-  manuscript: '#f4f0e8',
+  void: '#000000',
+  manuscript: '#e8e6e1',
 };
 
 /**

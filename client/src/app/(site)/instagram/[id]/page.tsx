@@ -4,11 +4,11 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getCategory, humanizeKey, type InstagramMediaDto } from '@triyan/shared';
 import { fetchInstagramItem, postImage, postKind, postTitle } from '@/features/instagram/api';
-import { PostTile } from '@/features/instagram/post-tile';
+import { PostTile } from '@/features/instagram/instagram-grid';
+import { Label } from '@/components/editorial';
 import { ApiError } from '@/lib/api';
 import { siteUrl } from '@/lib/env';
 import { Prose } from '@/components/ui/prose';
-import { Rule } from '@/components/ui/rule';
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -58,19 +58,21 @@ export default async function InstagramPostPage({ params }: PageProps) {
   const title = postTitle(post);
 
   return (
-    <main id="main" className="gutter mx-auto max-w-5xl pt-24 pb-32 sm:pt-32">
+    <main id="main" className="gutter mx-auto max-w-[90rem] pt-16 pb-32 sm:pt-24">
       <Link
         href="/instagram"
-        className="font-ui text-2xs tracking-widest text-fg-subtle uppercase no-underline hover:text-fg"
+        className="font-mono text-2xs tracking-[0.18em] text-fg-subtle uppercase no-underline hover:text-fg"
       >
         ← Visual memory
       </Link>
 
-      <article className="mt-10 grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-        <Media post={post} title={title} />
+      <article className="mt-12 grid gap-14 lg:grid-cols-12 lg:gap-8">
+        <div className="lg:col-span-7">
+          <Media post={post} title={title} />
+        </div>
 
-        <div>
-          <p className="font-ui text-2xs tracking-widest text-fg-subtle uppercase">
+        <div className="lg:col-span-4 lg:col-start-9">
+          <p className="font-mono text-2xs tracking-[0.18em] text-fg-subtle uppercase">
             {postKind(post)} ·{' '}
             <time dateTime={post.timestamp}>
               {new Date(post.timestamp).toLocaleDateString('en-GB', {
@@ -86,7 +88,7 @@ export default async function InstagramPostPage({ params }: PageProps) {
 
           {post.caption && (
             <>
-              <Rule className="my-8" />
+              <hr aria-hidden="true" className="my-10 border-border" />
               {/* Captions are often poems: line breaks are preserved. */}
               <Prose language={c.language} variant="poem">
                 {post.caption}
@@ -94,7 +96,7 @@ export default async function InstagramPostPage({ params }: PageProps) {
             </>
           )}
 
-          <dl className="mt-12 space-y-4 font-ui text-xs">
+          <dl className="mt-14 space-y-4 border-t border-border pt-8">
             {category && (
               <Meta label="Category">
                 <Link
@@ -123,7 +125,7 @@ export default async function InstagramPostPage({ params }: PageProps) {
               href={post.permalink}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-12 inline-block border border-border-strong px-5 py-3 font-ui text-2xs tracking-widest text-fg uppercase no-underline hover:border-fg"
+              className="group mt-12 inline-flex items-center gap-3 font-mono text-xs tracking-[0.2em] text-fg uppercase no-underline hover:text-accent"
             >
               View on Instagram ↗
             </a>
@@ -133,11 +135,13 @@ export default async function InstagramPostPage({ params }: PageProps) {
 
       {related.length > 0 && (
         <section className="mt-28" aria-labelledby="related-heading">
-          <Rule label="Nearby" className="mb-10" />
-          <h2 id="related-heading" className="sr-only">
+          <h2
+            id="related-heading"
+            className="mb-12 border-t border-border pt-8 font-mono text-2xs tracking-[0.18em] text-fg-subtle uppercase"
+          >
             Related posts
           </h2>
-          <ul className="grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
+          <ul className="grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-4">
             {related.map((r) => (
               <li key={r._id}>
                 <PostTile post={r} />
@@ -159,7 +163,7 @@ function Media({ post, title }: { post: InstagramMediaDto; title: string }) {
         preload="none"
         playsInline
         poster={post.thumbnailUrl || undefined}
-        className="w-full border border-border bg-bg-raised"
+        className="w-full bg-surface"
         aria-label={alt}
       >
         <source src={post.mediaUrl} />
@@ -169,15 +173,15 @@ function Media({ post, title }: { post: InstagramMediaDto; title: string }) {
   const image = postImage(post);
   if (!image) {
     return (
-      <div className="flex aspect-square items-center justify-center border border-border bg-bg-raised p-8">
-        <p className="font-ui text-2xs tracking-widest text-fg-subtle uppercase">
+      <div className="portrait-void flex aspect-[4/5] items-end bg-surface p-8">
+        <p className="font-mono text-2xs tracking-[0.18em] text-fg-subtle uppercase">
           Media is viewable on Instagram
         </p>
       </div>
     );
   }
   return (
-    <div className="relative aspect-square border border-border bg-bg-raised">
+    <div className="relative aspect-[4/5] bg-surface">
       <Image
         src={image}
         alt={alt}
@@ -193,8 +197,8 @@ function Media({ post, title }: { post: InstagramMediaDto; title: string }) {
 function Meta({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="grid grid-cols-[7rem_1fr] gap-4">
-      <dt className="tracking-widest text-fg-subtle uppercase">{label}</dt>
-      <dd className="text-fg-muted">{children}</dd>
+      <Label as="dt">{label}</Label>
+      <dd className="font-reading text-base text-fg-muted">{children}</dd>
     </div>
   );
 }

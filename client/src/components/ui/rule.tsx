@@ -14,7 +14,7 @@ export function Rule({ label, className }: RuleProps) {
 
   return (
     <div className={cn('flex items-center gap-4', className)}>
-      <span className="font-ui text-2xs tracking-widest text-fg-subtle uppercase">{label}</span>
+      <span className="font-mono text-2xs tracking-[0.18em] text-fg-subtle uppercase">{label}</span>
       <hr aria-hidden="true" className="flex-1 border-border" />
     </div>
   );

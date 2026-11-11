@@ -9,6 +9,8 @@ export interface RevealProps {
   stagger?: number;
   className?: string;
   as?: 'div' | 'section' | 'li' | 'article';
+  /** rise: fade and lift (default) · clip: wipe upward, for images · blur: focus pull, for statements */
+  variant?: 'rise' | 'clip' | 'blur';
 }
 
 /**
@@ -27,7 +29,13 @@ export interface RevealProps {
  *     at once — visible as ghosting on a tall screen. An IntersectionObserver has no
  *     such failure mode.
  */
-export function Reveal({ children, stagger = 0, className, as = 'div' }: RevealProps) {
+export function Reveal({
+  children,
+  stagger = 0,
+  className,
+  as = 'div',
+  variant = 'rise',
+}: RevealProps) {
   const ref = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -67,6 +75,7 @@ export function Reveal({ children, stagger = 0, className, as = 'div' }: RevealP
     <Tag
       ref={ref as React.Ref<HTMLDivElement>}
       data-reveal="out"
+      data-variant={variant === 'rise' ? undefined : variant}
       style={stagger ? ({ '--reveal-step': String(stagger) } as CSSProperties) : undefined}
       className={cn('reveal', className)}
     >

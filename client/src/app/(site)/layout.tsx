@@ -2,6 +2,7 @@ import { SiteHeader } from '@/components/site/site-header';
 import { SiteFooter } from '@/components/site/site-footer';
 import { fetchAboutSafely } from '@/features/content/api';
 import { Cursor } from '@/components/motion/cursor';
+import { ArtDefs } from '@/components/art';
 
 /**
  * The public shell. Admin lives in its own route group with no header or footer,
@@ -12,6 +13,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
 
   return (
     <div className="flex min-h-dvh flex-col">
+      <ArtDefs />
       <Cursor />
       <SiteHeader />
       <div className="flex-1">{children}</div>

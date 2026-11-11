@@ -10,6 +10,7 @@ import {
   storeTheme,
   subscribeToTheme,
 } from '@/lib/theme';
+import { cn } from '@/lib/cn';
 
 /**
  * Day/night switch.
@@ -20,7 +21,7 @@ import {
  * is null because the server cannot know the reader's preference; the control stays
  * operable and simply reads "Theme" until it does.
  */
-export function ThemeToggle() {
+export function ThemeToggle({ className }: { className?: string }) {
   const theme = useSyncExternalStore<Theme | null>(
     subscribeToTheme,
     getThemeSnapshot,
@@ -38,10 +39,25 @@ export function ThemeToggle() {
     <button
       type="button"
       onClick={flip}
-      aria-label={theme ? `Switch to ${THEME_LABELS[next]} mode` : 'Switch colour theme'}
-      className="font-ui text-2xs tracking-widest text-fg-subtle uppercase transition-colors hover:text-fg"
+      aria-label={
+        theme
+          ? `Switch to ${next === 'manuscript' ? 'day' : 'night'} (${THEME_LABELS[next]})`
+          : 'Switch colour theme'
+      }
+      className={cn(
+        'inline-flex items-center gap-2 font-mono text-2xs tracking-[0.18em] text-fg-subtle uppercase transition-colors hover:text-fg',
+        className,
+      )}
     >
-      {theme ? THEME_LABELS[next] : 'Theme'}
+      {/* A filled or hollow disc: night and day, without an icon set. */}
+      <span
+        aria-hidden="true"
+        className={cn(
+          'inline-block size-2 rounded-full border border-current',
+          next === 'void' && 'bg-current',
+        )}
+      />
+      {theme ? (next === 'manuscript' ? 'Day' : 'Night') : 'Theme'}
     </button>
   );
 }

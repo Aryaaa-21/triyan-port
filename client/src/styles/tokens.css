@@ -3,10 +3,13 @@
  *
  * Two environments, not two palettes (ARCHITECTURE §3.1):
  *
- *   VOID       night, default. A black void that light emerges from. No shadows —
- *              depth comes from luminance and vignette.
- *   MANUSCRIPT day. A printed page. Hairline rules, ink weight, paper warmth.
- *              Shadows exist here, and only here.
+ *   VOID       night, default. Black, and the light that emerges from it. No shadows —
+ *              depth comes from luminance alone.
+ *   MANUSCRIPT day. Near-black ink on off-white paper. Hairline rules, ink weight.
+ *
+ * Strictly monochrome (UI spec §04): black, near black, charcoal, dark grey, muted
+ * grey, light grey, off white, white. The single exception is --ember, reserved for
+ * error states, where a reader needs to notice something went wrong.
  *
  * This file is the only place in the codebase permitted to contain a colour literal.
  * `tokens.test.ts` enforces that, and also asserts every contrast pair below in both
@@ -24,27 +27,27 @@
 :root {
   color-scheme: dark;
 
-  --bg: #050505;
-  --bg-raised: #0b0b0c;
-  --surface: #121214;
+  --bg: #000000;
+  --bg-raised: #080808;
+  --surface: #111111;
 
-  --border: #232327;
-  --border-strong: #3a3a41;
+  --border: #1a1a1a;
+  --border-strong: #333333;
 
-  --fg: #ededee;
-  --fg-muted: #8a8a8f;
-  --fg-subtle: #6b6b72;
+  --fg: #e8e6e1;
+  --fg-muted: #b5b5b5;
+  --fg-subtle: #6f6f6f;
 
-  --accent: #cfc7b8; /* bone */
-  --ember: #b4553f; /* used sparingly, never for body text */
+  --accent: #ffffff; /* emphasis is more light, never a hue */
+  --ember: #b4553f; /* error states only — never decoration, never body text */
 
   /* Carries the WCAG 1.4.11 non-text requirement. Borders stay decorative. */
-  --focus: #cfc7b8;
+  --focus: #e8e6e1;
 
-  --vignette: radial-gradient(circle at 50% 0%, rgb(255 255 255 / 4%), transparent 65%);
+  --vignette: radial-gradient(circle at 50% 0%, rgb(255 255 255 / 3%), transparent 60%);
   --shadow-raised: none;
   --shadow-overlay: 0 0 0 1px var(--border), 0 24px 64px -24px rgb(0 0 0 / 90%);
-  --selection-bg: #2a2a30;
+  --selection-bg: #333333;
   --selection-fg: #ffffff;
 }
 
@@ -54,80 +57,81 @@
   :root:not([data-theme]) {
     color-scheme: light;
 
-    --bg: #f4f0e8;
-    --bg-raised: #fbf8f2;
-    --surface: #efe9de;
+    --bg: #e8e6e1;
+    --bg-raised: #efede8;
+    --surface: #dddad3;
 
-    --border: #ddd5c6;
-    --border-strong: #b9ad98;
+    --border: #cfccc5;
+    --border-strong: #a19e97;
 
-    --fg: #1a1917;
-    --fg-muted: #6b6760;
-    --fg-subtle: #857f74;
+    --fg: #080808;
+    --fg-muted: #3a3a3a;
+    --fg-subtle: #6f6f6f;
 
-    --accent: #7a5c3e; /* sepia */
+    --accent: #000000;
     --ember: #8a3a2e;
 
-    --focus: #7a5c3e;
+    --focus: #080808;
 
     --vignette: none;
-    --shadow-raised: 0 1px 2px rgb(26 25 23 / 5%);
-    --shadow-overlay: 0 1px 1px rgb(26 25 23 / 6%), 0 24px 48px -20px rgb(26 25 23 / 20%);
-    --selection-bg: #e4d9c3;
-    --selection-fg: #1a1917;
+    --shadow-raised: 0 1px 2px rgb(8 8 8 / 5%);
+    --shadow-overlay: 0 1px 1px rgb(8 8 8 / 6%), 0 24px 48px -20px rgb(8 8 8 / 20%);
+    --selection-bg: #080808;
+    --selection-fg: #e8e6e1;
   }
 }
 
 :root[data-theme='manuscript'] {
   color-scheme: light;
 
-  --bg: #f4f0e8;
-  --bg-raised: #fbf8f2;
-  --surface: #efe9de;
+  --bg: #e8e6e1;
+  --bg-raised: #efede8;
+  --surface: #dddad3;
 
-  --border: #ddd5c6;
-  --border-strong: #b9ad98;
+  --border: #cfccc5;
+  --border-strong: #a19e97;
 
-  --fg: #1a1917;
-  --fg-muted: #6b6760;
-  --fg-subtle: #857f74;
+  --fg: #080808;
+  --fg-muted: #3a3a3a;
+  --fg-subtle: #6f6f6f;
 
-  --accent: #7a5c3e;
+  --accent: #000000;
   --ember: #8a3a2e;
 
-  --focus: #7a5c3e;
+  --focus: #080808;
 
   --vignette: none;
-  --shadow-raised: 0 1px 2px rgb(26 25 23 / 5%);
-  --shadow-overlay: 0 1px 1px rgb(26 25 23 / 6%), 0 24px 48px -20px rgb(26 25 23 / 20%);
-  --selection-bg: #e4d9c3;
-  --selection-fg: #1a1917;
+  --shadow-raised: 0 1px 2px rgb(8 8 8 / 5%);
+  --shadow-overlay: 0 1px 1px rgb(8 8 8 / 6%), 0 24px 48px -20px rgb(8 8 8 / 20%);
+  --selection-bg: #080808;
+  --selection-fg: #e8e6e1;
 }
 
 /* An explicit choice of night, overriding a light system preference. */
 :root[data-theme='void'] {
   color-scheme: dark;
 
-  --bg: #050505;
-  --bg-raised: #0b0b0c;
-  --surface: #121214;
+  --bg: #000000;
+  --bg-raised: #080808;
+  --surface: #111111;
 
-  --border: #232327;
-  --border-strong: #3a3a41;
+  --border: #1a1a1a;
+  --border-strong: #333333;
 
-  --fg: #ededee;
-  --fg-muted: #8a8a8f;
-  --fg-subtle: #6b6b72;
+  --fg: #e8e6e1;
+  --fg-muted: #b5b5b5;
+  --fg-subtle: #6f6f6f;
 
-  --accent: #cfc7b8;
-  --ember: #b4553f;
+  --accent: #ffffff; /* emphasis is more light, never a hue */
+  --ember: #b4553f; /* error states only — never decoration, never body text */
 
-  --focus: #cfc7b8;
+  /* Carries the WCAG 1.4.11 non-text requirement. Borders stay decorative. */
+  --focus: #e8e6e1;
 
-  --vignette: radial-gradient(circle at 50% 0%, rgb(255 255 255 / 4%), transparent 65%);
+  --vignette: radial-gradient(circle at 50% 0%, rgb(255 255 255 / 3%), transparent 60%);
   --shadow-raised: none;
   --shadow-overlay: 0 0 0 1px var(--border), 0 24px 64px -24px rgb(0 0 0 / 90%);
-  --selection-bg: #2a2a30;
+  --selection-bg: #333333;
   --selection-fg: #ffffff;
 }
 
@@ -148,6 +152,8 @@
   --family-reading: var(--font-spectral), var(--font-tiro-deva), ui-serif, Georgia, serif;
   --family-reading-deva: var(--font-tiro-deva), var(--font-spectral), ui-serif, serif;
   --family-ui: var(--font-geist), var(--font-tiro-deva), ui-sans-serif, system-ui, sans-serif;
+  /* Technical register: dates, categories, numbering, labels, navigation detail. */
+  --family-mono: var(--font-geist-mono), ui-monospace, 'SFMono-Regular', monospace;
   --family-abyss: var(--font-unifraktur), ui-serif, serif;
   --family-abyss-ui: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
 
@@ -177,7 +183,7 @@
   --track-widest: 0.3em; /* the TRIYAN wordmark */
 
   /* Reading measures. Poetry is narrower than prose on purpose. */
-  --measure-poem: 34rem;
+  --measure-poem: 38rem; /* ~610px: inside the 600–760 reading band */
   --measure-prose: 42rem;
   --measure-wide: 64rem;
   --measure-full: 90rem;

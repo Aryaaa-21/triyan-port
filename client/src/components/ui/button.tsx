@@ -18,10 +18,10 @@ const SIZES: Record<ButtonSize, string> = {
 };
 
 const base = cn(
-  'inline-flex items-center justify-center gap-2 rounded-sm',
-  'font-ui tracking-wide uppercase',
+  'inline-flex items-center justify-center gap-2',
+  'font-mono tracking-[0.18em] uppercase',
   'transition-colors duration-[var(--dur-base)] ease-void',
-  'disabled:pointer-events-none disabled:opacity-40',
+  'disabled:cursor-not-allowed disabled:opacity-40',
 );
 
 const classes = (variant: ButtonVariant, size: ButtonSize, className?: string) =>
