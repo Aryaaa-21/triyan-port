@@ -86,12 +86,16 @@ describe('ThemeToggle', () => {
     const { ThemeToggle } = await import('./theme-toggle');
     render(<ThemeToggle />);
 
-    const button = screen.getByRole('button');
-    fireEvent.click(button);
+    const toggle = screen.getByRole('switch', { name: 'Night mode' });
+    fireEvent.click(toggle);
 
     expect(document.documentElement.getAttribute('data-theme')).toBeTruthy();
     expect(localStorage.getItem('triyan.theme')).toBe(
       document.documentElement.getAttribute('data-theme'),
     );
+    // A real switch: its state is announced, and flips with each press.
+    const first = toggle.getAttribute('aria-checked');
+    fireEvent.click(toggle);
+    expect(toggle.getAttribute('aria-checked')).not.toBe(first);
   });
 });

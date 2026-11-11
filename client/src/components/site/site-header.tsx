@@ -91,15 +91,18 @@ export function SiteHeader() {
           <ThemeToggle />
         </nav>
 
-        <button
-          type="button"
-          onClick={() => setOpen(true)}
-          aria-expanded={open}
-          aria-controls="mobile-nav"
-          className="-my-2 py-2 pl-4 font-mono text-2xs tracking-[0.18em] text-fg uppercase lg:hidden"
-        >
-          Menu
-        </button>
+        <div className="flex items-center gap-5 lg:hidden">
+          <ThemeToggle />
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            aria-expanded={open}
+            aria-controls="mobile-nav"
+            className="-my-2 py-2 font-mono text-2xs tracking-[0.18em] text-fg uppercase"
+          >
+            Menu
+          </button>
+        </div>
       </div>
 
       {/*
@@ -189,7 +192,7 @@ function MenuLink({
           active ? 'text-fg' : 'text-fg-muted group-hover:text-fg',
         )}
       >
-        {label}
+        {label === 'ABYSS' ? 'Abyss' : label}
       </span>
     </Link>
   );

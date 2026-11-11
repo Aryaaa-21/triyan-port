@@ -3,6 +3,7 @@ import { ArrowLink, SectionIntro } from '@/components/editorial';
 import { Parallax } from '@/components/motion/parallax';
 import { Reveal } from '@/components/ui/reveal';
 import { REMEMBER } from '@/content/triyan';
+import { wordmark } from '@/lib/wordmark';
 import WindStreamCursor from '@/components/ui/wind-stream-cursor';
 
 /** 07 — ABYSS. A doorway: the world beyond the words, and the sense that it is coming. */
@@ -19,7 +20,7 @@ export function AbyssDoor({ abyss }: { abyss: AbyssDto | null }) {
         className="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 text-center"
       >
         <span className="abyss-outline font-abyss text-[34vw] leading-none select-none">
-          {abyss.name}
+          {wordmark(abyss.name)}
         </span>
       </Parallax>
       <div className="gutter relative">
@@ -32,9 +33,9 @@ export function AbyssDoor({ abyss }: { abyss: AbyssDto | null }) {
           <Reveal variant="blur">
             <h2
               id="abyss-heading"
-              className="font-abyss text-[clamp(4.5rem,14vw,12rem)] leading-none font-normal"
+              className="font-abyss pb-[0.8em] pl-[0.18em] text-[clamp(4rem,12vw,10rem)] leading-[1.15] font-normal"
             >
-              {abyss.name}
+              {wordmark(abyss.name)}
             </h2>
           </Reveal>
           {abyss.tagline && (

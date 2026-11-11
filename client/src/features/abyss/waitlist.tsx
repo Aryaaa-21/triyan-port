@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { waitlistSchema } from '@triyan/shared';
 
 type State = 'idle' | 'sending' | 'joined' | 'failed';
 
@@ -18,27 +17,28 @@ export function Waitlist({ open = true }: { open?: boolean }) {
     event.preventDefault();
     if (!open) return;
     const form = new FormData(event.currentTarget);
-    const parsed = waitlistSchema.safeParse({
-      email: String(form.get('email') ?? ''),
-      consent: form.get('consent') === 'on' ? true : undefined,
-      website: String(form.get('website') ?? ''),
-    });
-    if (!parsed.success) {
-      const issue = parsed.error.issues[0];
-      setError(
-        issue?.path[0] === 'consent'
-          ? 'Tick the box to say yes.'
-          : 'That address does not look complete.',
-      );
+    // A light check for the reader's sake; the API validates properly (shared zod
+    // schema) — importing zod here would add ~40 KB to this page for one field.
+    const email = String(form.get('email') ?? '')
+      .trim()
+      .toLowerCase();
+    const consent = form.get('consent') === 'on';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setError('That address does not look complete.');
       return;
     }
+    if (!consent) {
+      setError('Tick the box to say yes.');
+      return;
+    }
+    const payload = { email, consent: true, website: String(form.get('website') ?? '') };
     setError('');
     setState('sending');
     try {
       const response = await fetch('/api/public/waitlist', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify(parsed.data),
+        body: JSON.stringify(payload),
       });
       if (!response.ok) {
         const body = (await response.json().catch(() => ({}))) as { error?: { message?: string } };

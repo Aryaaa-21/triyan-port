@@ -1,57 +1,61 @@
+import type { CSSProperties } from 'react';
 import { SplitText } from '@/components/motion/split-text';
-import { CosmicField } from '@/features/cosmos/cosmic-field';
+import { BlackHoleBackground } from '@/features/blackhole/background';
 import WindStreamCursor from '@/components/ui/wind-stream-cursor';
 
 /**
- * 01 — Entry: "Welcome to Abyss", then "Triyan Writes", over a slow drift through stars.
+ * 01 — Entry: "Welcome to Abyss", set inside the shadow of a black hole.
  *
- * The text and the static backdrop are server-rendered and readable instantly.
- * The WebGL field is an enhancement layered underneath; if it never loads, the
- * opening is still complete. The bottom fades into the page so the reader moves
- * from the space into the site rather than past a banner.
+ * The black hole is a living background (see BlackHoleBackground). The type is laid
+ * out in units of the hole's radius — the same formula the shader uses — so on any
+ * screen "Welcome to" sits above the dome, "Abyss" inside the dark above the band of
+ * the disk, and "Triyan Writes" beneath the lower arc. It is always night here, whichever theme is chosen.
  */
+const hole: CSSProperties & Record<string, string> = {
+  containerType: 'size',
+  // Mirrors the shader: 22% of the shorter side, never under 104px.
+  '--bh-r': 'max(22cqmin, 104px)',
+};
+
 export function HomeOpening() {
   return (
     <section
       aria-label="Welcome"
-      className="gutter relative isolate flex min-h-[calc(100svh-4rem)] items-center justify-center overflow-hidden"
+      className="opening abyss-door relative isolate h-[calc(100svh-4rem)] min-h-[34rem] overflow-hidden bg-black text-white"
+      style={hole}
     >
-      {/* Static depth cue: the fallback, and the base the stars sit on. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10 [background:radial-gradient(ellipse_at_center,color-mix(in_oklab,var(--fg)_7%,transparent),transparent_70%)]"
-      />
-      <div className="absolute inset-0 -z-10">
-        <CosmicField />
-      </div>
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-1/3 bg-gradient-to-b from-transparent to-bg"
-      />
-
-      {/* Grey wind trails the pointer through the entry. Fine pointers only. */}
+      <BlackHoleBackground />
       <WindStreamCursor />
 
-      <div className="relative text-center">
-        <p className="font-mono text-2xs tracking-[0.18em] text-fg-subtle uppercase">
-          <SplitText text="Welcome to" delay={200} step={35} />
+      <div className="opening-type pointer-events-none absolute inset-0">
+        <p
+          className="absolute left-1/2 -translate-x-1/2 font-mono text-2xs tracking-[0.4em] whitespace-nowrap text-white/60 uppercase"
+          style={{ top: 'calc(50% - var(--bh-r) * 1.66)' }}
+        >
+          <SplitText text="Welcome to" delay={300} step={35} />
         </p>
-        <p className="mt-6 font-abyss text-7xl leading-none font-normal sm:text-9xl">
-          <SplitText text="Abyss" delay={650} step={110} />
+        <p
+          className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 font-abyss leading-none font-normal whitespace-nowrap text-white"
+          style={{ top: 'calc(50% - var(--bh-r) * 0.3)', fontSize: 'calc(var(--bh-r) * 0.5)' }}
+        >
+          <SplitText text="Abyss" delay={700} step={110} />
         </p>
-        <p className="mt-10 font-mono text-xs tracking-[0.5em] text-fg-muted uppercase">
+        <p
+          className="absolute left-1/2 -translate-x-1/2 font-mono text-xs tracking-[0.5em] whitespace-nowrap text-white/70 uppercase"
+          style={{ top: 'calc(50% + var(--bh-r) * 1.48)' }}
+        >
           <SplitText text="Triyan Writes" delay={1500} step={55} />
         </p>
       </div>
 
       <a
         href="#triyan"
-        className="opening-cue absolute bottom-8 left-1/2 -translate-x-1/2 font-mono text-2xs tracking-[0.3em] text-fg-subtle uppercase no-underline hover:text-fg"
+        className="opening-cue absolute bottom-8 left-1/2 -translate-x-1/2 font-mono text-2xs tracking-[0.3em] text-white/55 uppercase no-underline hover:text-white"
       >
         Enter
         <span
           aria-hidden="true"
-          className="mt-3 block h-10 w-px translate-x-[1.1rem] bg-fg-subtle/60"
+          className="mt-3 block h-10 w-px translate-x-[1.1rem] bg-white/40"
         />
       </a>
     </section>

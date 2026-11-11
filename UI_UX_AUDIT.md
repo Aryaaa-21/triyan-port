@@ -149,3 +149,35 @@ Triyan's own answers replaced or tightened the copy across the site.
 **Verification:** 561 tests pass. 72 page/width combinations checked with no overflow
 and one `h1` each. Waitlist sign-up → admin and contact message → admin inbox both
 verified in a real browser.
+
+## Update — black-hole background, Aquiline Two, theme switch (2026-11-11)
+
+- **Black hole as a living background, not a loading screen.** The intro was removed.
+  The same shader now runs behind the homepage "Welcome to Abyss" opening and the
+  ABYSS page hero. "Abyss" sits inside the shadow; the type is laid out in units of
+  the hole's radius so it lands in the same place on every screen.
+- **Animation, deliberately irregular.** The disk turns and breathes; flares run
+  through it at random moments. A light travels round the photon ring. Lensed stars
+  twinkle and drift. Random sparkles pop across the sky, and shooting stars arrive at
+  irregular times, directions and speeds. Glittering stars spiral in and vanish at the
+  shadow (random turns, tilts and brightness), and glints orbit in the disk plane. The
+  camera drifts and rolls, follows the pointer for parallax, and scrolling draws the
+  viewer into the hole while the opening's words fade.
+- **Restraint:**
+  - It pauses off screen and in background tabs.
+  - Reduced motion gets one still frame.
+  - Without WebGL, or on very modest devices, a 64 KB still image is shown instead
+    (fetched only then).
+  - Three.js was removed entirely. The old star field is gone, and the shader needs no
+    library.
+- **Aquiline Two** (Manfred Klein + CybaPee; DaFont "100% Free"; fsType 0) is the
+  ABYSS wordmark. It is subset to Latin and served as WOFF2 (200 KB → 36 KB). A script
+  face reads best in title case, so the mark is set as "Abyss" wherever this font is
+  used, with room left for its swashes.
+- **Day/night switch.** The text link became a real switch (`role="switch"`, "Night
+  mode"): a sliding knob between a sun and a moon. It appears in the desktop header,
+  the phone header and the menu.
+- **Bundle:** the homepage is 152 KB gz first load. The waitlist dropped its zod import
+  (the API still validates), taking `/abyss` from 186 to 153 KB.
+- **Verification:** 569 tests pass. Browser E2E passes, including "black hole behind
+  the opening (animated)", the switch, and 13 routes × 9 widths.

@@ -129,7 +129,7 @@ export default async function AboutPage() {
                         : 'font-display text-4xl leading-tight font-light text-fg'
                     }
                   >
-                    {step.title}
+                    {step.title === 'ABYSS' ? 'Abyss' : step.title}
                   </p>
                   <p className="mt-3 max-w-lg font-reading text-lg leading-prose text-fg-muted">
                     {step.note}
@@ -250,7 +250,7 @@ export default async function AboutPage() {
                       : 'font-display text-3xl font-light text-fg'
                   }
                 >
-                  {item.title}
+                  {item.title === 'ABYSS' ? 'Abyss' : item.title}
                 </span>
                 <span className="mt-3 block font-reading text-base text-fg-muted">{item.note}</span>
                 <span

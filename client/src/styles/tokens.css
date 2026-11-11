@@ -154,7 +154,7 @@
   --family-ui: var(--font-geist), var(--font-tiro-deva), ui-sans-serif, system-ui, sans-serif;
   /* Technical register: dates, categories, numbering, labels, navigation detail. */
   --family-mono: var(--font-geist-mono), ui-monospace, 'SFMono-Regular', monospace;
-  --family-abyss: var(--font-unifraktur), ui-serif, serif;
+  --family-abyss: var(--font-aquiline), ui-serif, serif;
   --family-abyss-ui: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
 
   /* Fluid editorial scale. Display sizes are deliberately large. */

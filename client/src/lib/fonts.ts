@@ -5,8 +5,8 @@ import {
   Geist_Mono,
   Spectral,
   Tiro_Devanagari_Hindi,
-  UnifrakturMaguntia,
 } from 'next/font/google';
+import localFont from 'next/font/local';
 
 /**
  * Five roles, five families (ARCHITECTURE §3.3). The CSS variables declared here are
@@ -60,11 +60,16 @@ export const geistMono = Geist_Mono({
   display: 'swap',
 });
 
-/** ABYSS wordmark only — never body text. */
-export const unifraktur = UnifrakturMaguntia({
-  subsets: ['latin'],
-  weight: ['400'],
-  variable: '--font-unifraktur',
+/**
+ * ABYSS wordmark only — never body text. Aquiline Two, by Manfred Klein + CybaPee
+ * (based on Aquiline by Expert Software), distributed as "100% Free" on DaFont;
+ * embedding unrestricted (fsType 0). Subset to Latin and served as WOFF2 (36 KB).
+ */
+export const aquiline = localFont({
+  src: '../fonts/aquiline-two.woff2',
+  weight: '400',
+  style: 'normal',
+  variable: '--font-aquiline',
   display: 'swap',
   preload: false,
 });
@@ -84,6 +89,6 @@ export const fontVariables = [
   tiroDevanagari.variable,
   geist.variable,
   geistMono.variable,
-  unifraktur.variable,
+  aquiline.variable,
   archivo.variable,
 ].join(' ');

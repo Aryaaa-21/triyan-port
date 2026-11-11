@@ -255,15 +255,6 @@
     display: inline-block;
   }
 
-  .cosmos {
-    opacity: 0;
-    transition: opacity 2.4s var(--curve-void);
-  }
-
-  .cosmos[data-ready='true'] {
-    opacity: 1;
-  }
-
   @media (prefers-reduced-motion: no-preference) {
     html.js .split-char {
       opacity: 0;
@@ -317,6 +308,30 @@
   .abyss-outline {
     color: transparent;
     -webkit-text-stroke: 1px color-mix(in oklab, var(--fg) 14%, transparent);
+  }
+
+  /* The day/night switch: the knob slides; the icon it sits over steps back. */
+  .theme-knob {
+    translate: 0 -50%;
+    transition: translate 0.5s var(--curve-void);
+  }
+
+  .theme-switch[data-state='unknown'] .theme-knob {
+    translate: 0.75rem -50%;
+  }
+
+  .theme-switch[data-state='night'] .theme-knob {
+    translate: 1.5rem -50%;
+  }
+
+  .theme-switch[data-state='night'] .theme-moon,
+  .theme-switch[data-state='day'] .theme-sun {
+    opacity: 0;
+  }
+
+  .theme-sun,
+  .theme-moon {
+    transition: opacity 0.4s;
   }
 
   /* Header: integrated with the page at the top, a quiet dark layer once scrolled. */
@@ -613,63 +628,26 @@
   }
 
   /*
-   * The loading screen. Hidden unless the pre-paint script chose to play it, so it can
-   * never cover the site for a reader without JavaScript or arriving on a deep link.
+   * The black-hole background. It fades in on its first frame; without WebGL (or on a
+   * very modest device) the host shows a still image of the same scene instead — the
+   * image is only fetched when that rule matches.
    */
-  .intro {
-    display: none;
-    position: fixed;
-    inset: 0;
-    z-index: var(--z-intro);
-    background: var(--cursor-ink-inverse);
-  }
-
-  html[data-intro='play'] .intro {
-    display: block;
-  }
-
-  .intro-canvas {
+  .black-hole {
     opacity: 0;
-    transition: opacity 1.2s var(--curve-void);
+    transition: opacity 1.6s var(--curve-void);
   }
 
-  .intro[data-ready='true'] .intro-canvas {
+  .black-hole[data-ready='true'] {
     opacity: 1;
   }
 
-  .intro-progress > span {
-    width: 0;
-    animation: intro-progress 2.8s var(--curve-out) forwards;
+  /* As the opening scrolls away into the hole, its words go first. */
+  .opening-type {
+    opacity: calc(1 - var(--bh-progress, 0) * 2.2);
   }
 
-  .intro-chrome {
-    transition: opacity 0.4s;
-  }
-
-  /* Falling in: the words leave first, then the dark itself lets go. */
-  .intro[data-phase='falling'] .intro-chrome {
-    opacity: 0;
-  }
-
-  .intro[data-phase='falling'] {
-    animation: intro-out 0.5s var(--curve-in-out) 1s forwards;
-  }
-
-  @keyframes intro-progress {
-    to {
-      width: 88%;
-    }
-  }
-
-  @keyframes intro-out {
-    to {
-      opacity: 0;
-    }
-  }
-
-  /* The homepage's own entrance waits for the intro to finish. */
-  html[data-intro='play'] .split-char {
-    animation-play-state: paused;
+  [data-webgl='none'] {
+    background: var(--cursor-ink-inverse) url('/images/black-hole.jpg') center / cover no-repeat;
   }
 
   /* Companion cursor. Never replaces the system cursor. */

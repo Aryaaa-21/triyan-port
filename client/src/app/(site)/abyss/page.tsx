@@ -1,12 +1,13 @@
 import type { Metadata } from 'next';
 import { fetchAbyssSafely } from '@/features/content/api';
 import { siteUrl } from '@/lib/env';
+import { wordmark } from '@/lib/wordmark';
 import { SplitText } from '@/components/motion/split-text';
-import { Parallax } from '@/components/motion/parallax';
 import { Reveal } from '@/components/ui/reveal';
 import { ShirtSilhouette } from '@/features/abyss/silhouette';
 import { Waitlist } from '@/features/abyss/waitlist';
 import WindStreamCursor from '@/components/ui/wind-stream-cursor';
+import { BlackHoleBackground } from '@/features/blackhole/background';
 import { ABYSS_DIFFERENT, ABYSS_FEELING, ABYSS_FOR, ABYSS_WHY, VENTURES } from '@/content/triyan';
 
 export const metadata: Metadata = {
@@ -37,20 +38,14 @@ export default async function AbyssPage() {
       {/* ------------------------------------------------------------ mark */}
       <section className="gutter relative isolate flex min-h-[92svh] flex-col justify-end pb-20">
         <WindStreamCursor />
-        <Parallax
-          speed={-0.25}
-          className="pointer-events-none absolute inset-x-0 top-[42%] -z-10 -translate-y-1/2 text-center"
-        >
-          <span className="abyss-outline font-abyss text-[40vw] leading-none select-none">
-            {name}
-          </span>
-        </Parallax>
-        <div className="mx-auto w-full max-w-[90rem]">
-          <h1 className="font-abyss text-[clamp(3.75rem,19vw,17rem)] leading-[0.85] font-normal whitespace-nowrap">
-            <SplitText text={name} step={90} />
+        {/* The black hole behind the mark: a living background, above the name. */}
+        <BlackHoleBackground radius={0.2} offset={[0, 0.4]} />
+        <div className="relative mx-auto w-full max-w-[90rem]">
+          <h1 className="font-abyss pb-[0.8em] pl-[0.18em] text-[clamp(3.5rem,12vw,10.5rem)] leading-[1.15] font-normal whitespace-nowrap">
+            <SplitText text={wordmark(name)} step={90} />
           </h1>
           {abyss?.tagline && (
-            <p className="mt-10 max-w-3xl font-display text-[clamp(1.75rem,4vw,3.5rem)] leading-tight font-light text-white/80 italic">
+            <p className="mt-6 max-w-3xl font-display text-[clamp(1.5rem,3.4vw,3rem)] leading-tight font-light text-white/80 italic">
               {abyss.tagline}
             </p>
           )}
