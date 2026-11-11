@@ -9,16 +9,29 @@ The literary home of **Triyan** — poet, writer, artist — and of **ABYSS**.
 
 | Document | Contents |
 |---|---|
-| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Product, technical, visual, information, data, API, Instagram, classification, admin, deployment architecture |
-| [`docs/ROADMAP.md`](docs/ROADMAP.md) | Phase-by-phase implementation plan with exit criteria |
+| [`docs/SETUP.md`](docs/SETUP.md) | Running it locally |
+| [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) | Vercel (website), Railway (API), MongoDB Atlas |
+| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Product, technical, visual, data, API and deployment architecture |
+| [`docs/INSTAGRAM.md`](docs/INSTAGRAM.md) | Connecting the official Instagram API |
+| [`FINAL_AUDIT.md`](FINAL_AUDIT.md) · [`UI_UX_AUDIT.md`](UI_UX_AUDIT.md) | What is done, what is blocked, and the evidence |
 
 ## Stack
 
-- **client** — Next.js 15 (App Router), TypeScript, Tailwind v4, React Three Fiber, GSAP → Vercel
-- **server** — Express, TypeScript, Mongoose, node-cron worker → Railway
-- **data** — MongoDB Atlas · **media** — Cloudinary (behind a provider interface)
+An npm-workspaces monorepo:
+
+- **client** — Next.js 16 (App Router), React 19, TypeScript, Tailwind v4, a WebGL shader
+  for the black hole → **Vercel**
+- **server** — Express 5, TypeScript, Mongoose 9, an Instagram sync worker → **Railway**
+- **shared** — zod schemas, taxonomy and types used by both
+- **data** — MongoDB Atlas
 - **Instagram** — official Instagram API with Instagram Login only. No scraping.
 
 ## Quick start
 
-Not yet scaffolded — see Phase 1 in the roadmap.
+```bash
+nvm use            # Node 22
+npm install
+npm run verify     # lint, typecheck, tests, build
+```
+
+Then follow [`docs/SETUP.md`](docs/SETUP.md) to run the API and website locally.

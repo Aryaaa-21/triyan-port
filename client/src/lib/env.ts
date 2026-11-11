@@ -15,8 +15,14 @@ const publicSchema = z.object({
   NEXT_PUBLIC_SITE_NAME: z.string().default('Triyan'),
 });
 
+// On Vercel, until a custom domain is configured, fall back to the project's production
+// URL (a system variable Vercel exposes to Next.js projects) rather than localhost.
+const vercelProductionUrl = process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL;
+
 const publicEnv = publicSchema.parse({
-  NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
+  NEXT_PUBLIC_SITE_URL:
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    (vercelProductionUrl ? `https://${vercelProductionUrl}` : undefined),
   NEXT_PUBLIC_SITE_NAME: process.env.NEXT_PUBLIC_SITE_NAME,
 });
 

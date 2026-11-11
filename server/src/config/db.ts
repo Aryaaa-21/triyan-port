@@ -54,6 +54,19 @@ export const connectDatabase = async (uri = env.MONGODB_URI): Promise<typeof mon
   return connecting;
 };
 
+/**
+ * Builds any missing indexes for every registered model. Production turns autoIndex
+ * off (an index build should never start implicitly on a live collection), so the API
+ * calls this once at start instead. It only creates what is missing, never drops, and
+ * is quick when everything already exists. Without it a fresh production database has
+ * no text index (archive search fails) and no unique indexes (slugs, admin emails).
+ */
+export const ensureIndexes = async (): Promise<void> => {
+  const names = mongoose.modelNames();
+  await Promise.all(names.map((name) => mongoose.model(name).createIndexes()));
+  logger.info({ models: names.length }, 'MongoDB indexes ensured');
+};
+
 export const disconnectDatabase = async (): Promise<void> => {
   connecting = null;
   if (mongoose.connection.readyState !== ConnectionStates.disconnected) await mongoose.disconnect();
