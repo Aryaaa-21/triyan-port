@@ -1,5 +1,6 @@
 import { SplitText } from '@/components/motion/split-text';
 import { CosmicField } from '@/features/cosmos/cosmic-field';
+import WindStreamCursor from '@/components/ui/wind-stream-cursor';
 
 /**
  * 01 — Entry: "Welcome to Abyss", then "Triyan Writes", over a slow drift through stars.
@@ -27,6 +28,9 @@ export function HomeOpening() {
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-1/3 bg-gradient-to-b from-transparent to-bg"
       />
+
+      {/* Grey wind trails the pointer through the entry. Fine pointers only. */}
+      <WindStreamCursor />
 
       <div className="relative text-center">
         <p className="font-mono text-2xs tracking-[0.18em] text-fg-subtle uppercase">

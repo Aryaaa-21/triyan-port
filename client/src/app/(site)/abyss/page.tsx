@@ -6,6 +6,7 @@ import { Parallax } from '@/components/motion/parallax';
 import { Reveal } from '@/components/ui/reveal';
 import { ShirtSilhouette } from '@/features/abyss/silhouette';
 import { Waitlist } from '@/features/abyss/waitlist';
+import WindStreamCursor from '@/components/ui/wind-stream-cursor';
 import { ABYSS_DIFFERENT, ABYSS_FEELING, ABYSS_FOR, ABYSS_WHY, VENTURES } from '@/content/triyan';
 
 export const metadata: Metadata = {
@@ -35,6 +36,7 @@ export default async function AbyssPage() {
     <main id="main" className="abyss-door -mt-px overflow-x-clip bg-black text-white">
       {/* ------------------------------------------------------------ mark */}
       <section className="gutter relative isolate flex min-h-[92svh] flex-col justify-end pb-20">
+        <WindStreamCursor />
         <Parallax
           speed={-0.25}
           className="pointer-events-none absolute inset-x-0 top-[42%] -z-10 -translate-y-1/2 text-center"

@@ -10,3 +10,5 @@ export { Rule } from './rule';
 export type { RuleProps } from './rule';
 export { Reveal } from './reveal';
 export type { RevealProps } from './reveal';
+export { default as WindStreamCursor } from './wind-stream-cursor';
+export type { WindStreamConfig, WindStreamCursorProps } from './wind-stream-cursor';

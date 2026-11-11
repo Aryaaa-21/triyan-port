@@ -235,6 +235,11 @@
   --z-cursor: 50;
   --z-intro: 60;
 
+  /* Wind-stream greys for always-night spaces (ABYSS), whichever theme is active. */
+  --wind-night-strong: #b5b5b5;
+  --wind-night-soft: #6f6f6f;
+  --wind-night-faint: #333333;
+
   /* The companion cursor blends with `difference`, which needs pure ink in both themes. */
   --cursor-ink: #fff;
   --cursor-ink-inverse: #000;

@@ -73,6 +73,11 @@
   :root {
     --art-ink: var(--fg);
     --art-ground: var(--surface);
+
+    /* Wind-stream cursor: three greys from the active theme. */
+    --wind-strong: var(--fg-muted);
+    --wind-soft: var(--fg-subtle);
+    --wind-faint: var(--border-strong);
   }
 
   *,
@@ -435,6 +440,9 @@
   .abyss-door {
     --art-ink: var(--cursor-ink);
     --art-ground: var(--cursor-ink-inverse);
+    --wind-strong: var(--wind-night-strong);
+    --wind-soft: var(--wind-night-soft);
+    --wind-faint: var(--wind-night-faint);
   }
 
   /* The reading band fades into the page so the poem starts on a quiet ground. */
