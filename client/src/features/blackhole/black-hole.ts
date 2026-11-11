@@ -7,7 +7,9 @@
  * the lensed underside as a smaller arc. Behind: a star field seen through the lens,
  * random sparkles and shooting stars. In front: glittering stars spiralling in and
  * vanishing at the shadow, and glints orbiting in the disk plane. Empty space is
- * exactly black. Monochrome.
+ * exactly black. Coloured like Interstellar's Gargantua: the disk runs from ember at
+ * its faint edges through amber and gold to warm white near the shadow; the stars
+ * are a faintly cool white, and the stars falling in are gold.
  */
 export const BLACK_HOLE_FRAGMENT = /* glsl */ `
 precision highp float;
@@ -184,6 +186,21 @@ float orbiters(vec2 p, float t, float px) {
   return total;
 }
 
+/**
+ * Gargantua's palette: the disk's brightness mapped from deep ember at its faint
+ * edges, through amber and gold, to warm white closest to the shadow.
+ */
+vec3 gargantua(float v) {
+  vec3 ember = vec3(0.34, 0.09, 0.02);
+  vec3 amber = vec3(0.93, 0.43, 0.10);
+  vec3 gold = vec3(1.0, 0.73, 0.35);
+  vec3 white = vec3(1.0, 0.96, 0.88);
+  vec3 c = mix(ember, amber, smoothstep(0.0, 0.26, v));
+  c = mix(c, gold, smoothstep(0.22, 0.5, v));
+  c = mix(c, white, smoothstep(0.5, 0.86, v));
+  return c * min(1.0, v * 1.7);
+}
+
 void main() {
   float t = uTime;
   vec2 p = (gl_FragCoord.xy - 0.5 * uRes) / (uScale * uZoom);
@@ -279,6 +296,7 @@ void main() {
   // Point-lens approximation: light passing near the hole is deflected, so stars close
   // to the shadow are pulled into arcs along the Einstein ring.
   float px = 1.0 / (uScale * uZoom);
+  float sky = 0.0;
   if (r > 1.0) {
     float thetaE = 1.2;
     vec2 q = p - p * (thetaE * thetaE) / (r * r);
@@ -286,10 +304,9 @@ void main() {
     // Star density is set in screen terms (one shadow radius ~170px), so a phone and a
     // desktop see the same sky; it still scales with the fall, so stars stream outward.
     float S = uScale / 170.0;
-    float sky = starField(q * S, t, px * S) + glitterPops(q * S, t, px * S) + shootingStars(p, t, px);
+    sky = starField(q * S, t, px * S) + glitterPops(q * S, t, px * S) + shootingStars(p, t, px);
     // The disk is in front: where it glows, the stars are hidden.
-    sky *= 1.0 - clamp(I * 3.0, 0.0, 1.0);
-    I += sky * smoothstep(1.0, 1.08, r);
+    sky *= (1.0 - clamp(I * 3.0, 0.0, 1.0)) * smoothstep(1.0, 1.08, r);
   }
 
   // ---- a faint halo, so the light reads as light ------------------------------
@@ -297,19 +314,22 @@ void main() {
   I += 0.025 * halo * (p.y > wingMid ? 1.0 : 0.5) * step(r, 2.2);
 
   // ---- in front: glittering stars falling in, and glints orbiting ---------------
-  I += infall(p, t, px) + orbiters(p, t, px);
+  float glitter = infall(p, t, px) + orbiters(p, t, px);
 
   // Gentle Doppler asymmetry: the approaching side a touch brighter.
   I *= 1.0 - 0.06 * clamp(p.x / 2.5, -1.0, 1.0);
 
-  // Soft highlight roll-off, monochrome, dithered against banding.
-  float v = 1.0 - exp(-I * 1.45);
-  // A black toe: the faint tails of glows and spikes are crushed to exactly zero, so
-  // empty space is true #000 rather than a near-black wash.
-  v *= smoothstep(0.012, 0.03, v);
+  // The disk in Gargantua's colours; stars a faintly cool white; the stars falling
+  // in, gold. Each layer gets the same soft highlight roll-off.
+  vec3 col = gargantua(1.0 - exp(-I * 1.8))
+           + vec3(0.86, 0.92, 1.0) * (1.0 - exp(-sky * 1.45))
+           + vec3(1.0, 0.86, 0.6) * (1.0 - exp(-glitter * 1.45));
+  // A black toe: the faint tails of glows and spikes are crushed to exactly zero.
+  float m = max(col.r, max(col.g, col.b));
+  col *= smoothstep(0.012, 0.03, m);
   // Dither only where there is light, against banding in the disk.
-  v += (hash(gl_FragCoord.xy + t) - 0.5) / 255.0 * step(0.03, v);
-  gl_FragColor = vec4(vec3(v), 1.0);
+  col += (hash(gl_FragCoord.xy + t) - 0.5) / 255.0 * step(0.03, m);
+  gl_FragColor = vec4(min(col, vec3(1.0)), 1.0);
 }
 `;
 

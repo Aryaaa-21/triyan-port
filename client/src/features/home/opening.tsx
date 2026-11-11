@@ -4,60 +4,76 @@ import { BlackHoleBackground } from '@/features/blackhole/background';
 import WindStreamCursor from '@/components/ui/wind-stream-cursor';
 
 /**
- * 01 — Entry: "Welcome to Abyss", set inside the shadow of a black hole.
+ * 01 — Entry: a scroll scene.
  *
- * The black hole is a living background (see BlackHoleBackground). The type is laid
- * out in units of the hole's radius — the same formula the shader uses — so on any
- * screen "Welcome to" sits above the dome, "Abyss" inside the dark above the band of
- * the disk, and "Triyan Writes" beneath the lower arc. It is always night here, whichever theme is chosen.
+ * The section is tall; its stage stays pinned while you scroll through it. Scroll
+ * progress (--bh-progress, set by the black hole) drives the fall:
+ *   0.00  "Welcome to Abyss", the black hole turning, stars falling in
+ *   →     the camera falls toward the shadow; stars streak outward; the words part —
+ *         "Welcome to" rises, "Abyss" grows and dissolves, "Triyan Writes" sinks
+ *   0.80  inside the dark, a single line appears: the archive's own description
+ *   1.00  the stage releases and the page continues
+ * Scrolling is never hijacked: it is ordinary scrolling past a pinned stage. Under
+ * reduced motion the section is one screen tall, nothing moves, and the line is shown
+ * beneath the title instead.
+ *
+ * The type is laid out in units of the hole's radius — the shader's own formula — so
+ * it lands in the same place on every screen.
  */
-const hole: CSSProperties & Record<string, string> = {
+const stage: CSSProperties & Record<string, string> = {
   containerType: 'size',
   // Mirrors the shader: 22% of the shorter side, never under 104px.
   '--bh-r': 'max(22cqmin, 104px)',
 };
 
-export function HomeOpening() {
+export function HomeOpening({ statement }: { statement: string }) {
   return (
     <section
+      data-scroll-scene
       aria-label="Welcome"
-      className="opening abyss-door relative isolate h-[calc(100svh-4rem)] min-h-[34rem] overflow-hidden bg-black text-white"
-      style={hole}
+      className="opening abyss-door relative isolate bg-black text-white"
     >
-      <BlackHoleBackground />
-      <WindStreamCursor />
-
-      <div className="opening-type pointer-events-none absolute inset-0">
-        <p
-          className="absolute left-1/2 -translate-x-1/2 font-mono text-2xs tracking-[0.4em] whitespace-nowrap text-white/60 uppercase"
-          style={{ top: 'calc(50% - var(--bh-r) * 1.66)' }}
-        >
-          <SplitText text="Welcome to" delay={300} step={35} />
-        </p>
-        <p
-          className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 font-abyss leading-none font-normal whitespace-nowrap text-white"
-          style={{ top: 'calc(50% - var(--bh-r) * 0.3)', fontSize: 'calc(var(--bh-r) * 0.5)' }}
-        >
-          <SplitText text="Abyss" delay={700} step={110} />
-        </p>
-        <p
-          className="absolute left-1/2 -translate-x-1/2 font-mono text-xs tracking-[0.5em] whitespace-nowrap text-white/70 uppercase"
-          style={{ top: 'calc(50% + var(--bh-r) * 1.48)' }}
-        >
-          <SplitText text="Triyan Writes" delay={1500} step={55} />
-        </p>
-      </div>
-
-      <a
-        href="#triyan"
-        className="opening-cue absolute bottom-8 left-1/2 -translate-x-1/2 font-mono text-2xs tracking-[0.3em] text-white/55 uppercase no-underline hover:text-white"
+      <div
+        className="opening-stage sticky top-16 h-[calc(100svh-4rem)] min-h-[34rem] overflow-hidden"
+        style={stage}
       >
-        Enter
-        <span
-          aria-hidden="true"
-          className="mt-3 block h-10 w-px translate-x-[1.1rem] bg-white/40"
-        />
-      </a>
+        <BlackHoleBackground />
+        <WindStreamCursor />
+
+        <div className="pointer-events-none absolute inset-0">
+          <p
+            className="opening-welcome absolute left-1/2 -translate-x-1/2 font-mono text-2xs tracking-[0.4em] whitespace-nowrap text-white/60 uppercase"
+            style={{ top: 'calc(50% - var(--bh-r) * 1.66)' }}
+          >
+            <SplitText text="Welcome to" delay={300} step={35} />
+          </p>
+          <p
+            className="opening-abyss absolute left-1/2 -translate-x-1/2 -translate-y-1/2 font-abyss leading-none font-normal whitespace-nowrap text-white"
+            style={{ top: 'calc(50% - var(--bh-r) * 0.3)', fontSize: 'calc(var(--bh-r) * 0.5)' }}
+          >
+            <SplitText text="Abyss" delay={700} step={110} />
+          </p>
+          <p
+            className="opening-name absolute left-1/2 -translate-x-1/2 font-mono text-xs tracking-[0.5em] whitespace-nowrap text-white/70 uppercase"
+            style={{ top: 'calc(50% + var(--bh-r) * 1.48)' }}
+          >
+            <SplitText text="Triyan Writes" delay={1500} step={55} />
+          </p>
+
+          {/* Revealed in the dark, once the fall is complete. */}
+          <p className="opening-statement gutter absolute inset-x-0 top-1/2 mx-auto max-w-3xl -translate-y-1/2 text-center font-display text-[clamp(1.75rem,4.2vw,3.5rem)] leading-tight font-light text-white/90">
+            {statement}
+          </p>
+        </div>
+
+        <a
+          href="#triyan"
+          className="opening-cue absolute bottom-8 left-1/2 -translate-x-1/2 font-mono text-2xs tracking-[0.3em] text-white/55 uppercase no-underline hover:text-white"
+        >
+          Scroll to enter
+          <span aria-hidden="true" className="mx-auto mt-3 block h-10 w-px bg-white/40" />
+        </a>
+      </div>
     </section>
   );
 }

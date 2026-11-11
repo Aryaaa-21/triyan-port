@@ -36,6 +36,8 @@ const main = async (): Promise<void> => {
     literaryIdentity: 'Triyan Writes',
     writingSince: '2016',
     statement: 'An archive of everything that words cannot contain.',
+    // Supplied by the owner (2026-11-11), served from client/public/images.
+    portraitUrl: '/images/triyan.jpg',
     // Triyan's own words (questionnaire Q3, Q5, Q6/Q8, Q10, Q59), first person.
     body: [
       "I'm a poet and writer drawn towards the deeper, often unexplored dimensions of human existence. My writing explores love, grief, absence, mortality and the contradictions of being human. I believe words can express things that ordinary language often fails to contain.",
@@ -86,7 +88,7 @@ const main = async (): Promise<void> => {
 
   await updateSettings({
     siteTitle: 'Triyan',
-    tagline: 'Poet. Writer.',
+    tagline: 'Poet. Writer. Author.',
     defaultSeoDescription:
       'The writing of Triyan — poetry on love, grief, absence, mortality and existence, in English and Hindi.',
   });

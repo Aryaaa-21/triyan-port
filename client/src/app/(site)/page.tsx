@@ -14,7 +14,7 @@ import { AboutIntro, AbyssDoor, ContactDoor, Exit } from '@/features/home/closin
 
 export const metadata: Metadata = {
   // Absolute: the root layout's `%s — Triyan` template would otherwise double it.
-  title: { absolute: 'Triyan Writes — Poet, Writer' },
+  title: { absolute: 'Triyan Writes — Poet, Writer, Author' },
   description:
     'The writing of Triyan — poetry on love, grief, absence, mortality and existence, in English and Hindi.',
   alternates: { canonical: siteUrl },
@@ -58,7 +58,9 @@ export default async function HomePage() {
 
   return (
     <main id="main">
-      <HomeOpening />
+      <HomeOpening
+        statement={about?.statement || 'An archive of everything that words cannot contain.'}
+      />
       <HomeHero about={about} />
       <WordsWall writings={wall} />
       <ArchiveIntro />

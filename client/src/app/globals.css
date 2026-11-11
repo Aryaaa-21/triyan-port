@@ -641,9 +641,62 @@
     opacity: 1;
   }
 
-  /* As the opening scrolls away into the hole, its words go first. */
-  .opening-type {
-    opacity: calc(1 - var(--bh-progress, 0) * 2.2);
+  /*
+   * The opening scroll scene. The section is tall and its stage is pinned; scroll
+   * progress (--bh-progress, 0 → 1) drives each line. Individual transform
+   * properties (scale, translate) are used so they compose with the utilities.
+   */
+  .opening {
+    --p: var(--bh-progress, 0);
+    height: 240svh;
+  }
+
+  .opening-welcome {
+    transform: translateY(calc(var(--p) * -18vh));
+    opacity: calc(1 - var(--p) * 3.2);
+  }
+
+  .opening-abyss {
+    scale: calc(1 + var(--p) * 2.6);
+    opacity: clamp(0, calc(1.5 - var(--p) * 2.6), 1);
+    filter: blur(calc(var(--p) * 10px));
+  }
+
+  .opening-name {
+    transform: translateY(calc(var(--p) * 22vh));
+    opacity: calc(1 - var(--p) * 3.2);
+  }
+
+  /* The line in the dark: in from 0.6, held, and gone just before the stage releases. */
+  .opening-statement {
+    opacity: clamp(0, min(calc((var(--p) - 0.6) * 5), calc((1 - var(--p)) * 7)), 1);
+    transform: translateY(calc((0.8 - var(--p)) * 60px));
+  }
+
+  .opening-cue {
+    opacity: calc(1 - var(--p) * 8);
+  }
+
+  /* Deep in the fall the screen goes fully dark, so the line reads on pure black —
+     brightness, not opacity, so it tracks the scroll without the fade-in's easing. */
+  .opening .black-hole {
+    filter: brightness(clamp(0, calc((0.74 - var(--p)) * 5), 1));
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .opening {
+      height: auto;
+    }
+
+    .opening-stage {
+      position: relative;
+      top: 0;
+    }
+
+    /* The same sentence opens the hero just below; nothing needs revealing here. */
+    .opening-statement {
+      display: none;
+    }
   }
 
   [data-webgl='none'] {

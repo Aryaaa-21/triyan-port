@@ -15,8 +15,8 @@ import { createBlackHole } from './black-hole';
  * - Without WebGL: a static image of the same scene (fetched only then).
  * - Paused whenever it is off screen or the tab is hidden.
  *
- * It sets --bh-progress (0 → 1 as the section scrolls away) on its parent, so text
- * laid over it can respond in CSS.
+ * It sets --bh-progress (0 → 1) on its scroll scene — the nearest ancestor marked
+ * data-scroll-scene, or its own parent — so text laid over it can move in CSS.
  */
 export function BlackHoleBackground({
   radius = 0.22,
@@ -77,13 +77,24 @@ export function BlackHoleBackground({
       hole.setPointer(e.clientX / window.innerWidth - 0.5, e.clientY / window.innerHeight - 0.5);
     window.addEventListener('pointermove', onPointer, { passive: true });
 
-    const onScroll = () => {
-      const rect = host.getBoundingClientRect();
-      const progress = Math.min(1, Math.max(0, -rect.top / Math.max(1, rect.height)));
-      host.style.setProperty('--bh-progress', progress.toFixed(3));
-      if (scrollZoom) hole.setZoom(1 + progress * progress * 3);
+    // Scroll progress belongs to the whole scroll scene when there is one (a tall
+    // section with this canvas pinned inside it), otherwise to the host itself.
+    const scene = host.closest<HTMLElement>('[data-scroll-scene]') ?? host;
+    let scrollFrame = 0;
+    const measure = () => {
+      scrollFrame = 0;
+      const rect = scene.getBoundingClientRect();
+      const travel = rect.height - window.innerHeight;
+      const raw = travel > 0 ? -rect.top / travel : -rect.top / Math.max(1, rect.height);
+      const progress = Math.min(1, Math.max(0, raw));
+      scene.style.setProperty('--bh-progress', progress.toFixed(4));
+      // The fall: slow at first, then the shadow takes the whole screen.
+      if (scrollZoom) hole.setZoom(1 + 9 * Math.pow(Math.min(progress / 0.78, 1), 2.2));
     };
-    onScroll();
+    const onScroll = () => {
+      if (!scrollFrame) scrollFrame = requestAnimationFrame(measure);
+    };
+    measure();
     window.addEventListener('scroll', onScroll, { passive: true });
 
     return () => {
@@ -91,6 +102,7 @@ export function BlackHoleBackground({
       document.removeEventListener('visibilitychange', sync);
       window.removeEventListener('pointermove', onPointer);
       window.removeEventListener('scroll', onScroll);
+      cancelAnimationFrame(scrollFrame);
       hole.dispose();
     };
   }, [radius, minRadiusPx, ox, oy, scrollZoom]);

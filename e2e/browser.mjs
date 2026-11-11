@@ -249,7 +249,12 @@ await rp.goto(BASE + '/');
 const hidden = await rp.evaluate(
   () =>
     [...document.querySelectorAll('main *')].filter(
-      (e) => getComputedStyle(e).opacity === '0' && e.textContent?.trim(),
+      // Rendered (has boxes) but transparent: content a reader cannot see. Elements
+      // that are display:none are deliberately absent, not stranded.
+      (e) =>
+        e.getClientRects().length > 0 &&
+        getComputedStyle(e).opacity === '0' &&
+        e.textContent?.trim(),
     ).length,
 );
 check(

@@ -3,6 +3,7 @@ import type { AboutDto } from '@triyan/shared';
 import { SplitText } from '@/components/motion/split-text';
 import { SectionIntro } from '@/components/editorial';
 import { Reveal } from '@/components/ui/reveal';
+import { Parallax } from '@/components/motion/parallax';
 
 /**
  * 02 — Triyan. Identity through type, not a greeting. The left carries the name;
@@ -12,22 +13,31 @@ import { Reveal } from '@/components/ui/reveal';
 export function HomeHero({ about }: { about: AboutDto | null }) {
   const since = about?.writingSince || '2016';
   return (
-    <section id="triyan" aria-labelledby="triyan-heading" className="gutter scroll-mt-20">
+    <section
+      id="triyan"
+      aria-labelledby="triyan-heading"
+      className="gutter scroll-mt-20 overflow-x-clip"
+    >
       <div className="mx-auto max-w-[90rem] pt-16 pb-28 sm:pt-24 lg:pb-40">
         <SectionIntro index="02" label="Triyan" className="mb-14 sm:mb-20" />
         <div className="grid gap-16 lg:grid-cols-12 lg:gap-8">
           <div className="lg:col-span-8">
-            <h1
-              id="triyan-heading"
-              className="font-display text-[clamp(4rem,14vw,14rem)] leading-[0.82] font-light tracking-[-0.04em] whitespace-nowrap uppercase"
-            >
-              <SplitText text="Triyan" step={70} />
-            </h1>
+            {/* The name drifts sideways as the page scrolls past it. */}
+            <Parallax axis="x" speed={0.18} decorative={false}>
+              <h1
+                id="triyan-heading"
+                className="font-display text-[clamp(4rem,14vw,14rem)] leading-[0.82] font-light tracking-[-0.04em] whitespace-nowrap uppercase"
+              >
+                <SplitText text="Triyan" step={70} />
+              </h1>
+            </Parallax>
             <Reveal stagger={2}>
               <p className="mt-10 pl-[0.4em] font-display text-[clamp(1.75rem,4vw,3rem)] leading-[1.1] font-light text-fg-muted italic sm:pl-[1.6em]">
                 poet.
                 <br />
                 <span className="pl-[1.2em]">writer.</span>
+                <br />
+                <span className="pl-[2.4em]">author.</span>
               </p>
             </Reveal>
           </div>

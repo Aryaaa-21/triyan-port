@@ -41,9 +41,14 @@ describe('black hole shader', () => {
       expect(BLACK_HOLE_FRAGMENT).toContain(`${fn}(`);
     }
   });
-  it('is monochrome and crushes empty space to exact black', () => {
-    expect(BLACK_HOLE_FRAGMENT).toMatch(/gl_FragColor\s*=\s*vec4\(vec3\(v\),\s*1\.0\)/);
-    expect(BLACK_HOLE_FRAGMENT).toContain('v *= smoothstep(0.012, 0.03, v);');
+  it("colours the disk in Gargantua's palette, ember to warm white", () => {
+    expect(BLACK_HOLE_FRAGMENT).toContain('vec3 gargantua(float v)');
+    for (const stop of ['ember', 'amber', 'gold', 'white'])
+      expect(BLACK_HOLE_FRAGMENT).toContain(stop);
+  });
+
+  it('crushes empty space to exact black', () => {
+    expect(BLACK_HOLE_FRAGMENT).toContain('col *= smoothstep(0.012, 0.03, m);');
   });
 });
 

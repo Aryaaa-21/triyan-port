@@ -11,7 +11,7 @@ import { FOR_THE_READER, JOURNEY, REMEMBER, THEMES } from '@/content/triyan';
 export const metadata: Metadata = {
   title: 'About',
   description:
-    'Triyan has been writing since 2016 — poetry in English and Hindi on love, grief, absence, mortality and existence.',
+    'Triyan — writer, poet and author of Leaving and Living. Writing since 2016, in English and Hindi, on love, grief, absence, mortality and existence.',
   alternates: { canonical: `${siteUrl}/about` },
   openGraph: { type: 'profile', url: `${siteUrl}/about`, title: 'About Triyan' },
 };
@@ -28,7 +28,7 @@ export default async function AboutPage() {
     name,
     alternateName: about?.literaryIdentity || 'Triyan Writes',
     url: `${siteUrl}/about`,
-    jobTitle: 'Poet',
+    jobTitle: ['Poet', 'Writer', 'Author'],
     ...(about?.links.literaryInstagram ? { sameAs: [about.links.literaryInstagram] } : {}),
   };
 
@@ -52,6 +52,7 @@ export default async function AboutPage() {
               <ul className="mt-12 space-y-1 font-display text-[clamp(1.75rem,3.5vw,2.75rem)] leading-tight font-light text-fg-muted italic">
                 <li>writer</li>
                 <li className="pl-[1.2em]">poet</li>
+                <li className="pl-[2.4em]">author</li>
               </ul>
             </Reveal>
           </div>
