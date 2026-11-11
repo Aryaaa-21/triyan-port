@@ -73,8 +73,22 @@ export function CosmicField() {
       };
     };
 
-    // Reading comes first: wait until the browser is idle before paying for WebGL.
-    const run = () => void start().catch(() => undefined);
+    // Reading comes first: wait until the browser is idle before paying for WebGL —
+    // and until the black-hole intro, if it is playing, has finished with the GPU.
+    const run = () => {
+      const html = document.documentElement;
+      if (html.dataset.intro !== 'play') {
+        void start().catch(() => undefined);
+        return;
+      }
+      const wait = new MutationObserver(() => {
+        if (html.dataset.intro === 'play') return;
+        wait.disconnect();
+        void start().catch(() => undefined);
+      });
+      wait.observe(html, { attributeFilter: ['data-intro'] });
+      cleanup = () => wait.disconnect();
+    };
     const hasIdle = typeof window.requestIdleCallback === 'function';
     const idle = hasIdle
       ? window.requestIdleCallback(run, { timeout: 1500 })

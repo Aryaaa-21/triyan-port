@@ -612,6 +612,66 @@
     }
   }
 
+  /*
+   * The loading screen. Hidden unless the pre-paint script chose to play it, so it can
+   * never cover the site for a reader without JavaScript or arriving on a deep link.
+   */
+  .intro {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-intro);
+    background: var(--cursor-ink-inverse);
+  }
+
+  html[data-intro='play'] .intro {
+    display: block;
+  }
+
+  .intro-canvas {
+    opacity: 0;
+    transition: opacity 1.2s var(--curve-void);
+  }
+
+  .intro[data-ready='true'] .intro-canvas {
+    opacity: 1;
+  }
+
+  .intro-progress > span {
+    width: 0;
+    animation: intro-progress 2.8s var(--curve-out) forwards;
+  }
+
+  .intro-chrome {
+    transition: opacity 0.4s;
+  }
+
+  /* Falling in: the words leave first, then the dark itself lets go. */
+  .intro[data-phase='falling'] .intro-chrome {
+    opacity: 0;
+  }
+
+  .intro[data-phase='falling'] {
+    animation: intro-out 0.5s var(--curve-in-out) 1s forwards;
+  }
+
+  @keyframes intro-progress {
+    to {
+      width: 88%;
+    }
+  }
+
+  @keyframes intro-out {
+    to {
+      opacity: 0;
+    }
+  }
+
+  /* The homepage's own entrance waits for the intro to finish. */
+  html[data-intro='play'] .split-char {
+    animation-play-state: paused;
+  }
+
   /* Companion cursor. Never replaces the system cursor. */
   .cursor {
     position: fixed;

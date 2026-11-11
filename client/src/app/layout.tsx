@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { siteName, siteUrl } from '@/lib/env';
 import { fontVariables } from '@/lib/fonts';
 import { THEME_META_COLORS, themeInitScript } from '@/lib/theme';
+import { introInitScript } from '@/features/intro/intro';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -32,6 +33,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           who prefers MANUSCRIPT would see a flash of the void.
         */}
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        {/* Decides, before paint, whether the black-hole intro plays (homepage, once a session). */}
+        <script dangerouslySetInnerHTML={{ __html: introInitScript }} />
       </head>
       <body>
         <a

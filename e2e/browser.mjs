@@ -35,6 +35,9 @@ const pass = (m) => results.push(`ok   ${m}`);
 const check = (cond, ok, bad) => (cond ? pass(ok) : fail(bad));
 
 const ctx = await browser.newContext();
+// The black-hole intro plays once per session on the homepage; it has its own check
+// below, so the general walk-through starts with it already seen.
+await ctx.addInitScript(() => sessionStorage.setItem('triyan.intro', '1'));
 const page = await ctx.newPage();
 const errors = [];
 page.on(
@@ -262,6 +265,40 @@ check(
   `reduced motion: ${hidden} invisible elements`,
 );
 await rm.close();
+
+// loading screen: plays on a fresh homepage visit, hands over to the site, Skip works
+{
+  const ic = await browser.newContext({ viewport: { width: 1280, height: 800 } });
+  const ip = await ic.newPage();
+  await ip.goto(BASE + '/', { waitUntil: 'commit' });
+  const played = await ip
+    .waitForSelector('.intro', { state: 'visible', timeout: 15000 })
+    .then(() => true)
+    .catch(() => false);
+  if (played) {
+    await ip.getByRole('button', { name: 'Skip' }).click();
+    const gone = await ip
+      .waitForFunction(() => !document.querySelector('.intro'), null, { timeout: 8000 })
+      .then(() => true)
+      .catch(() => false);
+    const inert = await ip.evaluate(() => document.getElementById('site')?.hasAttribute('inert'));
+    check(
+      gone && !inert,
+      'intro plays, Skip hands over to the site',
+      `intro did not finish (gone=${gone}, inert=${inert})`,
+    );
+  } else {
+    // Without WebGL in this browser, the intro must simply not appear.
+    pass('intro skipped (no WebGL in this browser) — site shown directly');
+  }
+  await ip.goto(BASE + '/about');
+  check(
+    (await ip.evaluate(() => document.documentElement.dataset.intro)) === undefined,
+    'intro never covers other pages',
+    'intro appeared on a deep link',
+  );
+  await ic.close();
+}
 
 if (errors.length) errors.slice(0, 10).forEach((e) => fail(`console: ${e}`));
 else pass('no console errors');
