@@ -37,10 +37,7 @@ typo in a published poem does not silently reorder the archive.
 
 | Model | Phase | Why not now |
 |---|---|---|
-| `InstagramMedia` | 3 | Nothing can be synced before the provider exists. |
-| `InstagramSyncState` | 3 | Cursor and health state for the sync job. |
-| `Classification` | 3 | Immutable classification records. |
-| `ClassificationCorrection` | 3 | Append-only audit of admin overrides. |
+| `Classification` / `ClassificationCorrection` as collections | later | Embedded in `InstagramMedia` (`classification`, `corrections[]`); a separate collection buys nothing at this size. |
 | `Media` | 3 | Provider-agnostic asset records; needed once Instagram media is mirrored. |
 | `WaitlistSubscriber` | 4 | ABYSS waitlist. |
 | `AnalyticsEvent` | 4 | First-party analytics. |
@@ -60,3 +57,10 @@ typo in a published poem does not silently reorder the archive.
 | `writing_text` | Bilingual full-text search |
 | `User.email` unique | Login |
 | `RefreshToken.tokenHash` unique, `expiresAt` TTL | Session lookup; expiry without a cron job |
+
+## Phase 3 models
+
+| Model | Purpose | Indexes |
+|---|---|---|
+| `InstagramMedia` | One synced post, its classification, admin corrections (append-only `corrections[]`), feature/hide flags, availability | `sourceId` unique (dedup); `{hidden, available, provider, timestamp, _id}` for the public archive; category, language, themes, `needsReview`; `instagram_text` |
+| `InstagramSyncState` | Singleton: run lock, health, last error, newest timestamp, resume cursor, sweep start, rate-limit window, last run summary | `key` unique |

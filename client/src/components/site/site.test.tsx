@@ -16,7 +16,7 @@ describe('navigation destinations', () => {
   it('exposes the core destinations exactly once each', () => {
     const hrefs = NAV_LINKS.map((l) => l.href);
     expect(new Set(hrefs).size).toBe(hrefs.length);
-    expect(hrefs).toEqual(['/writings', '/book', '/about', '/abyss', '/contact']);
+    expect(hrefs).toEqual(['/writings', '/book', '/about', '/instagram', '/abyss', '/contact']);
   });
 
   it('every destination is an internal absolute path', () => {
@@ -64,7 +64,7 @@ describe('SiteFooter', () => {
 
   it('omits Instagram and Email when they have not been supplied', () => {
     render(<SiteFooter />);
-    expect(screen.queryByRole('link', { name: 'Instagram' })).toBeNull();
+    expect(screen.queryByRole('link', { name: /@triyanwrites/ })).toBeNull();
     expect(screen.queryByRole('link', { name: 'Email' })).toBeNull();
   });
 
@@ -72,7 +72,7 @@ describe('SiteFooter', () => {
     render(
       <SiteFooter literaryInstagram="https://www.instagram.com/triyanwrites" email="a@b.test" />,
     );
-    expect(screen.getByRole('link', { name: 'Instagram' }).getAttribute('href')).toContain(
+    expect(screen.getByRole('link', { name: /@triyanwrites/ }).getAttribute('href')).toContain(
       'triyanwrites',
     );
     expect(screen.getByRole('link', { name: 'Email' }).getAttribute('href')).toBe(

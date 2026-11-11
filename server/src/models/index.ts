@@ -25,3 +25,9 @@ export type { AbyssAttrs } from './abyss.model.js';
 
 export { SiteSettings } from './siteSettings.model.js';
 export type { SiteSettingsAttrs } from './siteSettings.model.js';
+
+export { InstagramMedia } from './instagramMedia.model.js';
+export type { InstagramMediaAttrs, InstagramMediaDoc } from './instagramMedia.model.js';
+
+export { InstagramSyncState } from './instagramSyncState.model.js';
+export type { InstagramSyncStateAttrs } from './instagramSyncState.model.js';

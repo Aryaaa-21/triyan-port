@@ -7,6 +7,8 @@ import { siteUrl } from '@/lib/env';
 import { Reveal } from '@/components/ui/reveal';
 import { Rule } from '@/components/ui/rule';
 import { HomeOpening } from '@/features/home/opening';
+import { fetchInstagramSafely } from '@/features/instagram/api';
+import { PostTile } from '@/features/instagram/post-tile';
 
 export const metadata: Metadata = {
   // Absolute: the root layout's `%s — Triyan` template would otherwise render
@@ -31,12 +33,13 @@ const safeWritings = async (query: Parameters<typeof fetchWritings>[0]): Promise
     .catch(() => []);
 
 export default async function HomePage() {
-  const [featured, recent, about, book, abyss] = await Promise.all([
+  const [featured, recent, about, book, abyss, posts] = await Promise.all([
     safeWritings({ featured: 'true', page: '1' }),
     safeWritings({ page: '1' }),
     fetchAboutSafely(),
     fetchBookSafely(),
     fetchAbyssSafely(),
+    fetchInstagramSafely({ limit: '6' }),
   ]);
 
   // Featured if any are marked so, otherwise simply the most recent.
@@ -163,20 +166,35 @@ export default async function HomePage() {
         <h2 id="instagram-heading" className="sr-only">
           From Instagram
         </h2>
-        {/*
-          The component architecture is in place; synchronisation arrives in Phase 3.
-          Nothing is shown rather than placeholder tiles, because a fabricated post
-          would be indistinguishable from a real one.
-        */}
-        <p className="max-w-prose font-reading text-lg leading-prose text-fg-subtle">
-          Writing posted to Instagram will appear here once the archive is connected.
-        </p>
+        {posts.length > 0 ? (
+          <>
+            <ul className="grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+              {posts.map((post) => (
+                <li key={post._id}>
+                  <PostTile post={post} />
+                </li>
+              ))}
+            </ul>
+            <Link
+              href="/instagram"
+              className="mt-14 inline-block font-ui text-2xs tracking-widest text-fg uppercase no-underline hover:text-ember"
+            >
+              Every post →
+            </Link>
+          </>
+        ) : (
+          // Nothing is shown rather than placeholder tiles: a fabricated post would be
+          // indistinguishable from a real one.
+          <p className="max-w-prose font-reading text-lg leading-prose text-fg-subtle">
+            Writing posted to Instagram will appear here once the archive is connected.
+          </p>
+        )}
         {about?.links.literaryInstagram && (
           <a
             href={about.links.literaryInstagram}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-8 inline-block font-ui text-2xs tracking-widest text-fg-subtle uppercase no-underline hover:text-fg"
+            className="mt-8 block font-ui text-2xs tracking-widest text-fg-subtle uppercase no-underline hover:text-fg"
           >
             @triyanwrites on Instagram ↗
           </a>

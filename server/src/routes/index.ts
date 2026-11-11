@@ -3,6 +3,7 @@ import { healthRouter } from './health.routes.js';
 import { authRouter } from './auth.routes.js';
 import { adminWritingRouter, writingRouter } from './writing.routes.js';
 import { contentRouter } from './content.routes.js';
+import { adminInstagramRouter, instagramRouter } from './instagram.routes.js';
 
 /** Versioned API surface. */
 export const apiRouter = Router();
@@ -14,7 +15,9 @@ apiRouter.get('/', (_req, res) => {
 apiRouter.use('/auth', authRouter);
 apiRouter.use(writingRouter);
 apiRouter.use(contentRouter);
+apiRouter.use(instagramRouter);
 apiRouter.use('/admin', adminWritingRouter);
+apiRouter.use('/admin', adminInstagramRouter);
 
 export const rootRouter = Router();
 rootRouter.use(healthRouter);

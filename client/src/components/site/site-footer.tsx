@@ -40,7 +40,7 @@ export function SiteFooter({ literaryInstagram, email }: FooterProps) {
                   target="_blank"
                   className="font-ui text-2xs tracking-widest text-fg-subtle uppercase no-underline hover:text-fg"
                 >
-                  Instagram
+                  @triyanwrites ↗
                 </a>
               </li>
             )}

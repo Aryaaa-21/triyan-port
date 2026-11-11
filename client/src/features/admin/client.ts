@@ -1,6 +1,12 @@
 'use client';
 
-import type { AdminUserDto, PageMeta, WritingDto } from '@triyan/shared';
+import type {
+  AdminUserDto,
+  InstagramMediaDto,
+  PageMeta,
+  SyncStatusDto,
+  WritingDto,
+} from '@triyan/shared';
 
 /**
  * Browser-side admin client. Every call goes through the same-origin proxy so the
@@ -83,4 +89,33 @@ export const adminApi = {
     call<WritingDto>(`/admin/writings/${id}/unpublish`, { method: 'POST' }),
 
   remove: (id: string) => call<null>(`/admin/writings/${id}`, { method: 'DELETE' }),
+
+  syncInstagram: (mode: 'FULL' | 'INCREMENTAL') =>
+    call<{ status: string; created: number; updated: number; fetched: number }>(
+      '/admin/instagram/sync',
+      { method: 'POST', body: JSON.stringify({ mode }) },
+    ),
+
+  syncStatus: () => call<SyncStatusDto>('/admin/instagram/sync'),
+
+  reclassifyInstagram: (scope: 'ALL' | 'NEEDS_REVIEW') =>
+    call<{ reclassified: number }>('/admin/instagram/reclassify', {
+      method: 'POST',
+      body: JSON.stringify({ confirm: true, scope }),
+    }),
+
+  updateInstagram: (id: string, payload: { featured?: boolean; hidden?: boolean }) =>
+    call<InstagramMediaDto>(`/admin/instagram/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(payload),
+    }),
+
+  correctInstagram: (id: string, payload: Record<string, unknown>) =>
+    call<InstagramMediaDto>(`/admin/instagram/${id}/classification`, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+
+  refreshInstagram: (id: string) =>
+    call<InstagramMediaDto>(`/admin/instagram/${id}/refresh`, { method: 'POST' }),
 };

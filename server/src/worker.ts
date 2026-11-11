@@ -2,10 +2,13 @@ import { createServer } from 'node:http';
 import { connectDatabase, disconnectDatabase } from './config/db.js';
 import { env } from './config/env.js';
 import { logger } from './config/logger.js';
+import { getInstagramProvider } from './services/instagram/index.js';
+import { runSync } from './services/instagram/sync.service.js';
+import { intervalFromCron } from './services/instagram/schedule.js';
 
 /**
  * The worker process. It owns every scheduled job so that no HTTP request ever
- * performs a synchronisation inline (spec §43). Jobs are registered in Phase 12.
+ * performs a synchronisation inline (spec §43).
  */
 const main = async (): Promise<void> => {
   if (env.MONGODB_URI) {
@@ -19,8 +22,23 @@ const main = async (): Promise<void> => {
     'Triyan worker started',
   );
 
+  let timer: NodeJS.Timeout | null = null;
   if (!env.SYNC_ENABLED) {
     logger.warn('SYNC_ENABLED is false — no Instagram synchronisation will run');
+  } else if (!env.MONGODB_URI) {
+    logger.warn('SYNC_ENABLED but no database — sync will not run');
+  } else {
+    const tick = async () => {
+      try {
+        const result = await runSync({ mode: 'INCREMENTAL', provider: getInstagramProvider() });
+        logger.info({ result }, 'Instagram sync finished');
+      } catch (error) {
+        // A failing sync must never take the worker down.
+        logger.error({ err: error }, 'Instagram sync crashed');
+      }
+    };
+    void tick();
+    timer = setInterval(() => void tick(), intervalFromCron(env.SYNC_CRON));
   }
 
   // Minimal health endpoint so the platform can tell a live worker from a crashed one.
@@ -36,6 +54,7 @@ const main = async (): Promise<void> => {
 
   const shutdown = (signal: string) => {
     logger.info({ signal }, 'Worker shutting down');
+    if (timer) clearInterval(timer);
     health.close(() => {
       void disconnectDatabase().finally(() => process.exit(0));
     });
