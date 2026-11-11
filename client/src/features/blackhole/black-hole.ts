@@ -402,7 +402,7 @@ export interface BlackHoleOptions {
    * all in image pixels. The photo is shown with object-fit: cover, centred on the hole;
    * only the living layers are drawn, and the hole's size follows the photo's.
    */
-  cover?: { width: number; height: number; radius: number };
+  cover?: CoverImage;
   onFirstFrame?: () => void;
 }
 
@@ -415,6 +415,33 @@ export interface BlackHole {
   setPointer(x: number, y: number): void;
   dispose(): void;
 }
+
+/** A photograph of the hole drawn beneath the effects, in its own pixels. */
+export interface CoverImage {
+  width: number;
+  height: number;
+  /** The shadow's radius. */
+  radius: number;
+  /**
+   * How much of the image's width must stay on screen. On tall screens a plain cover
+   * crop would cut the disk off; the image is shown at least this wide instead.
+   */
+  visibleWidth?: number;
+}
+
+/**
+ * The photo's scale on screen: a cover fit, except on tall screens, where it is only
+ * as large as keeps `visibleWidth` in view (the CSS in globals.css mirrors this).
+ */
+export const coverScale = (cw: number, ch: number, cover: CoverImage): number =>
+  Math.max(cw / cover.width, Math.min(ch / cover.height, cw / (cover.visibleWidth ?? cover.width)));
+
+/** The drawn disk reaches about 2.7 shadow radii either side: keep it all on screen. */
+const DISK_HALF_SPAN = 2.85;
+
+/** The drawn hole's radius in CSS px: a share of the shorter side, within the width. */
+export const drawnRadius = (cw: number, ch: number, radius: number, minRadiusPx: number) =>
+  Math.min(Math.max(radius * Math.min(cw, ch), minRadiusPx), cw / (2 * DISK_HALF_SPAN));
 
 /** Returns null when WebGL is unavailable, so the caller can fall back. */
 export const createBlackHole = (
@@ -488,8 +515,8 @@ export const createBlackHole = (
     const ch = canvas.clientHeight;
     const { cover } = options;
     const radiusCss = cover
-      ? cover.radius * Math.max(cw / cover.width, ch / cover.height)
-      : Math.max(options.radius * Math.min(cw, ch), options.minRadiusPx);
+      ? cover.radius * coverScale(cw, ch, cover)
+      : drawnRadius(cw, ch, options.radius, options.minRadiusPx);
     // Pointer parallax eases toward its target rather than snapping.
     sx += (px - sx) * 0.06;
     sy += (py - sy) * 0.06;

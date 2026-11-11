@@ -60,6 +60,19 @@ describe('black hole shader', () => {
     for (const c of colours) expect(new Set(c).size).toBe(1);
   });
 
+  it('keeps the whole disk on narrow screens, and covers on wide ones', async () => {
+    const { coverScale, drawnRadius } = await import('./black-hole');
+    const photo = { width: 1560, height: 1000, radius: 146, visibleWidth: 1160 };
+    // Desktop: a plain cover fit (the width decides).
+    expect(coverScale(1440, 836, photo)).toBeCloseTo(1440 / 1560);
+    // Phone: just wide enough to show 1160 image px, not a cover crop to the height.
+    expect(coverScale(390, 780, photo)).toBeCloseTo(390 / 1160);
+    // The drawn disk (~2.85 radii each side) always fits the width…
+    expect(drawnRadius(390, 780, 0.2, 104) * 2 * 2.85).toBeLessThanOrEqual(390);
+    // …and wide screens keep the usual size.
+    expect(drawnRadius(1440, 900, 0.2, 104)).toBeCloseTo(180);
+  });
+
   it('crushes empty space to exact black', () => {
     expect(BLACK_HOLE_FRAGMENT).toContain('col *= smoothstep(0.012, 0.03, m);');
   });

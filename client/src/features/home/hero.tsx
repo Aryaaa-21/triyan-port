@@ -19,7 +19,9 @@ export function HomeHero({ about }: { about: AboutDto | null }) {
     <section
       id="triyan"
       aria-labelledby="triyan-heading"
-      className="gutter scroll-mt-20 overflow-x-clip"
+      // Focus lands here after "Scroll to enter"; it is a target, not a control.
+      tabIndex={-1}
+      className="gutter scroll-mt-20 overflow-x-clip outline-none"
     >
       <div className="mx-auto max-w-[90rem] pt-16 pb-28 sm:pt-24 lg:pb-40">
         <SectionIntro index="02" label="Triyan" className="mb-14 sm:mb-20" />

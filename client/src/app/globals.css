@@ -712,9 +712,25 @@
     }
   }
 
-  /* The photograph falls with the stars: the same zoom, about the hole at the centre. */
+  /*
+   * The photograph, centred on the hole and sized by --bh-img-w (see opening.tsx). It
+   * falls with the stars: the same zoom, about the hole at the centre.
+   */
   .opening-image {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: var(--bh-img-w);
+    aspect-ratio: 1560 / 1000;
+    translate: -50% -50%;
     scale: var(--bh-zoom, 1);
+  }
+
+  /* On tall screens the photo no longer fills the height: its edges melt into the stars. */
+  @container (max-aspect-ratio: 116 / 100) {
+    .opening-image {
+      mask-image: linear-gradient(to bottom, transparent, black 18%, black 82%, transparent);
+    }
   }
 
   /* Deep in the fall the screen goes fully dark, so the line reads on pure black —

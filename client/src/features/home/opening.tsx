@@ -2,6 +2,7 @@ import type { CSSProperties } from 'react';
 import Image from 'next/image';
 import { SplitText } from '@/components/motion/split-text';
 import { FilmGrain } from '@/components/ui/film-grain';
+import { ScrollCue } from './scroll-cue';
 import { BlackHoleBackground } from '@/features/blackhole/background';
 import WindStreamCursor from '@/components/ui/wind-stream-cursor';
 
@@ -15,6 +16,8 @@ const FRONT = {
   width: 1560,
   height: 1000,
   radius: 146,
+  // The disk's bright span is ~1040px; on tall screens at least this much stays in view.
+  visibleWidth: 1160,
 } as const;
 
 /**
@@ -32,12 +35,16 @@ const FRONT = {
  * reduced motion the section is one screen tall, nothing moves, and the line is shown
  * beneath the title instead.
  *
- * The type is laid out in units of the hole's radius as the image is shown (cover,
- * centred), so it lands in the same place on every screen.
+ * The type is laid out in units of the hole's radius as the image is shown, so it
+ * lands in the same place on every screen. On a phone the whole disk is in view, and
+ * "abyss" keeps a readable size inside the hole.
  */
 const stage: CSSProperties & Record<string, string> = {
   containerType: 'size',
-  '--bh-r': `max(${((FRONT.radius / FRONT.width) * 100).toFixed(3)}cqw, ${((FRONT.radius / FRONT.height) * 100).toFixed(3)}cqh)`,
+  // The photo's width on screen: a cover fit, except on tall screens (phones), where it
+  // is just wide enough to keep the whole disk in view. Mirrors coverScale() in the shader.
+  '--bh-img-w': `max(100cqw, min(${((FRONT.width / FRONT.height) * 100).toFixed(2)}cqh, ${((FRONT.width / FRONT.visibleWidth) * 100).toFixed(2)}cqw))`,
+  '--bh-r': `calc(var(--bh-img-w) * ${(FRONT.radius / FRONT.width).toFixed(5)})`,
 };
 
 export function HomeOpening({ line }: { line: string }) {
@@ -51,7 +58,7 @@ export function HomeOpening({ line }: { line: string }) {
         className="opening-stage sticky top-16 h-[calc(100svh-4rem)] min-h-[34rem] overflow-hidden"
         style={stage}
       >
-        <div aria-hidden="true" className="opening-image absolute inset-0">
+        <div aria-hidden="true" className="opening-image">
           <Image
             src={FRONT.src}
             alt=""
@@ -59,7 +66,7 @@ export function HomeOpening({ line }: { line: string }) {
             priority
             // On screens taller than the image's shape it is scaled to the height (cover),
             // so it is drawn wider than the viewport: 156vh at the image's 1560:1000.
-            sizes="(max-aspect-ratio: 39/25) 156vh, 100vw"
+            sizes="(max-aspect-ratio: 116/100) 135vw, (max-aspect-ratio: 39/25) 156vh, 100vw"
             className="object-cover object-center"
           />
         </div>
@@ -76,7 +83,11 @@ export function HomeOpening({ line }: { line: string }) {
           </p>
           <p
             className="opening-abyss absolute left-1/2 -translate-x-1/2 -translate-y-1/2 font-abyss leading-none font-normal whitespace-nowrap text-white"
-            style={{ top: 'calc(50% - var(--bh-r) * 0.4)', fontSize: 'calc(var(--bh-r) * 0.5)' }}
+            style={{
+              top: 'calc(50% - var(--bh-r) * 0.42)',
+              // Half the radius on large screens; never under ~2.1rem on a phone.
+              fontSize: 'clamp(calc(var(--bh-r) * 0.5), 2.1rem, calc(var(--bh-r) * 0.72))',
+            }}
           >
             <SplitText text="abyss" delay={700} step={110} />
           </p>
@@ -93,13 +104,13 @@ export function HomeOpening({ line }: { line: string }) {
           </p>
         </div>
 
-        <a
-          href="#triyan"
+        <ScrollCue
+          target="triyan"
           className="opening-cue absolute bottom-8 left-1/2 -translate-x-1/2 font-mono text-2xs tracking-[0.3em] text-white/55 uppercase no-underline hover:text-white"
         >
           Scroll to enter
           <span aria-hidden="true" className="mx-auto mt-3 block h-10 w-px bg-white/40" />
-        </a>
+        </ScrollCue>
       </div>
     </section>
   );

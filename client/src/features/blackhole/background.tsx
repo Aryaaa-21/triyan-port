@@ -39,7 +39,9 @@ export function BlackHoleBackground({
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [ox, oy] = offset;
-  const [cw, ch, cr] = cover ? [cover.width, cover.height, cover.radius] : [0, 0, 0];
+  const [cw, ch, cr, cv] = cover
+    ? [cover.width, cover.height, cover.radius, cover.visibleWidth ?? cover.width]
+    : [0, 0, 0, 0];
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -57,7 +59,7 @@ export function BlackHoleBackground({
             minRadiusPx,
             offset: [ox, oy],
             dprCap: tier === 'high' ? 1.5 : 0.85,
-            cover: cw ? { width: cw, height: ch, radius: cr } : undefined,
+            cover: cw ? { width: cw, height: ch, radius: cr, visibleWidth: cv } : undefined,
             onFirstFrame: () => canvas.setAttribute('data-ready', 'true'),
           })
         : null;
@@ -115,7 +117,7 @@ export function BlackHoleBackground({
       cancelAnimationFrame(scrollFrame);
       hole?.dispose();
     };
-  }, [radius, minRadiusPx, ox, oy, scrollZoom, cw, ch, cr]);
+  }, [radius, minRadiusPx, ox, oy, scrollZoom, cw, ch, cr, cv]);
 
   return (
     <canvas
