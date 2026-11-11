@@ -92,4 +92,6 @@ export interface SiteSettingsDto {
   defaultOgImageUrl: string;
   contactFormEnabled: boolean;
   introEnabled: boolean;
+  /** Whether contact messages can actually be delivered. NONE until a mail transport exists. */
+  contactDelivery: 'NONE' | 'EMAIL';
 }

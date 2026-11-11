@@ -22,7 +22,8 @@ export const getAbyssContent: RequestHandler = async (_req, res) => {
 
 export const getSettingsContent: RequestHandler = async (_req, res) => {
   publicCache(res, 300);
-  ok(res, await getSettings());
+  // No mail transport is configured, so the site must not imply messages are delivered.
+  ok(res, { ...(await getSettings()), contactDelivery: 'NONE' as const });
 };
 
 /**

@@ -45,6 +45,13 @@ describe('public content endpoints', () => {
     await request(app).get('/api/v1/settings').expect(200);
   });
 
+  it('reports that contact messages cannot be delivered yet', async () => {
+    const settings = item<{ contactDelivery: string }>(
+      await request(app).get('/api/v1/settings').expect(200),
+    );
+    expect(settings.contactDelivery).toBe('NONE');
+  });
+
   it('allows public caching of content reads', async () => {
     const res = await request(app).get('/api/v1/about').expect(200);
     expect(res.headers['cache-control']).toContain('s-maxage');
