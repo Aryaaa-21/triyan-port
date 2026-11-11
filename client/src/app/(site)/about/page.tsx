@@ -6,6 +6,7 @@ import { siteUrl } from '@/lib/env';
 import { ArrowLink, ContentPending, Label, SectionIntro } from '@/components/editorial';
 import { SplitText } from '@/components/motion/split-text';
 import { Reveal } from '@/components/ui/reveal';
+import { FOR_THE_READER, JOURNEY, REMEMBER, THEMES } from '@/content/triyan';
 
 export const metadata: Metadata = {
   title: 'About',
@@ -14,37 +15,6 @@ export const metadata: Metadata = {
   alternates: { canonical: `${siteUrl}/about` },
   openGraph: { type: 'profile', url: `${siteUrl}/about`, title: 'About Triyan' },
 };
-
-/** The subjects the writing keeps returning to, as supplied by Triyan. */
-const THEMES = [
-  'love',
-  'unrequited love',
-  'heartbreak',
-  'grief',
-  'absence',
-  'longing',
-  'loneliness',
-  'melancholy',
-  'mortality',
-  'nostalgia',
-  'suffering',
-  'hope',
-  'despair',
-  'faith',
-  'existence',
-  'human contradiction',
-];
-
-/**
- * A literary timeline, not a CV. Only one date is confirmed — 2016 — so it is the
- * only date shown; the rest are chapters, in order, without invented years.
- */
-const journey = (since: string) => [
-  { mark: since, title: 'The beginning', note: 'The writing begins.' },
-  { mark: '—', title: 'Triyan Writes', note: 'The name the work is gathered under.' },
-  { mark: '—', title: 'Leaving and Living', note: 'A collection of poetry.' },
-  { mark: '—', title: 'ABYSS', note: 'What comes next.' },
-];
 
 export default async function AboutPage() {
   const about = await fetchAboutSafely();
@@ -75,7 +45,7 @@ export default async function AboutPage() {
         <header className="grid gap-16 lg:grid-cols-12 lg:gap-8">
           <div className="lg:col-span-7">
             <Label as="p">{about?.literaryIdentity || 'Triyan Writes'}</Label>
-            <h1 className="mt-8 font-display text-[clamp(4.5rem,16vw,14rem)] leading-[0.82] font-light tracking-[-0.04em] uppercase">
+            <h1 className="mt-8 font-display text-[clamp(4rem,11.5vw,11rem)] leading-[0.82] font-light tracking-[-0.04em] whitespace-nowrap uppercase">
               <SplitText text={name} step={70} />
             </h1>
             <Reveal stagger={2}>
@@ -116,7 +86,7 @@ export default async function AboutPage() {
           className="mt-32 grid gap-12 lg:mt-48 lg:grid-cols-12 lg:gap-8"
         >
           <div className="lg:col-span-4">
-            <SectionIntro label="Identity" className="mb-8" />
+            <SectionIntro label="In Triyan's words" className="mb-8" />
             <h2 id="writer-heading" className="font-display text-4xl font-light tracking-tight">
               The writer
             </h2>
@@ -141,7 +111,7 @@ export default async function AboutPage() {
             Writing journey
           </h2>
           <ol className="journey relative lg:ml-[33%]">
-            {journey(since).map((step, i) => (
+            {JOURNEY.map((step, i) => (
               <Reveal
                 as="li"
                 key={step.title}
@@ -149,7 +119,7 @@ export default async function AboutPage() {
                 className="relative grid grid-cols-[5.5rem_1fr] gap-6 pb-16 last:pb-0 sm:grid-cols-[8rem_1fr]"
               >
                 <span className="font-display text-3xl font-light text-fg-subtle tabular-nums">
-                  {step.mark}
+                  {i === 0 ? since : '—'}
                 </span>
                 <div>
                   <p
@@ -161,7 +131,9 @@ export default async function AboutPage() {
                   >
                     {step.title}
                   </p>
-                  <p className="mt-3 font-reading text-lg text-fg-muted">{step.note}</p>
+                  <p className="mt-3 max-w-lg font-reading text-lg leading-prose text-fg-muted">
+                    {step.note}
+                  </p>
                 </div>
               </Reveal>
             ))}
@@ -196,6 +168,36 @@ export default async function AboutPage() {
                 </li>
               ))}
             </ul>
+          </Reveal>
+        </section>
+
+        {/* ---------------------------------------------------- for the reader */}
+        <section
+          aria-labelledby="reader-heading"
+          className="mt-32 grid gap-12 border-t border-border pt-20 lg:mt-48 lg:grid-cols-12 lg:gap-8"
+        >
+          <h2
+            id="reader-heading"
+            className="font-mono text-2xs tracking-[0.18em] text-fg-subtle uppercase lg:col-span-3"
+          >
+            For the reader
+          </h2>
+          <Reveal className="lg:col-span-8">
+            <blockquote className="font-display text-[clamp(1.75rem,3.2vw,2.75rem)] leading-snug font-light text-fg">
+              {FOR_THE_READER}
+            </blockquote>
+          </Reveal>
+        </section>
+
+        {/* -------------------------------------------------------- remember */}
+        <section aria-labelledby="remember-heading" className="mt-32 lg:mt-48">
+          <h2 id="remember-heading" className="sr-only">
+            What to remember
+          </h2>
+          <Reveal variant="blur">
+            <p className="max-w-5xl font-display text-[clamp(2.5rem,6vw,5.5rem)] leading-[1] font-light tracking-tight italic">
+              {REMEMBER.charAt(0).toUpperCase() + REMEMBER.slice(1)}
+            </p>
           </Reveal>
         </section>
 

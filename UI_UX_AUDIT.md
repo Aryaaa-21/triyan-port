@@ -18,8 +18,8 @@ NOT IMPLEMENTED
 | About | Name, writer/poet, portrait, identity, literary timeline, themes, philosophy, current work | DONE (UI) · BLOCKED (portrait) | `about/page.tsx` | No portrait supplied: an honest "Portrait to be added" space |
 | Book | Cover hero, why the book exists, excerpts, reviews, buy | DONE (UI) · BLOCKED (cover, excerpts, reviews) | `book/page.tsx` | Each missing piece shows a designed "to be added" state; nothing is invented |
 | Instagram | Opening, editorial rhythm grid (feature + two), filters, detail page | DONE (UI) | `instagram-grid.tsx`, `instagram/*`; E2E: filter, pagination, original link | Tested with labelled mock posts only; real images untested |
-| ABYSS | Separate world (always night), manifesto, clothing direction, future, waitlist | PARTIAL | `abyss/page.tsx`, `features/abyss/*` | **Waitlist is closed** (backend postponed per §67). No product imagery: a labelled silhouette study only |
-| Contact | Quiet statement, channels, minimal form with all states | PARTIAL | `contact/page.tsx`, `contact-form.tsx` + tests | **Form is closed** until an email service exists (see "Honesty fix") |
+| ABYSS | Separate world (always night), manifesto, clothing direction, future, waitlist | DONE | `abyss/page.tsx`, `features/abyss/*` | Waitlist is live (email + explicit consent, stored once, CSV export in the admin). No product imagery: a labelled silhouette study only |
+| Contact | Quiet statement, channels, minimal form with all states | DONE | `contact/page.tsx`, `contact-form.tsx` + tests | Messages go to the admin inbox (`/admin/inbox`); no email forwarding yet |
 | Footer | End of the journey, not a sitemap | DONE | `site-footer.tsx` | — |
 | Category imagery | One original image per category, used across the site | DONE | `components/art/*`, 13 tests | Abstract artwork, not photography; replace with Triyan's photos when available (`CategoryPlate src`) |
 | Responsive | 320 / 375 / 390 / 430 / 768 / 1024 / 1280 / 1440 / 1920 | DONE | E2E: 13 routes × 9 widths, no horizontal overflow, one `h1` each | Spot-checked visually at 320, 375, 390 and 1440 only |
@@ -106,3 +106,46 @@ claim.
 | Tests | **546 passing** (shared 163 · client 138 · server 245) |
 | `npm run e2e:browser` (production build) | 28 / 28 checks pass, 0 failures |
 | Overflow and headings | 13 routes × 9 widths, all clean |
+
+## Update — owner questionnaire applied (2026-11-11)
+
+Triyan's own answers replaced or tightened the copy across the site.
+
+**Content now on the site**
+- **About** is in the first person: who Triyan is, why the writing began, what forms it
+  takes, the journey, and the larger vision.
+- **About** adds "For the reader" and the line to remember. The themes follow
+  Triyan's own list and order.
+- **Homepage:** while nothing is published, the words wall shows Triyan's favourite
+  pieces as labelled working titles, not links. The exit ends on "words can contain
+  entire worlds…".
+- **Book:** adds the inspiration and "the beginning rather than the conclusion".
+- **ABYSS:** adds why it exists, what makes it different, who it is for, the feeling it
+  should give, and the wider ventures.
+
+**Behaviour changes**
+- **Book:** the Amazon link was removed. The owner now lists Amazon availability as
+  "to be confirmed", so the site says "availability to be announced".
+- **Waitlist** (owner wants pre-launch registration): `POST /waitlist` stores an
+  address once, with explicit consent. The admin can view it and export it as CSV.
+- **Contact** (owner wants direct contact, no email yet): messages are stored in an
+  admin inbox with read and delete. `contactDelivery` is `INBOX`, so the form is open
+  and every message actually arrives.
+- **Instagram** is curated first. Featured posts lead the homepage and a "Selected"
+  section on `/instagram`; the latest posts appear only when none are featured.
+- **Contact:** @triyxnn was removed. The owner lists only @triyanwrites as public.
+
+**Deliberately not used**
+- "Since I was 10": it would publish a birth year, against the owner's request for no
+  unnecessary personal information.
+- Follower and view counts: the owner does not want to be presented as a social media
+  poet.
+- Working titles are kept exactly as written, including "alot".
+
+**Also fixed**
+- Display names wrapped at some widths ("TRI / YAN" on About at 1280px, ABYSS at
+  320px). Split-letter headings now never break inside a word.
+
+**Verification:** 561 tests pass. 72 page/width combinations checked with no overflow
+and one `h1` each. Waitlist sign-up → admin and contact message → admin inbox both
+verified in a real browser.

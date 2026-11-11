@@ -4,6 +4,7 @@ import { ArrowLink, ContentPending, SectionIntro } from '@/components/editorial'
 import { Reveal } from '@/components/ui/reveal';
 import { cn } from '@/lib/cn';
 import { CategoryArt } from '@/components/art';
+import { WORKING_TITLES } from '@/content/triyan';
 
 /** Alternating offsets give the wall its asymmetry; titles are objects, not rows. */
 const OFFSETS = ['', 'lg:ml-[18%]', 'lg:ml-[6%]', 'lg:ml-[26%]', 'lg:ml-[12%]', 'lg:ml-[22%]'];
@@ -24,9 +25,7 @@ export function WordsWall({ writings }: { writings: WritingDto[] }) {
         </h2>
 
         {writings.length === 0 ? (
-          <ContentPending>
-            The first writings are being gathered. They will appear here.
-          </ContentPending>
+          <WorkingTitles />
         ) : (
           <div className="words-wall grid gap-8 lg:grid-cols-12">
             <ul className="space-y-12 sm:space-y-16 lg:col-span-8">
@@ -102,5 +101,37 @@ export function WordsWall({ writings }: { writings: WritingDto[] }) {
         )}
       </div>
     </section>
+  );
+}
+
+/**
+ * Until the first writing is published, the wall holds Triyan's own favourites as
+ * working titles: set as type, not links, and labelled as provisional — they are
+ * "not necessarily final published titles", in his words.
+ */
+function WorkingTitles() {
+  return (
+    <div>
+      <ul className="space-y-6 sm:space-y-8">
+        {WORKING_TITLES.map((title, i) => (
+          <Reveal
+            as="li"
+            key={title}
+            stagger={i % 3}
+            className={cn('max-w-4xl', OFFSETS[i % OFFSETS.length])}
+          >
+            <span className="font-mono text-2xs tracking-[0.18em] text-fg-subtle uppercase tabular-nums">
+              {String(i + 1).padStart(2, '0')}
+            </span>
+            <p className="mt-2 font-display text-[clamp(2rem,5.5vw,4.5rem)] leading-[1.04] font-light tracking-tight text-balance text-fg-muted">
+              {title}
+            </p>
+          </Reveal>
+        ))}
+      </ul>
+      <ContentPending label="Working titles" className="mt-20 lg:ml-[22%]">
+        Pieces Triyan has chosen as favourites. Their full texts arrive with the archive.
+      </ContentPending>
+    </div>
   );
 }

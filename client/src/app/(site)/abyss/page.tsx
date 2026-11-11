@@ -6,6 +6,7 @@ import { Parallax } from '@/components/motion/parallax';
 import { Reveal } from '@/components/ui/reveal';
 import { ShirtSilhouette } from '@/features/abyss/silhouette';
 import { Waitlist } from '@/features/abyss/waitlist';
+import { ABYSS_DIFFERENT, ABYSS_FEELING, ABYSS_FOR, ABYSS_WHY, VENTURES } from '@/content/triyan';
 
 export const metadata: Metadata = {
   title: 'ABYSS',
@@ -43,7 +44,7 @@ export default async function AbyssPage() {
           </span>
         </Parallax>
         <div className="mx-auto w-full max-w-[90rem]">
-          <h1 className="font-abyss text-[clamp(5rem,19vw,17rem)] leading-[0.85] font-normal">
+          <h1 className="font-abyss text-[clamp(3.75rem,19vw,17rem)] leading-[0.85] font-normal whitespace-nowrap">
             <SplitText text={name} step={90} />
           </h1>
           {abyss?.tagline && (
@@ -122,16 +123,63 @@ export default async function AbyssPage() {
         </div>
       </section>
 
+      {/* ------------------------------------------------------------- why */}
+      <section aria-labelledby="why-abyss" className="gutter border-t border-white/10">
+        <div className="mx-auto grid max-w-[90rem] gap-12 py-32 lg:grid-cols-12 lg:gap-8 lg:py-40">
+          <h2 id="why-abyss" className={`${mono} lg:col-span-3`}>
+            Why ABYSS
+          </h2>
+          <div className="lg:col-span-8">
+            <Reveal variant="blur">
+              <p className="font-display text-[clamp(1.75rem,3.5vw,3rem)] leading-tight font-light text-white/90">
+                {ABYSS_WHY}
+              </p>
+            </Reveal>
+            <p className="mt-10 max-w-2xl font-reading text-xl leading-prose text-white/65">
+              {ABYSS_DIFFERENT}
+            </p>
+            <dl className="mt-16 grid gap-10 border-t border-white/10 pt-10 sm:grid-cols-2">
+              <div>
+                <dt className={mono}>For</dt>
+                <dd className="mt-4 font-reading text-lg leading-prose text-white/75">
+                  {ABYSS_FOR}
+                </dd>
+              </div>
+              <div>
+                <dt className={mono}>The feeling</dt>
+                <dd className="mt-4 font-reading text-lg leading-prose text-white/75">
+                  {ABYSS_FEELING}
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </section>
+
       {/* -------------------------------------------------------- ventures */}
       <section aria-labelledby="beyond" className="gutter border-t border-white/10">
         <div className="mx-auto grid max-w-[90rem] gap-12 py-32 lg:grid-cols-12 lg:gap-8">
           <h2 id="beyond" className={`${mono} lg:col-span-3`}>
             Beyond clothing
           </h2>
-          <p className="max-w-3xl font-display text-[clamp(1.75rem,3.5vw,3rem)] leading-tight font-light text-white/80 lg:col-span-8">
-            Literature, philosophy, visual art, creative expression — the wider body of work ABYSS
-            is meant to grow into.
-          </p>
+          <div className="lg:col-span-8">
+            <p className="max-w-3xl font-display text-[clamp(1.75rem,3.5vw,3rem)] leading-tight font-light text-white/80">
+              Multiple creative ventures under one larger identity.
+            </p>
+            <ul className="mt-12 flex flex-wrap gap-x-8 gap-y-4">
+              {VENTURES.map((v) => (
+                <li
+                  key={v}
+                  className="font-abyss-ui text-sm tracking-[0.3em] text-white/60 uppercase"
+                >
+                  {v}
+                </li>
+              ))}
+              <li className="font-abyss-ui text-sm tracking-[0.3em] text-white/35 uppercase">
+                and other artistic projects
+              </li>
+            </ul>
+          </div>
         </div>
       </section>
 

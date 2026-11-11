@@ -27,6 +27,12 @@ export default async function AdminDashboard() {
         </div>
         <div className="flex items-center gap-4">
           <Link
+            href="/admin/inbox"
+            className="font-ui text-xs tracking-widest text-fg-muted uppercase no-underline hover:text-fg"
+          >
+            Inbox
+          </Link>
+          <Link
             href="/admin/instagram"
             className="font-ui text-xs tracking-widest text-fg-muted uppercase no-underline hover:text-fg"
           >

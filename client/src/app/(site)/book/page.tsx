@@ -8,6 +8,7 @@ import { ArrowLink, ContentPending, Label, SectionIntro } from '@/components/edi
 import { Prose } from '@/components/ui/prose';
 import { Reveal } from '@/components/ui/reveal';
 import { CategoryPlate } from '@/components/art';
+import { BOOK_FUTURE, BOOK_INSPIRATION } from '@/content/triyan';
 import { getCategory, type CategoryKey } from '@triyan/shared';
 
 export const metadata: Metadata = {
@@ -136,10 +137,14 @@ export default async function BookPage() {
             )}
             <div className="mt-12 flex flex-wrap gap-x-10 gap-y-2">
               <ArrowLink href="#excerpts">Read</ArrowLink>
-              {book.purchaseUrl && (
+              {book.purchaseUrl ? (
                 <ArrowLink href={book.purchaseUrl} external>
                   Buy
                 </ArrowLink>
+              ) : (
+                <span className="py-2 font-mono text-xs tracking-[0.2em] text-fg-subtle uppercase">
+                  Availability to be announced
+                </span>
               )}
             </div>
             {facts.length > 0 && (
@@ -176,6 +181,12 @@ export default async function BookPage() {
               </ul>
             </Reveal>
             <div className="space-y-12 lg:col-span-4 lg:col-start-9 lg:pt-4">
+              <div>
+                <Label as="p">Inspiration</Label>
+                <p className="mt-4 font-reading text-lg leading-prose text-fg-muted">
+                  {BOOK_INSPIRATION}
+                </p>
+              </div>
               {book.audience && (
                 <div>
                   <Label as="p">Written for</Label>
@@ -284,18 +295,25 @@ export default async function BookPage() {
         </section>
 
         {/* ------------------------------------------------------------- end */}
-        {book.purchaseUrl && (
-          <section className="mt-40 border-t border-border pt-20 text-center lg:mt-56">
-            <p className="mx-auto max-w-2xl font-display text-[clamp(2rem,4vw,3.25rem)] leading-tight font-light">
-              {book.title}
+        <section className="mt-40 grid gap-12 border-t border-border pt-20 lg:mt-56 lg:grid-cols-12 lg:gap-8">
+          <div className="lg:col-span-7">
+            <Label as="p">What comes next</Label>
+            <p className="mt-8 font-display text-[clamp(2rem,4vw,3.25rem)] leading-tight font-light">
+              {BOOK_FUTURE}
             </p>
-            <div className="mt-10 flex justify-center">
+          </div>
+          <div className="lg:col-span-4 lg:col-start-9 lg:pt-14">
+            {book.purchaseUrl ? (
               <ArrowLink href={book.purchaseUrl} external>
                 Buy the book
               </ArrowLink>
-            </div>
-          </section>
-        )}
+            ) : (
+              <ContentPending label="Availability">
+                Publishing and distribution details will be announced here.
+              </ContentPending>
+            )}
+          </div>
+        </section>
       </div>
     </main>
   );

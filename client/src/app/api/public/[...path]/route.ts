@@ -7,7 +7,7 @@ import { serverEnv } from '@/lib/env';
  * Only POST is forwarded, and only to an allow-listed path: a general-purpose proxy
  * on a public route would let anyone use this origin to reach arbitrary API paths.
  */
-const ALLOWED = new Set(['contact']);
+const ALLOWED = new Set(['contact', 'waitlist']);
 
 export async function POST(req: NextRequest, ctx: { params: Promise<{ path: string[] }> }) {
   const { path } = await ctx.params;

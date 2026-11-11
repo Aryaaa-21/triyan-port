@@ -38,14 +38,17 @@ const safeWritings = async (query: Parameters<typeof fetchWritings>[0]): Promise
  * from the API, and a missing piece shows as reserved space, never as a stand-in.
  */
 export default async function HomePage() {
-  const [featured, recent, about, book, abyss, posts] = await Promise.all([
+  const [featured, recent, about, book, abyss, featuredPosts, latestPosts] = await Promise.all([
     safeWritings({ featured: 'true', page: '1' }),
     safeWritings({ page: '1' }),
     fetchAboutSafely(),
     fetchBookSafely(),
     fetchAbyssSafely(),
+    fetchInstagramSafely({ limit: '3', featured: 'true' }),
     fetchInstagramSafely({ limit: '3' }),
   ]);
+  // Curated first (Triyan prefers selected posts, Q24); the latest only if none are featured.
+  const posts = featuredPosts.length > 0 ? featuredPosts : latestPosts;
 
   // Featured writings lead; recent ones fill the wall to six.
   const seen = new Set<string>();

@@ -67,10 +67,14 @@ export function BookFeature({ book }: { book: BookDto | null }) {
             )}
             <div className="mt-12 flex flex-wrap gap-x-10 gap-y-2">
               <ArrowLink href="/book">Explore the book</ArrowLink>
-              {book.purchaseUrl && (
+              {book.purchaseUrl ? (
                 <ArrowLink href={book.purchaseUrl} external tone="quiet">
                   Buy
                 </ArrowLink>
+              ) : (
+                <span className="py-2 font-mono text-xs tracking-[0.2em] text-fg-subtle uppercase">
+                  Availability to be announced
+                </span>
               )}
             </div>
           </div>

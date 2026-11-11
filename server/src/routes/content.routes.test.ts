@@ -3,7 +3,7 @@ import request from 'supertest';
 import { createApp } from '../app.js';
 import { clearTestDatabase, startTestDatabase, stopTestDatabase } from '../test/db.js';
 import { err, item } from '../test/factory.js';
-import { SiteSettings } from '../models/index.js';
+import { ContactMessage, SiteSettings } from '../models/index.js';
 
 const app = createApp();
 
@@ -45,11 +45,11 @@ describe('public content endpoints', () => {
     await request(app).get('/api/v1/settings').expect(200);
   });
 
-  it('reports that contact messages cannot be delivered yet', async () => {
+  it('reports that contact messages go to the admin inbox', async () => {
     const settings = item<{ contactDelivery: string }>(
       await request(app).get('/api/v1/settings').expect(200),
     );
-    expect(settings.contactDelivery).toBe('NONE');
+    expect(settings.contactDelivery).toBe('INBOX');
   });
 
   it('allows public caching of content reads', async () => {
@@ -70,10 +70,20 @@ describe('POST /contact', () => {
     expect(item<{ received: boolean }>(res).received).toBe(true);
   });
 
-  it('is explicit that no transport is configured yet', async () => {
+  it('delivers the message to the inbox rather than dropping it', async () => {
     const res = await request(app).post('/api/v1/contact').send(valid).expect(200);
-    // The API must not imply delivery it cannot perform.
-    expect(item<{ delivery: string }>(res).delivery).toBe('PENDING_TRANSPORT');
+    expect(item<{ delivery: string }>(res).delivery).toBe('INBOX');
+    const stored = await ContactMessage.findOne({ email: valid.email }).lean();
+    expect(stored?.message).toBe(valid.message);
+    expect(stored?.read).toBe(false);
+  });
+
+  it('stores nothing when the honeypot is filled', async () => {
+    await request(app)
+      .post('/api/v1/contact')
+      .send({ ...valid, website: 'spam' })
+      .expect(400);
+    expect(await ContactMessage.countDocuments()).toBe(0);
   });
 
   it('rejects a message that is too short', async () => {

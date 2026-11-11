@@ -19,7 +19,7 @@ export function HomeHero({ about }: { about: AboutDto | null }) {
           <div className="lg:col-span-8">
             <h1
               id="triyan-heading"
-              className="font-display text-[clamp(4.5rem,17vw,15rem)] leading-[0.82] font-light tracking-[-0.04em] uppercase"
+              className="font-display text-[clamp(4rem,14vw,14rem)] leading-[0.82] font-light tracking-[-0.04em] whitespace-nowrap uppercase"
             >
               <SplitText text="Triyan" step={70} />
             </h1>

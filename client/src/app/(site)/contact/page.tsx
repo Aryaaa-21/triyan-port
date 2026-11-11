@@ -22,7 +22,11 @@ export default async function ContactPage() {
       .then((r) => r.data)
       .catch(() => null),
   ]);
-  const deliverable = Boolean(settings?.contactFormEnabled && settings.contactDelivery === 'EMAIL');
+  // Open only when messages have somewhere real to go (the inbox, or email).
+  const deliverable = Boolean(
+    settings?.contactFormEnabled &&
+    (settings.contactDelivery === 'INBOX' || settings.contactDelivery === 'EMAIL'),
+  );
 
   const channels: { label: string; value: string; href?: string; external?: boolean }[] = [
     about?.links.email
@@ -34,16 +38,6 @@ export default async function ContactPage() {
             label: 'Instagram',
             value: '@triyanwrites',
             href: about.links.literaryInstagram,
-            external: true,
-          },
-        ]
-      : []),
-    ...(about?.links.personalInstagram
-      ? [
-          {
-            label: 'Personal',
-            value: '@triyxnn',
-            href: about.links.personalInstagram,
             external: true,
           },
         ]

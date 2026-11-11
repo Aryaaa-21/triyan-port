@@ -31,3 +31,9 @@ export type { InstagramMediaAttrs, InstagramMediaDoc } from './instagramMedia.mo
 
 export { InstagramSyncState } from './instagramSyncState.model.js';
 export type { InstagramSyncStateAttrs } from './instagramSyncState.model.js';
+
+export { ContactMessage } from './contactMessage.model.js';
+export type { ContactMessageAttrs } from './contactMessage.model.js';
+
+export { WaitlistSubscriber } from './waitlistSubscriber.model.js';
+export type { WaitlistSubscriberAttrs } from './waitlistSubscriber.model.js';

@@ -8,6 +8,7 @@ import {
   getBookContent,
   getSettingsContent,
   postContact,
+  postWaitlist,
 } from '../controllers/content.controller.js';
 
 export const contentRouter = Router();
@@ -27,3 +28,13 @@ const contactLimiter = rateLimit({
 });
 
 contentRouter.post('/contact', contactLimiter, postContact);
+
+const waitlistLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  limit: isProduction ? 5 : 1000,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  handler: (_req, _res, next) => next(HttpError.rateLimited('Too many attempts. Try again later.')),
+});
+
+contentRouter.post('/waitlist', waitlistLimiter, postWaitlist);

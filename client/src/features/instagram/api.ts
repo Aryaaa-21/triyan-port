@@ -7,6 +7,7 @@ export interface InstagramQuery {
   language?: string;
   productType?: string;
   limit?: string;
+  featured?: string;
 }
 
 const qs = (query: InstagramQuery) => {

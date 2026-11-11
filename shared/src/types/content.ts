@@ -92,6 +92,26 @@ export interface SiteSettingsDto {
   defaultOgImageUrl: string;
   contactFormEnabled: boolean;
   introEnabled: boolean;
-  /** Whether contact messages can actually be delivered. NONE until a mail transport exists. */
-  contactDelivery: 'NONE' | 'EMAIL';
+  /**
+   * Where contact messages go. INBOX: stored for the owner in the admin (no email
+   * transport yet). EMAIL: sent on. NONE: nowhere — the form must stay closed.
+   */
+  contactDelivery: 'NONE' | 'EMAIL' | 'INBOX';
+}
+
+export interface ContactMessageDto {
+  _id: string;
+  name: string;
+  email: string;
+  message: string;
+  read: boolean;
+  createdAt: string;
+}
+
+export interface WaitlistSubscriberDto {
+  _id: string;
+  email: string;
+  name: string;
+  consentAt: string;
+  createdAt: string;
 }

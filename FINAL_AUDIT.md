@@ -61,7 +61,7 @@ Every one of these passed the unit tests and only showed up in the browser:
 | Writing detail | reading room: verbatim whitespace (`pre-wrap`), metadata, themes, share, related | browser: line and indentation preservation | DONE | — |
 | About / Book | confirmed fields only; empty fields aren't rendered | `content.routes.test` asserts no age, birth date, publisher, ISBN, price, reviews | DONE | — |
 | Book cover | page ready to show one | — | **BLOCKED** | Owner hasn't supplied a cover image |
-| Contact | validated form, honeypot, 5/hour limit, can be switched off in settings | contact tests; API returns `delivery: PENDING_TRANSPORT` | **PARTIAL** | No email provider and no professional email address: messages are accepted but **not delivered** |
+| Contact | validated form, honeypot, 5/hour limit; messages stored in the admin inbox | contact + inbox tests | DONE | No email forwarding yet; messages are read in `/admin/inbox` |
 | Navigation / footer | desktop line nav; full-screen mobile panel (now working) | browser: mobile menu navigates | DONE | — |
 | Light / dark | `void` / `manuscript`, set before first paint, saved, follows system | browser: toggle persists across reload | DONE | — |
 | Responsive | 320, 375, 390, 414, 768, 1024, 1280, 1440, 1920 | browser: 13 routes × 9 widths, no horizontal overflow, exactly one `h1` | DONE | — |
@@ -116,7 +116,7 @@ Every one of these passed the unit tests and only showed up in the browser:
 ## Production risks, by severity
 
 1. **No offsite copy of the code** (no git remote). Create one and push.
-2. **Contact messages aren't delivered.** Either keep the form disabled in settings or add a provider before launch.
+2. **Contact messages go to the admin inbox only**: nothing forwards them by email yet.
 3. **No CSP header** on the site.
 4. **Instagram media links expire** and the token expires after 60 days. Both need work (media mirroring, token refresh) before the archive can run unattended.
 5. Performance and accessibility haven't been checked on real mobile hardware or with real assistive technology.

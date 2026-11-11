@@ -116,6 +116,11 @@ export const adminApi = {
       body: JSON.stringify(payload),
     }),
 
+  markMessage: (id: string, read: boolean) =>
+    call<null>(`/admin/inbox/${id}`, { method: 'PATCH', body: JSON.stringify({ read }) }),
+
+  deleteMessage: (id: string) => call<null>(`/admin/inbox/${id}`, { method: 'DELETE' }),
+
   refreshInstagram: (id: string) =>
     call<InstagramMediaDto>(`/admin/instagram/${id}/refresh`, { method: 'POST' }),
 };

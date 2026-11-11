@@ -2,6 +2,7 @@ import type { AboutDto, AbyssDto } from '@triyan/shared';
 import { ArrowLink, SectionIntro } from '@/components/editorial';
 import { Parallax } from '@/components/motion/parallax';
 import { Reveal } from '@/components/ui/reveal';
+import { REMEMBER } from '@/content/triyan';
 
 /** 07 — ABYSS. A doorway: the world beyond the words, and the sense that it is coming. */
 export function AbyssDoor({ abyss }: { abyss: AbyssDto | null }) {
@@ -58,7 +59,8 @@ export function AbyssDoor({ abyss }: { abyss: AbyssDto | null }) {
 /** 08 — About: a few sentences of the writer, and the way to more. */
 export function AboutIntro({ about }: { about: AboutDto | null }) {
   const paragraphs = (about?.body ?? '').split('\n').filter((p) => p.trim());
-  const lead = paragraphs[1] ?? paragraphs[0];
+  // The first paragraph is Triyan describing himself, in the first person.
+  const lead = paragraphs[0];
   return (
     <section aria-labelledby="about-heading" className="gutter">
       <div className="mx-auto grid max-w-[90rem] gap-12 py-28 lg:grid-cols-12 lg:gap-8 lg:py-40">
@@ -111,6 +113,11 @@ export function Exit() {
   return (
     <section aria-label="Exit" className="exit gutter relative overflow-hidden">
       <div className="mx-auto flex min-h-[80svh] max-w-[90rem] flex-col items-center justify-center py-32 text-center">
+        <Reveal variant="blur">
+          <p className="mx-auto mb-24 max-w-3xl font-display text-[clamp(1.5rem,2.8vw,2.25rem)] leading-snug font-light text-fg-muted italic">
+            {REMEMBER}
+          </p>
+        </Reveal>
         <Reveal variant="blur">
           <p className="font-display text-[clamp(2.5rem,6vw,5rem)] leading-[1.05] font-light tracking-tight">
             Thank you

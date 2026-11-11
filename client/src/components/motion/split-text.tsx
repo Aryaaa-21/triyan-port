@@ -22,7 +22,8 @@ export function SplitText({
   return (
     <span className={cn('split', className)}>
       <span className="sr-only">{text}</span>
-      <span aria-hidden="true">
+      {/* nowrap: letters are inline-blocks, and a word must never break between them. */}
+      <span aria-hidden="true" className="whitespace-nowrap">
         {Array.from(text).map((char, i) => (
           <span
             // Index keys are correct here: the string is static.

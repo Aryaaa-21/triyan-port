@@ -50,6 +50,13 @@ export default async function InstagramPage({ searchParams }: PageProps) {
     if (!(error instanceof ApiError && error.status === 400)) failed = true;
   }
   const about = await fetchAboutSafely();
+  // Curated first (Q24): posts Triyan has featured lead the unfiltered first page.
+  const unfiltered = !query.category && !query.language && !query.productType && !query.cursor;
+  const selected = unfiltered
+    ? await fetchInstagram({ featured: 'true', limit: '6' })
+        .then((r) => r.data)
+        .catch(() => [] as InstagramMediaDto[])
+    : [];
 
   const href = (over: Partial<InstagramQuery>) => {
     const p = new URLSearchParams();
@@ -128,6 +135,16 @@ export default async function InstagramPage({ searchParams }: PageProps) {
             </ul>
           </nav>
         </div>
+
+        {selected.length > 0 && (
+          <section aria-labelledby="selected-heading" className="mt-20">
+            <h2 id="selected-heading" className="sr-only">
+              Selected
+            </h2>
+            <SectionIntro label="Selected" className="mb-14" />
+            <InstagramGrid posts={selected} />
+          </section>
+        )}
 
         <SectionIntro
           label={query.cursor ? 'All work · earlier' : 'All work'}

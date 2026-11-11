@@ -3,40 +3,69 @@ import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/re
 import { Waitlist } from './waitlist';
 import { ShirtSilhouette } from './silhouette';
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  vi.unstubAllGlobals();
+});
+
+const fillAndSubmit = (email: string, consent: boolean) => {
+  const input = screen.getByPlaceholderText('your email');
+  fireEvent.change(input, { target: { value: email } });
+  const box = screen.getByRole('checkbox') as HTMLInputElement;
+  if (box.checked !== consent) fireEvent.click(box);
+  fireEvent.submit(input.closest('form')!);
+};
 
 describe('Waitlist', () => {
-  it('is visibly closed, and saves nothing, until a backend exists', () => {
+  it('joins with an address and explicit consent', async () => {
+    const fetchSpy = vi
+      .fn()
+      .mockResolvedValue(new Response(JSON.stringify({ data: { joined: true } }), { status: 200 }));
+    vi.stubGlobal('fetch', fetchSpy);
     render(<Waitlist />);
-    expect((screen.getByPlaceholderText('your email') as HTMLInputElement).disabled).toBe(true);
+    fillAndSubmit('Reader@Example.test', true);
+    await waitFor(() => expect(screen.getByRole('status').textContent).toMatch(/entered/i));
+    const [url, init] = fetchSpy.mock.calls[0] as [string, RequestInit];
+    expect(url).toBe('/api/public/waitlist');
+    expect(JSON.parse(String(init.body))).toMatchObject({
+      email: 'reader@example.test',
+      consent: true,
+    });
+  });
+
+  it('asks for consent before sending anything', () => {
+    const fetchSpy = vi.fn();
+    vi.stubGlobal('fetch', fetchSpy);
+    render(<Waitlist />);
+    fillAndSubmit('reader@example.test', false);
+    expect(screen.getByRole('alert').textContent).toMatch(/tick the box/i);
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
+  it('rejects an incomplete address', () => {
+    vi.stubGlobal('fetch', vi.fn());
+    render(<Waitlist />);
+    fillAndSubmit('nope', true);
+    expect(screen.getByRole('alert').textContent).toMatch(/complete/i);
+  });
+
+  it('reports a failure instead of pretending to succeed', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response('{}', { status: 503 })));
+    render(<Waitlist />);
+    fillAndSubmit('reader@example.test', true);
+    await waitFor(() => expect(screen.getByRole('alert').textContent).toMatch(/could not/i));
+    expect(screen.queryByText(/you have entered/i)).toBeNull();
+  });
+
+  it('is visibly closed, and sends nothing, when not open', () => {
+    const fetchSpy = vi.fn();
+    vi.stubGlobal('fetch', fetchSpy);
+    render(<Waitlist open={false} />);
     expect((screen.getByRole('button', { name: /join/i }) as HTMLButtonElement).disabled).toBe(
       true,
     );
     expect(screen.getByText(/not open yet/i)).toBeTruthy();
-  });
-
-  it('validates and joins when it is open', async () => {
-    const onJoin = vi.fn().mockResolvedValue(undefined);
-    render(<Waitlist onJoin={onJoin} />);
-    const input = screen.getByPlaceholderText('your email');
-    fireEvent.change(input, { target: { value: 'nope' } });
-    fireEvent.submit(input.closest('form')!);
-    expect(screen.getByRole('alert').textContent).toMatch(/complete/i);
-    expect(onJoin).not.toHaveBeenCalled();
-
-    fireEvent.change(input, { target: { value: 'reader@example.test' } });
-    fireEvent.submit(input.closest('form')!);
-    await waitFor(() => expect(screen.getByRole('status').textContent).toMatch(/on the list/i));
-    expect(onJoin).toHaveBeenCalledWith('reader@example.test');
-  });
-
-  it('reports a failure instead of pretending to succeed', async () => {
-    render(<Waitlist onJoin={vi.fn().mockRejectedValue(new Error('down'))} />);
-    const input = screen.getByPlaceholderText('your email');
-    fireEvent.change(input, { target: { value: 'reader@example.test' } });
-    fireEvent.submit(input.closest('form')!);
-    await waitFor(() => expect(screen.getByRole('alert').textContent).toMatch(/could not/i));
-    expect(screen.queryByText(/on the list/i)).toBeNull();
+    expect(fetchSpy).not.toHaveBeenCalled();
   });
 });
 
