@@ -10,7 +10,8 @@ import {
 } from '@triyan/shared';
 
 /**
- * A post synced from @triyanwrites through the official API.
+ * A post synced from @triyanwrites through the official API, or imported from the
+ * owner's own screenshot archive (`provider: 'archive'`, see docs/INSTAGRAM.md).
  *
  * Posts are live by default — this is not an approval queue. `hidden` is a
  * correction, not a gate. When a post disappears upstream it is marked
@@ -49,6 +50,8 @@ const childSchema = new Schema(
     mediaType: { type: String, enum: INSTAGRAM_MEDIA_TYPES },
     mediaUrl: { type: String, default: '' },
     thumbnailUrl: { type: String, default: '' },
+    mediaWidth: { type: Number, default: 0 },
+    mediaHeight: { type: Number, default: 0 },
   },
   { _id: false },
 );
@@ -56,7 +59,7 @@ const childSchema = new Schema(
 const instagramMediaSchema = new Schema(
   {
     sourceId: { type: String, required: true, unique: true },
-    provider: { type: String, enum: ['graph', 'mock'], required: true },
+    provider: { type: String, enum: ['graph', 'mock', 'archive'], required: true },
     permalink: { type: String, default: '' },
     mediaType: { type: String, enum: INSTAGRAM_MEDIA_TYPES, required: true },
     productType: { type: String, enum: INSTAGRAM_PRODUCT_TYPES, default: 'UNKNOWN' },
@@ -66,6 +69,8 @@ const instagramMediaSchema = new Schema(
     timestamp: { type: Date, required: true },
     mediaUrl: { type: String, default: '' },
     thumbnailUrl: { type: String, default: '' },
+    mediaWidth: { type: Number, default: 0 },
+    mediaHeight: { type: Number, default: 0 },
     children: { type: [childSchema], default: [] },
 
     classification: { type: classificationSchema, default: () => ({}) },

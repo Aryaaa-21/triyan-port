@@ -10,6 +10,12 @@ import type {
   ThemeKey,
 } from '../taxonomy.js';
 
+/**
+ * Where a stored post came from. `graph` and `mock` are sync providers; `archive` is the
+ * owner's own screenshot archive, imported once by script and never touched by a sync.
+ */
+export type InstagramProviderName = 'graph' | 'mock' | 'archive';
+
 /** The classification attached to a synced post. */
 export interface ClassificationDto {
   primaryCategory: CategoryKey | null;
@@ -35,7 +41,16 @@ export interface InstagramMediaDto {
   timestamp: string;
   mediaUrl: string;
   thumbnailUrl: string;
-  children: { mediaType: InstagramMediaType; mediaUrl: string; thumbnailUrl: string }[];
+  /** Pixel size of `mediaUrl`, when known (0 when not). Lets a tile keep the image's own shape. */
+  mediaWidth: number;
+  mediaHeight: number;
+  children: {
+    mediaType: InstagramMediaType;
+    mediaUrl: string;
+    thumbnailUrl: string;
+    mediaWidth: number;
+    mediaHeight: number;
+  }[];
   classification: ClassificationDto;
   manualOverride: boolean;
   featured: boolean;
@@ -43,7 +58,7 @@ export interface InstagramMediaDto {
   displayTitle: string;
   altText: string;
   available: boolean;
-  provider: 'graph' | 'mock';
+  provider: InstagramProviderName;
   syncedAt: string;
 }
 
@@ -62,6 +77,8 @@ export interface SyncRunDto {
 
 export interface SyncStatusDto {
   provider: 'graph' | 'mock';
+  /** Posts imported from the owner's own screenshots, outside any sync. */
+  archiveStored: number;
   configured: boolean;
   health: SyncHealthState;
   lastSuccessAt: string | null;

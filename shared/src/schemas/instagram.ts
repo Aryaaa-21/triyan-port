@@ -22,6 +22,8 @@ export const instagramQuerySchema = cursorPaginationSchema.extend({
   linked: booleanParam,
   from: z.coerce.date().optional(),
   to: z.coerce.date().optional(),
+  /** `oldest` reads the archive from the first post forward. */
+  sort: z.enum(['newest', 'oldest']).default('newest'),
 });
 
 /**

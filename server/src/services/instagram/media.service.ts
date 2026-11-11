@@ -48,10 +48,14 @@ export const toDto = (doc: Lean): InstagramMediaDto => ({
   timestamp: new Date(doc.timestamp).toISOString(),
   mediaUrl: doc.mediaUrl ?? '',
   thumbnailUrl: doc.thumbnailUrl ?? '',
+  mediaWidth: doc.mediaWidth ?? 0,
+  mediaHeight: doc.mediaHeight ?? 0,
   children: (doc.children ?? []).map((c) => ({
     mediaType: c.mediaType ?? 'IMAGE',
     mediaUrl: c.mediaUrl ?? '',
     thumbnailUrl: c.thumbnailUrl ?? '',
+    mediaWidth: c.mediaWidth ?? 0,
+    mediaHeight: c.mediaHeight ?? 0,
   })),
   classification: {
     primaryCategory: doc.classification?.primaryCategory ?? null,
@@ -107,13 +111,21 @@ export const listMedia = async (
   }
   if (query.q) filter.$text = { $search: query.q };
 
+  // `oldest` walks the same index in the other direction, so the cursor comparison flips too.
+  const oldestFirst = query.sort === 'oldest';
+  const past = oldestFirst ? '$gt' : '$lt';
+  const direction = oldestFirst ? 1 : -1;
+
   if (query.cursor) {
     const c = decodeCursor(query.cursor);
     if (c) {
       const id = new Types.ObjectId(c.id);
       filter.$and = [
         {
-          $or: [{ timestamp: { $lt: c.timestamp } }, { timestamp: c.timestamp, _id: { $lt: id } }],
+          $or: [
+            { timestamp: { [past]: c.timestamp } },
+            { timestamp: c.timestamp, _id: { [past]: id } },
+          ],
         },
       ];
     }
@@ -121,7 +133,7 @@ export const listMedia = async (
 
   const docs = (await InstagramMedia.find(filter)
     .select('-corrections -captionHash')
-    .sort({ timestamp: -1, _id: -1 })
+    .sort({ timestamp: direction, _id: direction })
     .limit(query.limit + 1)
     .lean()) as Lean[];
 
@@ -207,6 +219,8 @@ export const reclassify = async (request: ReclassifyRequest) => {
   if (request.scope === 'SELECTED') filter._id = { $in: request.ids };
   if (request.scope === 'NEEDS_REVIEW') filter['classification.needsReview'] = true;
   if (!request.includeManualOverrides) filter.manualOverride = { $ne: true };
+  // Archive posts were sorted by reading the image, which the caption rules cannot do.
+  filter.provider = { $ne: 'archive' };
 
   let count = 0;
   for await (const doc of InstagramMedia.find(filter).cursor()) {
@@ -222,6 +236,8 @@ export const reclassify = async (request: ReclassifyRequest) => {
 export const refreshMedia = async (id: string) => {
   const doc = await InstagramMedia.findById(id);
   if (!doc) return null;
+  // Archive posts have no upstream to ask: asking would wrongly mark them as vanished.
+  if (doc.provider === 'archive') return toDto(doc.toObject());
   const provider = getInstagramProvider();
   try {
     const fresh = await provider.fetchOne(doc.sourceId);
@@ -253,13 +269,15 @@ export const refreshMedia = async (id: string) => {
 
 export const getSyncStatus = async (): Promise<SyncStatusDto> => {
   const provider = getInstagramProvider();
-  const [state, totalStored] = await Promise.all([
+  const [state, totalStored, archiveStored] = await Promise.all([
     InstagramSyncState.findOne({ key: 'instagram' }).lean(),
     InstagramMedia.countDocuments({ provider: provider.name }),
+    InstagramMedia.countDocuments({ provider: 'archive' }),
   ]);
   const run = state?.lastRun;
   return {
     provider: provider.name,
+    archiveStored,
     configured: provider.configured,
     health: state?.health ?? 'NEVER_RUN',
     lastSuccessAt: iso(state?.lastSuccessAt),

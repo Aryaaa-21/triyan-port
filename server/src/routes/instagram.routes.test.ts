@@ -57,6 +57,63 @@ describe('public instagram API', () => {
     expect(seen[0]).toBe('mock_0030');
   });
 
+  it('walks the archive from the first post forward when sort=oldest', async () => {
+    await syncSome(30);
+    const seen: string[] = [];
+    let cursor: string | null = null;
+    let guard = 0;
+    do {
+      const res: request.Response = await request(app)
+        .get('/api/v1/instagram')
+        .query({ limit: 7, sort: 'oldest', ...(cursor ? { cursor } : {}) })
+        .expect(200);
+      seen.push(...items<InstagramMediaDto>(res).map((p) => p.sourceId));
+      cursor = metaOf(res).nextCursor;
+      guard += 1;
+    } while (cursor && guard < 10);
+    expect(seen).toHaveLength(30);
+    expect(new Set(seen).size).toBe(30);
+    expect(seen[0]).toBe('mock_0001');
+    expect(seen.at(-1)).toBe('mock_0030');
+  });
+
+  it('serves archive posts with their size, and never refreshes or reclassifies them', async () => {
+    await seedAdmin();
+    const cookie = await loginAsAdmin(app);
+    const doc = await InstagramMedia.create({
+      sourceId: 'ArchiveCode1',
+      provider: 'archive',
+      mediaType: 'IMAGE',
+      productType: 'REELS',
+      caption: 'a caption',
+      timestamp: new Date('2024-01-01T00:00:00Z'),
+      mediaUrl: '/archive/instagram/ArchiveCode1-1.webp',
+      thumbnailUrl: '/archive/instagram/ArchiveCode1-1.thumb.webp',
+      mediaWidth: 930,
+      mediaHeight: 1500,
+      manualOverride: false,
+      classification: { primaryCategory: 'HOPE_DESPAIR', method: 'LLM', needsReview: false },
+    });
+    const [post] = items<InstagramMediaDto>(
+      await request(app).get('/api/v1/instagram').expect(200),
+    );
+    expect(post).toMatchObject({ provider: 'archive', mediaWidth: 930, mediaHeight: 1500 });
+
+    await request(app)
+      .post(`/api/v1/admin/instagram/${String(doc._id)}/refresh`)
+      .set('Cookie', cookie)
+      .expect(200);
+    await request(app)
+      .post('/api/v1/admin/instagram/reclassify')
+      .set('Cookie', cookie)
+      .send({ confirm: true, scope: 'ALL', includeManualOverrides: true })
+      .expect(200);
+    const after = await InstagramMedia.findById(doc._id).lean();
+    expect(after?.available).toBe(true);
+    expect(after?.classification?.primaryCategory).toBe('HOPE_DESPAIR');
+    expect(after?.classification?.method).toBe('LLM');
+  });
+
   it('hides hidden and unavailable posts', async () => {
     await syncSome(5);
     await InstagramMedia.updateOne({ sourceId: 'mock_0005' }, { hidden: true });

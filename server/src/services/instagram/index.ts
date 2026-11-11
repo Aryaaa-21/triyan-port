@@ -19,7 +19,7 @@ export const getInstagramProvider = (): InstagramProvider => {
 
 /** Which stored posts the public may see: never mock posts in production. */
 export const publicProviderFilter = (): Record<string, unknown> =>
-  isProduction ? { provider: 'graph' } : {};
+  isProduction ? { provider: { $in: ['graph', 'archive'] } } : {};
 
 export * from './provider.js';
 export { createGraphProvider } from './graph.provider.js';
