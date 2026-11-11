@@ -159,7 +159,11 @@ export default async function WritingPage({ params }: PageProps) {
           <ul className="space-y-8">
             {related.map((item) => (
               <li key={item.slug}>
-                <Link href={`/writings/${item.slug}`} className="group block no-underline">
+                <Link
+                  href={`/writings/${item.slug}`}
+                  data-cursor="writing"
+                  className="group block no-underline"
+                >
                   <h3 className="font-display text-2xl font-light text-fg-muted transition-colors group-hover:text-fg">
                     {item.title}
                   </h3>

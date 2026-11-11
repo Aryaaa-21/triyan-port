@@ -7,6 +7,7 @@ import { siteUrl } from '@/lib/env';
 import { Reveal } from '@/components/ui/reveal';
 import { Rule } from '@/components/ui/rule';
 import { HomeOpening } from '@/features/home/opening';
+import { SplitText } from '@/components/motion/split-text';
 import { fetchInstagramSafely } from '@/features/instagram/api';
 import { PostTile } from '@/features/instagram/post-tile';
 
@@ -51,10 +52,13 @@ export default async function HomePage() {
       <HomeOpening />
 
       {/* ------------------------------------------------------------ hero */}
-      <section className="gutter mx-auto max-w-6xl pt-10 pb-24 sm:pt-20 sm:pb-32">
+      <section
+        id="hero"
+        className="gutter mx-auto max-w-6xl scroll-mt-24 pt-10 pb-24 sm:pt-20 sm:pb-32"
+      >
         <Reveal>
           <h1 className="font-display text-display leading-tight font-light tracking-tighter">
-            Triyan
+            <SplitText text="Triyan" step={70} />
           </h1>
         </Reveal>
         <Reveal stagger={1}>
@@ -81,7 +85,11 @@ export default async function HomePage() {
           <ul className="space-y-14">
             {highlight.map((writing, index) => (
               <Reveal as="li" key={writing.slug} stagger={index}>
-                <Link href={`/writings/${writing.slug}`} className="group block no-underline">
+                <Link
+                  href={`/writings/${writing.slug}`}
+                  data-cursor="writing"
+                  className="group block no-underline"
+                >
                   <span className="font-ui text-2xs tabular-nums text-fg-subtle">
                     {String(index + 1).padStart(2, '0')}
                   </span>

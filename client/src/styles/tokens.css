@@ -228,4 +228,8 @@
   --z-overlay: 40;
   --z-cursor: 50;
   --z-intro: 60;
+
+  /* The companion cursor blends with `difference`, which needs pure ink in both themes. */
+  --cursor-ink: #fff;
+  --cursor-ink-inverse: #000;
 }

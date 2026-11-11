@@ -119,7 +119,11 @@ export default async function WritingsPage({ searchParams }: PageProps) {
           <ul className="mt-10 space-y-12">
             {writings.map((writing) => (
               <li key={writing.slug}>
-                <Link href={`/writings/${writing.slug}`} className="group block no-underline">
+                <Link
+                  href={`/writings/${writing.slug}`}
+                  data-cursor="writing"
+                  className="group block no-underline"
+                >
                   <h2 className="font-display text-3xl leading-snug font-light text-fg-muted transition-colors group-hover:text-fg">
                     {writing.title}
                   </h2>
