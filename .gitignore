@@ -13,3 +13,4 @@ coverage/
 .vercel/
 tsconfig.tsbuildinfo
 *.tsbuildinfo
+e2e/screenshots/

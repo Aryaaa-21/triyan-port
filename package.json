@@ -22,13 +22,15 @@
     "lint": "eslint . && npm run lint -w @triyan/client && prettier --check .",
     "format": "prettier --write .",
     "test": "npm run build:shared && npm run test --workspaces --if-present",
-    "verify": "npm run build:shared && npm run lint && npm run typecheck && npm run test && npm run build"
+    "verify": "npm run build:shared && npm run lint && npm run typecheck && npm run test && npm run build",
+    "e2e:browser": "node e2e/browser.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "concurrently": "^10.0.7",
     "eslint": "^10.14.0",
     "globals": "^17.14.0",
+    "playwright-core": "^1.54.2",
     "prettier": "^3.9.10",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.72.2"
