@@ -5,7 +5,9 @@
  * reference image: the shadow; a thin photon ring inside it; the far side of the
  * accretion disk, lensed into a dome over the top; the near side, seen almost
  * edge-on as a broad brim; the band of the disk crossing in front; and the lensed
- * underside as a smaller arc below. Monochrome, and slowly turning.
+ * underside as a smaller arc below. Behind it, a star field seen through the lens —
+ * stars near the hole are pulled into arcs — with one shooting star early on. Empty
+ * space is exactly black. Monochrome, and slowly turning.
  */
 export const BLACK_HOLE_FRAGMENT = /* glsl */ `
 precision highp float;
@@ -25,6 +27,57 @@ float fbm(vec2 p) {
   float v = 0.0, a = 0.5;
   for (int i = 0; i < 4; i++) { v += a * noise(p); p *= 2.03; a *= 0.5; }
   return v;
+}
+
+/**
+ * A sparse star field, sampled through the lens: q is where light from a star would
+ * appear to come from. Two layers — many faint, a few bright — that twinkle slowly.
+ * px is one screen pixel in these units, so stars stay pin-sharp at any size.
+ */
+float starField(vec2 q, float t, float px) {
+  float s = 0.0;
+  for (int l = 0; l < 3; l++) {
+    float dens = l == 0 ? 6.5 : (l == 1 ? 2.6 : 1.05);
+    float keep = l == 0 ? 0.55 : (l == 1 ? 0.84 : 0.9);
+    vec2 g = q * dens;
+    vec2 id = floor(g);
+    float h = hash(id + float(l) * 17.3);
+    if (h > keep) {
+      vec2 o = vec2(hash(id + 3.1), hash(id + 7.7)) * 0.7 + 0.15;
+      vec2 dv = (fract(g) - o) / dens;
+      float d2 = dot(dv, dv);
+      float size = px * (l == 0 ? 0.9 : (l == 1 ? 1.5 : 2.1));
+      float twinkle = 0.55 + 0.45 * sin(t * (0.6 + h * 2.2) + h * 40.0);
+      float b = (l == 0 ? 0.45 : (l == 1 ? 1.0 : 1.5)) * (0.5 + 0.5 * hash(id + 11.0)) * twinkle;
+      float core = exp(-d2 / (size * size));
+      float glow = l == 0 ? 0.0 : 0.07 * exp(-sqrt(d2) / (size * 3.0));
+      // The brightest few carry faint four-point spikes, as in a long exposure.
+      float spikes = 0.0;
+      if (l == 2) {
+        vec2 a = abs(dv);
+        spikes = 0.35 * (exp(-a.x / (px * 0.7)) * exp(-a.y / (px * 16.0))
+                       + exp(-a.y / (px * 0.7)) * exp(-a.x / (px * 16.0)));
+      }
+      s += b * (core + glow + spikes);
+    }
+  }
+  return s;
+}
+
+/** One shooting star, early in the intro: a short bright head and a fading tail. */
+float shootingStar(vec2 p, float t, float px) {
+  float k = (t - 0.9) / 1.1;                                // crosses between 0.9s and 2.0s
+  if (k < 0.0 || k > 1.0) return 0.0;
+  vec2 from = vec2(-2.6, 2.3);
+  vec2 dir = normalize(vec2(1.0, -0.42));
+  vec2 head = from + dir * k * 4.2;
+  vec2 rel = p - head;
+  float along = dot(rel, -dir);                             // distance back along the tail
+  float across = abs(dot(rel, vec2(-dir.y, dir.x)));
+  if (along < -px * 3.0 || along > 0.9) return 0.0;
+  float tail = exp(-max(along, 0.0) / 0.28) * exp(-across / (px * 1.1));
+  float fade = sin(k * 3.14159);                            // in, and out again
+  return 1.4 * tail * fade;
 }
 
 void main() {
@@ -101,16 +154,37 @@ void main() {
   // where the band meets the wings, the light gathers
   I += 0.42 * exp(-pow((ax - 1.05) / 0.09, 2.0) - pow((p.y + 0.2) / 0.11, 2.0));
 
+  // ---- stars behind it all, bent around the hole -------------------------------
+  // Point-lens approximation: light passing near the hole is deflected, so stars close
+  // to the shadow are pulled into arcs along the Einstein ring.
+  float px = 1.0 / (uScale * uZoom);
+  if (r > 1.0) {
+    float thetaE = 1.2;
+    vec2 q = p - p * (thetaE * thetaE) / (r * r);
+    q += vec2(0.018 * t, 0.004 * t);                       // a slow drift across the sky
+    // Star density is set in screen terms (one shadow radius ~170px), so a phone and a
+    // desktop see the same sky; it still scales with the fall, so stars stream outward.
+    float S = uScale / 170.0;
+    float sky = starField(q * S, t, px * S) + shootingStar(p, t, px);
+    // The disk is in front: where it glows, the stars are hidden.
+    sky *= 1.0 - clamp(I * 3.0, 0.0, 1.0);
+    I += sky * smoothstep(1.0, 1.08, r);
+  }
+
   // ---- a faint halo, so the light reads as light ------------------------------
   float halo = exp(-max(r - 1.0, 0.0) * 2.4) * smoothstep(0.98, 1.05, r);
-  I += 0.025 * halo * (p.y > wingMid ? 1.0 : 0.5);
+  I += 0.025 * halo * (p.y > wingMid ? 1.0 : 0.5) * step(r, 2.2);
 
   // Gentle Doppler asymmetry: the approaching side a touch brighter.
   I *= 1.0 - 0.06 * clamp(p.x / 2.5, -1.0, 1.0);
 
   // Soft highlight roll-off, monochrome, dithered against banding.
   float v = 1.0 - exp(-I * 1.45);
-  v += (hash(gl_FragCoord.xy + t) - 0.5) / 255.0;
+  // A black toe: the faint tails of glows and spikes are crushed to exactly zero, so
+  // empty space is true #000 rather than a near-black wash.
+  v *= smoothstep(0.012, 0.03, v);
+  // Dither only where there is light, against banding in the disk.
+  v += (hash(gl_FragCoord.xy + t) - 0.5) / 255.0 * step(0.03, v);
   gl_FragColor = vec4(vec3(v), 1.0);
 }
 `;

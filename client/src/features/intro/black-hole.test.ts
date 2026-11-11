@@ -9,4 +9,13 @@ describe('black hole shader', () => {
   it('is monochrome: every output channel is the same value', () => {
     expect(BLACK_HOLE_FRAGMENT).toMatch(/gl_FragColor\s*=\s*vec4\(vec3\(v\),\s*1\.0\)/);
   });
+
+  it('draws stars through the lens, behind the disk', () => {
+    expect(BLACK_HOLE_FRAGMENT).toContain('starField(q * S, t, px * S)');
+    expect(BLACK_HOLE_FRAGMENT).toMatch(/thetaE/);
+  });
+
+  it('crushes empty space to exact black', () => {
+    expect(BLACK_HOLE_FRAGMENT).toContain('v *= smoothstep(0.012, 0.03, v);');
+  });
 });
