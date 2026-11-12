@@ -7,6 +7,11 @@ import WindStreamCursor from '@/components/ui/wind-stream-cursor';
 import { ArtDefs } from '@/components/art';
 import WritingsLoading from './writings-loading';
 import WritingLoading from './writing-loading';
+import { ScrollProgress } from '@/features/site/scroll-progress';
+import { FloatingActions } from '@/features/site/floating-actions';
+import { CookieNotice } from '@/features/site/cookie-notice';
+import { rememberCampaign } from '@/lib/utm';
+import { useEffect } from 'react';
 
 /**
  * The public shell. Admin lives in its own route group with no header or footer,
@@ -32,8 +37,12 @@ export default function SiteLayout() {
   const pendingPath = navigation.state === 'loading' ? navigation.location.pathname : null;
   const pending = pendingPath && pendingPath !== pathname ? pendingFor(pendingPath) : null;
 
+  // Note the campaign tags of a tagged link once, on arrival.
+  useEffect(rememberCampaign, []);
+
   return (
     <>
+      <ScrollProgress />
       <div id="site" className="flex min-h-dvh flex-col">
         <ArtDefs />
         <Cursor />
@@ -54,6 +63,8 @@ export default function SiteLayout() {
           {...(about?.links.email ? { email: about.links.email } : {})}
         />
       </div>
+      <FloatingActions pathname={pathname} />
+      <CookieNotice />
     </>
   );
 }

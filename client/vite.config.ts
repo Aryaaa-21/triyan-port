@@ -27,6 +27,7 @@ const api = process.env.API_PROXY_TARGET ?? 'http://localhost:4000';
 
 export default defineConfig({
   plugins: [react(), tailwindcss(), themeHead()],
+  define: { __BUILD_DATE__: JSON.stringify(new Date().toISOString()) },
   resolve: {
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
   },

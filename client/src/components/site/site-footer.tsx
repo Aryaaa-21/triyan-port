@@ -13,6 +13,12 @@ interface FooterProps {
  */
 export function SiteFooter({ literaryInstagram, email }: FooterProps) {
   const year = new Date().getFullYear();
+  // Stamped when the site is built, so it is the date of the last deploy.
+  const built = typeof __BUILD_DATE__ === 'string' ? new Date(__BUILD_DATE__) : null;
+  const updated =
+    built && !Number.isNaN(built.getTime())
+      ? built.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+      : '';
 
   return (
     <footer className="gutter mt-auto border-t border-border">
@@ -71,6 +77,11 @@ export function SiteFooter({ literaryInstagram, email }: FooterProps) {
         <div className="mt-14 flex flex-col gap-3 border-t border-border pt-6 sm:flex-row sm:justify-between">
           <p className="font-mono text-2xs tracking-[0.18em] text-fg-subtle uppercase">
             © {year} Triyan Writes
+            {updated && (
+              <>
+                {' · '}Last updated <time dateTime={__BUILD_DATE__}>{updated}</time>
+              </>
+            )}
           </p>
           <p className="font-display text-base font-light text-fg-subtle italic">
             soul is deeper than the abyss

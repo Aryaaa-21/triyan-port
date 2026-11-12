@@ -1,9 +1,10 @@
 import { useState } from 'react';
 
-type Status = '' | 'copied' | 'copied-for-instagram' | 'failed';
+type Status = '' | 'copied' | 'copied-text' | 'copied-for-instagram' | 'failed';
 
 const MESSAGES: Record<Exclude<Status, ''>, string> = {
   copied: 'Link copied',
+  'copied-text': 'Writing copied, with its credit',
   'copied-for-instagram': 'Link copied — paste it into Instagram',
   failed: 'Copy failed — the link is in the address bar',
 };
@@ -18,10 +19,13 @@ export function ShareActions({
   title,
   url,
   instagramUrl,
+  text: body,
 }: {
   title: string;
   url: string;
   instagramUrl?: string;
+  /** The piece itself. When given, a second button copies it with its credit. */
+  text?: string;
 }) {
   const [status, setStatus] = useState<Status>('');
 
@@ -29,6 +33,16 @@ export function ShareActions({
     try {
       await navigator.clipboard.writeText(url);
       setStatus(next);
+    } catch {
+      setStatus('failed');
+    }
+    setTimeout(() => setStatus(''), 3000);
+  };
+
+  const copyText = async () => {
+    try {
+      await navigator.clipboard.writeText(`${body ?? ''}\n\n~Triyan\n${url}`);
+      setStatus('copied-text');
     } catch {
       setStatus('failed');
     }
@@ -61,6 +75,13 @@ export function ShareActions({
             Copy link
           </button>
         </li>
+        {body && (
+          <li>
+            <button type="button" onClick={() => void copyText()} className={item}>
+              Copy the writing
+            </button>
+          </li>
+        )}
         <li>
           {instagramUrl ? (
             <a className={item} href={instagramUrl} target="_blank" rel="noopener noreferrer">

@@ -170,6 +170,7 @@ export default function WritingPage() {
         <ShareActions
           title={writing.title}
           url={canonical}
+          text={writing.content}
           {...(writing.instagramUrl ? { instagramUrl: writing.instagramUrl } : {})}
         />
 
