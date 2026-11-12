@@ -13,6 +13,7 @@ import { PostTile } from '@/features/instagram/instagram-grid';
 import { Label } from '@/components/editorial';
 import { ApiError } from '@/lib/api';
 import { Prose } from '@/components/ui/prose';
+import { InSimpleWords } from '@/features/writings/in-simple-words';
 import { useLoaderData, type LoaderFunctionArgs } from 'react-router';
 import { Meta as PageMeta } from '@/lib/meta';
 
@@ -76,17 +77,36 @@ export default function InstagramPostPage() {
               })}
             </time>
           </p>
-          <h1 className="mt-5 font-display text-3xl leading-tight font-light tracking-tight">
-            {title}
-          </h1>
-
-          {post.caption && (
+          {post.text ? (
             <>
-              <hr aria-hidden="true" className="my-10 border-border" />
-              {/* Captions are often poems: line breaks are preserved. */}
-              <Prose language={c.language} variant="poem">
-                {post.caption}
-              </Prose>
+              {/* The first line is already the piece's opening; the heading is for outlines. */}
+              <h1 className="sr-only">{title}</h1>
+              <Writing text={post.text} language={c.language} timestamp={post.timestamp} />
+              {post.explanation && <InSimpleWords>{post.explanation}</InSimpleWords>}
+              {post.caption && (
+                <div className="mt-12 border-t border-border pt-8">
+                  <Label as="p">Caption</Label>
+                  <p className="mt-4 font-reading text-base leading-prose whitespace-pre-line text-fg-muted">
+                    {post.caption}
+                  </p>
+                </div>
+              )}
+            </>
+          ) : (
+            <>
+              <h1 className="mt-5 font-display text-3xl leading-tight font-light tracking-tight">
+                {title}
+              </h1>
+
+              {post.caption && (
+                <>
+                  <hr aria-hidden="true" className="my-10 border-border" />
+                  {/* Captions are often poems: line breaks are preserved. */}
+                  <Prose language={c.language} variant="poem">
+                    {post.caption}
+                  </Prose>
+                </>
+              )}
             </>
           )}
 
@@ -145,6 +165,47 @@ export default function InstagramPostPage() {
         </section>
       )}
     </main>
+  );
+}
+
+/**
+ * One piece, set the same way every time: the writing, then his name, then the day it
+ * was published. A carousel's slides follow one another, parted by a short rule.
+ */
+function Writing({
+  text,
+  language,
+  timestamp,
+}: {
+  text: string;
+  language: InstagramMediaDto['classification']['language'];
+  timestamp: string;
+}) {
+  const parts = text
+    .split(/\n\s*---\s*\n/)
+    .map((part) => part.trim())
+    .filter(Boolean);
+  return (
+    <div className="mt-10">
+      {parts.map((part, i) => (
+        <div key={i}>
+          {i > 0 && <hr aria-hidden="true" className="my-10 w-12 border-border-strong" />}
+          <Prose language={language} variant="poem">
+            {part}
+          </Prose>
+        </div>
+      ))}
+      <p className="mt-10 font-display text-2xl leading-none font-light text-fg italic">~Triyan</p>
+      <p className="mt-3 font-mono text-2xs tracking-[0.18em] text-fg-subtle uppercase">
+        <time dateTime={timestamp}>
+          {new Date(timestamp).toLocaleDateString('en-GB', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          })}
+        </time>
+      </p>
+    </div>
   );
 }
 
