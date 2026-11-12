@@ -1,4 +1,5 @@
 import Image from '@/lib/image';
+import { BackLink } from '@/components/site/back-link';
 import Link from '@/lib/link';
 import { getCategory, humanizeKey, type InstagramMediaDto } from '@triyan/shared';
 import {
@@ -50,12 +51,7 @@ export default function InstagramPostPage() {
         type="article"
         {...(image ? { image } : {})}
       />
-      <Link
-        href="/instagram"
-        className="font-mono text-2xs tracking-[0.18em] text-fg-subtle uppercase no-underline hover:text-fg"
-      >
-        ← Visual memory
-      </Link>
+      <BackLink href="/instagram">Back to visual memory</BackLink>
 
       <article className="mt-12 grid gap-14 lg:grid-cols-12 lg:gap-8">
         <div className="lg:col-span-7">

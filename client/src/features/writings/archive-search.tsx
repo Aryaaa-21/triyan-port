@@ -10,16 +10,20 @@ export function ArchiveSearch({ initialQuery }: { initialQuery: string }) {
   const searchParams = useSearchParams();
   const [value, setValue] = useState(initialQuery);
   const [pending, startTransition] = useTransition();
-  const isFirstRender = useRef(true);
+  // The address is read through a ref, so that a change of page or shelf (which changes
+  // the address but not the search) never re-runs the search and resets the paging.
+  const paramsRef = useRef(searchParams);
+  useEffect(() => {
+    paramsRef.current = searchParams;
+  }, [searchParams]);
 
   useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
+    const wanted = value.trim();
+    // Nothing to do when the address already says what the box says.
+    if (wanted === (paramsRef.current.get('q') ?? '')) return;
     const timer = setTimeout(() => {
-      const params = new URLSearchParams(searchParams.toString());
-      if (value.trim()) params.set('q', value.trim());
+      const params = new URLSearchParams(paramsRef.current.toString());
+      if (wanted) params.set('q', wanted);
       else params.delete('q');
       params.delete('page');
       const qs = params.toString();
@@ -28,7 +32,7 @@ export function ArchiveSearch({ initialQuery }: { initialQuery: string }) {
       );
     }, 350);
     return () => clearTimeout(timer);
-  }, [value, router, searchParams]);
+  }, [value, router]);
 
   return (
     <form role="search" onSubmit={(event) => event.preventDefault()} className="relative">

@@ -10,6 +10,7 @@ import { ApiError } from '@/lib/api';
 import { siteUrl } from '@/lib/env';
 import { useLoaderData, type LoaderFunctionArgs } from 'react-router';
 import { Meta } from '@/lib/meta';
+import { BackLink } from '@/components/site/back-link';
 
 const load = async (slug: string): Promise<WritingDto | null> => {
   try {
@@ -91,6 +92,11 @@ export default function WritingPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+
+      {/* The way back to the list the reader came from, before anything else. */}
+      <div className="mx-auto max-w-[90rem] pt-6">
+        <BackLink href="/writings">Back to the writings</BackLink>
+      </div>
 
       {/* The room's atmosphere: its shelf's image, faded into the page before reading starts. */}
       {writing.primaryCategory && (
@@ -245,6 +251,8 @@ function Neighbour({
   return (
     <Link
       href={`/writings/${writing.slug}`}
+      // Stepping through pieces replaces this one, so "Back" still leads to the list.
+      replace
       data-cursor="writing"
       className={`group block border-border py-12 no-underline sm:py-16 ${
         direction === 'Next'
