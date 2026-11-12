@@ -35,6 +35,18 @@ How it behaves:
   posts. A correction made in the admin is kept when the import is run again.
 - Captions are the owner's words only: the standing footer ("Original works…"), the keyword
   list and the hashtags are left out.
+- Each post also carries `text`: the writing inside the image, typed out line for line
+  (his spelling and line breaks kept; the signature left off). The post page sets it the
+  same way every time: the writing, then `~triyan`, then the date it was published. A
+  carousel's slides are separated by a `---` line. Photos with no writing have no text.
+- The same import fills the Writings archive. Each distinct piece becomes one published
+  writing (`writings` in the data file): reposts of the same text are one writing, dated by
+  its first post and filed on the shelf of its category. Pieces written with someone else,
+  announcements and photos are not turned into writings. A writing that already exists
+  (matched on its slug) is never overwritten, so edits made in the admin are kept.
+- Five posts on the profile were published from the personal account (`@triyxnn`) as
+  collaborations. They are left out of the archive altogether: neither their data nor their
+  images are in this repository.
 - A reel is archived as one still, so it is stored as an image with `productType: 'REELS'`.
 - The import is safe to run again. It matches posts on their Instagram shortcode.
 - `/instagram?sort=oldest` reads the archive from the first post forward.
