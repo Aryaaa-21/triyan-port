@@ -1,5 +1,4 @@
 node_modules/
-.next/
 dist/
 build/
 coverage/
@@ -14,3 +13,19 @@ coverage/
 tsconfig.tsbuildinfo
 *.tsbuildinfo
 e2e/screenshots/
+
+# Editors, assistants and operating systems
+.vscode/
+.idea/
+.claude/
+Thumbs.db
+desktop.ini
+
+# Local tooling and scratch files
+*.tmp.ts
+*.tmp.mjs
+.cache/
+tmp/
+
+# Working material that lives outside the repository
+instagram-screenshots/
