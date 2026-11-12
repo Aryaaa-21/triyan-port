@@ -10,10 +10,19 @@ const MESSAGES: Record<Exclude<Status, ''>, string> = {
 
 /**
  * Share, after the poem — never floating over it. WhatsApp and X open their own
- * share pages. Instagram has no web share link, so the honest option is the
- * device's share sheet where there is one, and otherwise copying the link.
+ * share pages. Instagram has no web share link: when the piece has its own Instagram
+ * post, "Instagram" opens that post, where it can be shared from; otherwise it falls
+ * back to the device's share sheet, or to copying the link.
  */
-export function ShareActions({ title, url }: { title: string; url: string }) {
+export function ShareActions({
+  title,
+  url,
+  instagramUrl,
+}: {
+  title: string;
+  url: string;
+  instagramUrl?: string;
+}) {
   const [status, setStatus] = useState<Status>('');
 
   const copy = async (next: Exclude<Status, '' | 'failed'>) => {
@@ -53,9 +62,15 @@ export function ShareActions({ title, url }: { title: string; url: string }) {
           </button>
         </li>
         <li>
-          <button type="button" onClick={() => void instagram()} className={item}>
-            Instagram
-          </button>
+          {instagramUrl ? (
+            <a className={item} href={instagramUrl} target="_blank" rel="noopener noreferrer">
+              Instagram <span className="sr-only">(opens the post in a new tab)</span>
+            </a>
+          ) : (
+            <button type="button" onClick={() => void instagram()} className={item}>
+              Instagram
+            </button>
+          )}
         </li>
         <li>
           <a
