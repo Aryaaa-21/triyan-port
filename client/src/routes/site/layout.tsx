@@ -3,6 +3,7 @@ import { SiteHeader } from '@/components/site/site-header';
 import { SiteFooter } from '@/components/site/site-footer';
 import { fetchAboutSafely } from '@/features/content/api';
 import { Cursor } from '@/components/motion/cursor';
+import WindStreamCursor from '@/components/ui/wind-stream-cursor';
 import { ArtDefs } from '@/components/art';
 import WritingsLoading from './writings-loading';
 import WritingLoading from './writing-loading';
@@ -36,6 +37,8 @@ export default function SiteLayout() {
       <div id="site" className="flex min-h-dvh flex-col">
         <ArtDefs />
         <Cursor />
+        {/* The wind that trails the pointer, on every page. */}
+        <WindStreamCursor fixed />
         <SiteHeader />
         <div className="flex-1">
           {/* Re-keyed on every navigation, which is what gives each page its entrance.

@@ -4,7 +4,6 @@ import { Parallax } from '@/components/motion/parallax';
 import { Reveal } from '@/components/ui/reveal';
 import { REMEMBER } from '@/content/triyan';
 import { wordmark } from '@/lib/wordmark';
-import WindStreamCursor from '@/components/ui/wind-stream-cursor';
 
 /** 07 — ABYSS. A doorway: the world beyond the words, and the sense that it is coming. */
 export function AbyssDoor({ abyss }: { abyss: AbyssDto | null }) {
@@ -14,7 +13,6 @@ export function AbyssDoor({ abyss }: { abyss: AbyssDto | null }) {
       aria-labelledby="abyss-heading"
       className="abyss-door relative overflow-hidden bg-black text-white"
     >
-      <WindStreamCursor />
       <Parallax
         speed={-0.15}
         className="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 text-center"

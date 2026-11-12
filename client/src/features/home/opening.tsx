@@ -4,7 +4,6 @@ import { SplitText } from '@/components/motion/split-text';
 import { FilmGrain } from '@/components/ui/film-grain';
 import { ScrollCue } from './scroll-cue';
 import { BlackHoleBackground } from '@/features/blackhole/background';
-import WindStreamCursor from '@/components/ui/wind-stream-cursor';
 
 /**
  * The owner's front-page image of the black hole in black and white, straightened so
@@ -72,7 +71,6 @@ export function HomeOpening({ line }: { line: string }) {
         </div>
         <BlackHoleBackground cover={FRONT} />
         <FilmGrain />
-        <WindStreamCursor />
 
         <div className="pointer-events-none absolute inset-0">
           <p

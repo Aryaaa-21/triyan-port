@@ -4,7 +4,6 @@ import { SplitText } from '@/components/motion/split-text';
 import { Reveal } from '@/components/ui/reveal';
 import { ShirtSilhouette } from '@/features/abyss/silhouette';
 import { Waitlist } from '@/features/abyss/waitlist';
-import WindStreamCursor from '@/components/ui/wind-stream-cursor';
 import { FilmGrain } from '@/components/ui/film-grain';
 import { BlackHoleBackground } from '@/features/blackhole/background';
 import { ABYSS_DIFFERENT, ABYSS_FEELING, ABYSS_FOR, ABYSS_WHY, VENTURES } from '@/content/triyan';
@@ -36,7 +35,6 @@ export default function AbyssPage() {
       />
       {/* ------------------------------------------------------------ mark */}
       <section className="gutter relative isolate flex min-h-[92svh] flex-col justify-end pb-20">
-        <WindStreamCursor />
         {/* The black hole behind the mark: a living background, above the name. */}
         <BlackHoleBackground radius={0.2} offset={[0, 0.4]} />
         <FilmGrain />
