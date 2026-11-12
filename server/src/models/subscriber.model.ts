@@ -1,3 +1,4 @@
+import { CATEGORY_KEYS } from '@triyan/shared';
 import { Schema, model, type InferSchemaType, type Model } from 'mongoose';
 
 export const SUBSCRIBER_STATUSES = ['PENDING', 'ACTIVE', 'UNSUBSCRIBED'] as const;
@@ -20,6 +21,8 @@ const subscriberSchema = new Schema(
       maxlength: 254,
     },
     status: { type: String, enum: SUBSCRIBER_STATUSES, default: 'PENDING', required: true },
+    /** The shelves they want to hear about. Empty means every new writing. */
+    interests: { type: [{ type: String, enum: CATEGORY_KEYS }], default: [] },
     token: { type: String, required: true, unique: true, select: false },
     consentAt: { type: Date, required: true },
     confirmedAt: { type: Date, default: null },

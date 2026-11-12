@@ -1,4 +1,6 @@
 import { useId, useState } from 'react';
+import { CATEGORIES, type CategoryKey } from '@triyan/shared';
+import { cn } from '@/lib/cn';
 
 type State = 'idle' | 'sending' | 'confirm' | 'joined' | 'failed';
 
@@ -7,10 +9,28 @@ type State = 'idle' | 'sending' | 'confirm' | 'joined' | 'failed';
  * answers with what happens next: a confirmation email to open, or — while no email
  * provider is connected — simply that the address is on the list.
  */
-export function SubscribeForm({ className }: { className?: string }) {
+export function SubscribeForm({
+  className,
+  chooseInterests = false,
+  initialInterests = [],
+  label = 'New writings, by email',
+  onDone,
+}: {
+  className?: string;
+  /** Also ask which shelves the reader cares about. None chosen means all of them. */
+  chooseInterests?: boolean;
+  initialInterests?: CategoryKey[];
+  label?: string;
+  /** Called once the address has been accepted. */
+  onDone?: () => void;
+}) {
   const id = useId();
   const [state, setState] = useState<State>('idle');
   const [error, setError] = useState('');
+  const [interests, setInterests] = useState<CategoryKey[]>(initialInterests);
+
+  const toggle = (key: CategoryKey) =>
+    setInterests((now) => (now.includes(key) ? now.filter((k) => k !== key) : [...now, key]));
 
   const submit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -33,7 +53,12 @@ export function SubscribeForm({ className }: { className?: string }) {
       const response = await fetch('/api/v1/newsletter/subscribe', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ email, consent: true, website: String(form.get('website') ?? '') }),
+        body: JSON.stringify({
+          email,
+          consent: true,
+          website: String(form.get('website') ?? ''),
+          ...(chooseInterests ? { interests } : {}),
+        }),
       });
       const body = (await response.json().catch(() => ({}))) as {
         data?: { outcome?: string };
@@ -41,6 +66,7 @@ export function SubscribeForm({ className }: { className?: string }) {
       };
       if (!response.ok) throw new Error(body.error?.message ?? 'failed');
       setState(body.data?.outcome === 'SUBSCRIBED' ? 'joined' : 'confirm');
+      onDone?.();
     } catch (cause) {
       setState('failed');
       setError(
@@ -68,11 +94,44 @@ export function SubscribeForm({ className }: { className?: string }) {
 
   return (
     <form onSubmit={(e) => void submit(e)} noValidate className={className}>
+      {chooseInterests && (
+        <fieldset className="m-0 mb-8 border-0 p-0">
+          <legend className="font-mono text-2xs tracking-[0.18em] text-fg-subtle uppercase">
+            What do you come here for?
+          </legend>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {CATEGORIES.map((category) => {
+              const on = interests.includes(category.key);
+              return (
+                <button
+                  key={category.key}
+                  type="button"
+                  aria-pressed={on}
+                  onClick={() => toggle(category.key)}
+                  className={cn(
+                    'border px-3.5 py-2 font-mono text-2xs tracking-[0.14em] uppercase transition-colors duration-300',
+                    on
+                      ? 'border-fg bg-fg text-bg'
+                      : 'border-border-strong text-fg-muted hover:border-fg hover:text-fg',
+                  )}
+                >
+                  {category.label}
+                </button>
+              );
+            })}
+          </div>
+          <p className="mt-3 font-ui text-xs text-fg-subtle">
+            {interests.length === 0
+              ? 'Choose any that speak to you, or none to hear about everything.'
+              : `You will hear about ${interests.length === 1 ? 'this shelf' : `these ${interests.length} shelves`} only.`}
+          </p>
+        </fieldset>
+      )}
       <label
         htmlFor={`${id}-email`}
         className="font-mono text-2xs tracking-[0.18em] text-fg-subtle uppercase"
       >
-        New writings, by email
+        {label}
       </label>
       <div className="mt-2 flex items-end gap-4 border-b border-border-strong focus-within:border-fg">
         <input

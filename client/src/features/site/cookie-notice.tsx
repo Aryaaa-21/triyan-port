@@ -34,8 +34,8 @@ export function CookieNotice() {
       className="cookie-notice fixed bottom-32 left-4 z-(--z-sticky) max-w-[min(22rem,calc(100vw-2rem))] border border-border-strong bg-bg/95 p-5 backdrop-blur sm:bottom-6 sm:left-6"
     >
       <p className="font-reading text-sm leading-prose text-fg-muted">
-        No tracking, no advertising cookies. This site only remembers your light or dark choice, on
-        your own device.
+        No tracking, no advertising cookies. This site only remembers your light or dark choice and
+        what you have dismissed, on your own device.
       </p>
       <button
         type="button"

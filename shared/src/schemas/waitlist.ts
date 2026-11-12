@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { emailSchema } from './common.js';
+import { categoryKeySchema, emailSchema } from './common.js';
 
 export const waitlistSchema = z.object({
   email: emailSchema,
@@ -22,6 +22,8 @@ export const contactSchema = z.object({
 export const subscribeSchema = z.object({
   email: emailSchema,
   consent: z.literal(true, { error: 'Tick the box to say yes' }),
+  /** The shelves the reader cares about. Empty or absent means all of them. */
+  interests: z.array(categoryKeySchema).max(8).optional(),
   website: z.string().max(0).optional(),
 });
 

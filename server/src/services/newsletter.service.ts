@@ -121,11 +121,17 @@ export type SubscribeOutcome = 'CONFIRMATION_SENT' | 'SUBSCRIBED';
  *
  * The answer never reveals whether the address was already on the list.
  */
-export const subscribe = async (email: string): Promise<SubscribeOutcome> => {
+export const subscribe = async (email: string, interests?: string[]): Promise<SubscribeOutcome> => {
   const canMail = mailEnabled();
   const existing = await Subscriber.findOne({ email }).select('+token');
 
-  if (existing?.status === 'ACTIVE') return canMail ? 'CONFIRMATION_SENT' : 'SUBSCRIBED';
+  // Someone already on the list who picks shelves again is updating their choice.
+  const chosen = interests ? { interests: [...new Set(interests)] } : {};
+
+  if (existing?.status === 'ACTIVE') {
+    if (interests) await Subscriber.updateOne({ email }, { $set: chosen });
+    return canMail ? 'CONFIRMATION_SENT' : 'SUBSCRIBED';
+  }
 
   const now = new Date();
   const token = existing?.token ?? newToken();
@@ -137,6 +143,7 @@ export const subscribe = async (email: string): Promise<SubscribeOutcome> => {
         consentAt: now,
         confirmedAt: canMail ? null : now,
         unsubscribedAt: null,
+        ...chosen,
       },
       $setOnInsert: { email, token },
     },
@@ -193,7 +200,14 @@ export const announceWriting = async (id: string): Promise<AnnounceOutcome> => {
   ).lean();
   if (!claimed) return { ok: false, reason: 'ALREADY_SENT' };
 
-  const subscribers = await Subscriber.find({ status: 'ACTIVE' }).select('+token email').lean();
+  // A reader who chose shelves hears only about those; one who chose none hears about all.
+  const shelf = claimed.primaryCategory;
+  const subscribers = await Subscriber.find({
+    status: 'ACTIVE',
+    ...(shelf ? { $or: [{ interests: { $size: 0 } }, { interests: shelf }] } : {}),
+  })
+    .select('+token email')
+    .lean();
   const { sent, failed } = await sendMany(
     subscribers.map((s) => announcementMail(s.email, s.token, claimed)),
   );

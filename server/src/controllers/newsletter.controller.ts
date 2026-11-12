@@ -27,7 +27,7 @@ export const postSubscribe: RequestHandler = async (req, res, next) => {
     return;
   }
   try {
-    ok(res, { outcome: await subscribe(parsed.data.email) });
+    ok(res, { outcome: await subscribe(parsed.data.email, parsed.data.interests) });
   } catch (error) {
     logger.error({ event: 'newsletter.subscribe_failed', err: error }, 'Confirmation not sent');
     next(HttpError.upstream('The confirmation email could not be sent. Try again in a moment.'));

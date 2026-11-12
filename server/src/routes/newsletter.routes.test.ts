@@ -159,6 +159,34 @@ describe('announcing a writing', () => {
     expect((await Writing.findById(writing._id).lean())?.notifiedAt).toBeInstanceOf(Date);
   });
 
+  it('sends a shelf only to those who chose it, or who chose nothing', async () => {
+    const pick = async (email: string, interests?: string[]) => {
+      await request(app)
+        .post('/api/v1/newsletter/subscribe')
+        .send({ email, consent: true, ...(interests ? { interests } : {}) })
+        .expect(200);
+      await request(app)
+        .get(`/api/v1/newsletter/confirm?token=${await tokenOf(email)}`)
+        .expect(303);
+    };
+    await pick('love@example.test', ['LOVE_LONGING']);
+    await pick('grief@example.test', ['GRIEF_MELANCHOLY', 'EXISTENTIALISM']);
+    await pick('all@example.test');
+    sentMail.length = 0;
+
+    const writing = await makeWriting({ status: 'PUBLISHED', primaryCategory: 'LOVE_LONGING' });
+    const res = await announce(String(writing._id)).expect(200);
+    expect(item<{ total: number }>(res).total).toBe(2);
+    expect(sentMail.map((m) => m.to).sort()).toEqual(['all@example.test', 'love@example.test']);
+  });
+
+  it('rejects a shelf that does not exist', async () => {
+    await request(app)
+      .post('/api/v1/newsletter/subscribe')
+      .send({ email: 'x@example.test', consent: true, interests: ['NOT_A_SHELF'] })
+      .expect(400);
+  });
+
   it('never sends the same writing twice', async () => {
     await joinAndConfirm('one@example.test');
     const writing = await makeWriting({ status: 'PUBLISHED' });

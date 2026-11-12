@@ -5,6 +5,8 @@ import { ArchiveSearch } from '@/features/writings/archive-search';
 import { WritingRow } from '@/features/writings/writing-row';
 import { ShelfCorner, ShelfStrip } from '@/features/writings/shelf-strip';
 import { Pager } from '@/features/writings/pager';
+import { InterestPopup } from '@/features/newsletter/interest-popup';
+import { useMatches } from 'react-router';
 import { CategoryPlate } from '@/components/art';
 import { ContentPending, Label } from '@/components/editorial';
 import { ApiError } from '@/lib/api';
@@ -66,8 +68,14 @@ export default function WritingsPage() {
 
   const activeCategory = query.category ? getCategory(query.category) : undefined;
 
+  // The shell's loader knows whether the site can keep addresses at all.
+  const canSubscribe = useMatches().some(
+    (match) => (match.data as { newsletter?: boolean } | undefined)?.newsletter === true,
+  );
+
   return (
     <main id="main" className="gutter">
+      {canSubscribe && <InterestPopup current={activeCategory?.key} />}
       <Meta
         title="Writings"
         description="The archive: poetry and philosophical writing by Triyan, in English and Hindi, discoverable by theme, emotion and language."

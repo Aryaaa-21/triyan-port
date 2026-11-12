@@ -1,6 +1,6 @@
 import { useRouter } from '@/lib/navigation';
 import { useState, useTransition } from 'react';
-import type { SubscriberDto } from '@triyan/shared';
+import { getCategory, type SubscriberDto } from '@triyan/shared';
 import { adminApi, AdminError } from '@/features/admin/client';
 import { useConfirm } from '@/components/ui/confirm';
 
@@ -46,7 +46,14 @@ export function SubscriberList({ subscribers }: { subscribers: SubscriberDto[] }
             key={s._id}
             className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 py-4"
           >
-            <span className="font-mono text-sm break-all text-fg">{s.email}</span>
+            <span className="font-mono text-sm break-all text-fg">
+              {s.email}
+              <span className="mt-1 block text-2xs tracking-[0.1em] text-fg-subtle">
+                {s.interests?.length
+                  ? s.interests.map((key) => getCategory(key)?.label ?? key).join(' · ')
+                  : 'Every shelf'}
+              </span>
+            </span>
             <span className="flex items-baseline gap-6 font-mono text-2xs tracking-[0.12em] text-fg-subtle uppercase">
               <span className={s.status === 'ACTIVE' ? 'text-fg-muted' : undefined}>
                 {STATUS_LABEL[s.status]}

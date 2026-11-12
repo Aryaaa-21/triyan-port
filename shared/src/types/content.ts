@@ -138,6 +138,8 @@ export interface SubscriberDto {
   _id: string;
   email: string;
   status: SubscriberStatus;
+  /** Shelves they asked about; empty means every new writing. */
+  interests: string[];
   consentAt: string;
   confirmedAt: string | null;
   createdAt: string;
