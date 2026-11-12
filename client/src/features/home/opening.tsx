@@ -104,6 +104,8 @@ export function HomeOpening({ line }: { line: string }) {
 
         <ScrollCue
           target="triyan"
+          // The line in the dark is fully lit from 0.80 to 0.86: stop there and let it be read.
+          rest={{ at: 0.83, ms: 2600 }}
           className="opening-cue absolute bottom-8 left-1/2 -translate-x-1/2 font-mono text-2xs tracking-[0.3em] text-white/55 uppercase no-underline hover:text-white"
         >
           Scroll to enter
