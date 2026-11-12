@@ -4,6 +4,7 @@ import { fetchRelated, fetchWriting, fetchWritings } from '@/features/writings/a
 import { ShareActions } from '@/features/writings/share-actions';
 import { Label } from '@/components/editorial';
 import { CategoryArt } from '@/components/art';
+import { InSimpleWords } from '@/features/writings/in-simple-words';
 import { Prose } from '@/components/ui/prose';
 import { ApiError } from '@/lib/api';
 import { siteUrl } from '@/lib/env';
@@ -141,13 +142,36 @@ export default function WritingPage() {
           </Prose>
         </div>
 
-        <p aria-hidden="true" className="mt-24 font-display text-2xl text-fg-subtle">
-          —
+        {/* Every piece closes the same way: his name, then the day it was published. */}
+        <p className="mt-16 font-display text-2xl leading-none font-light text-fg italic">
+          ~Triyan
         </p>
+        {date && (
+          <p className="mt-3 font-mono text-2xs tracking-[0.18em] text-fg-subtle uppercase">
+            <time dateTime={writing.publishedAt ?? undefined}>{date}</time>
+          </p>
+        )}
       </article>
 
       <div className="mx-auto measure-poem space-y-14 pb-24">
-        <ShareActions title={writing.title} url={canonical} />
+        {writing.explanation && <InSimpleWords>{writing.explanation}</InSimpleWords>}
+
+        {writing.instagramUrl && (
+          <a
+            href={writing.instagramUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-3 font-mono text-xs tracking-[0.2em] text-fg uppercase no-underline hover:text-accent"
+          >
+            View the post on Instagram ↗
+          </a>
+        )}
+
+        <ShareActions
+          title={writing.title}
+          url={canonical}
+          {...(writing.instagramUrl ? { instagramUrl: writing.instagramUrl } : {})}
+        />
 
         {(writing.themes.length > 0 || writing.emotions.length > 0) && (
           <section aria-label="Themes and emotions">
