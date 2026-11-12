@@ -21,6 +21,10 @@ const BOOK_SHELVES: CategoryKey[] = [
   'EXISTENTIALISM',
 ];
 
+/** The owner's jacket artwork: the front panel leads the page, the full wrap follows. */
+const BOOK_COVER = '/images/book-cover.jpg';
+const BOOK_JACKET = '/images/book-jacket.jpg';
+
 const SUBJECTS = [
   'love',
   'loss',
@@ -168,6 +172,27 @@ export default function BookPage() {
             )}
           </div>
         </section>
+
+        {/* ---------------------------------------------------------- jacket */}
+        {book.coverImageUrl === BOOK_COVER && (
+          <section aria-labelledby="jacket-heading" className="mt-32 lg:mt-44">
+            <SectionIntro label="The jacket" className="mb-12" />
+            <h2 id="jacket-heading" className="sr-only">
+              The jacket
+            </h2>
+            <Reveal variant="clip">
+              <img
+                src={BOOK_JACKET}
+                alt={`The full jacket of ${book.title}: back cover with the publisher's description, spine, and front cover`}
+                width={1540}
+                height={1200}
+                loading="lazy"
+                decoding="async"
+                className="mx-auto h-auto w-full max-w-5xl shadow-[var(--shadow-overlay)]"
+              />
+            </Reveal>
+          </section>
+        )}
 
         {/* ------------------------------------------------------------- why */}
         <section aria-labelledby="why-heading" className="mt-40 lg:mt-56">
