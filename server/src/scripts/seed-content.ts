@@ -72,8 +72,13 @@ const main = async (): Promise<void> => {
     // so no purchase link is shown until they are.
     purchaseUrl: '',
     published: true,
-    // Left empty until supplied: coverImageUrl, publisher, isbn, price,
-    // publicationDate, formats, reviews, excerptSlugs.
+    // The owner's jacket artwork: the front panel, cut from the full wrap in
+    // client/public/images/book-jacket.jpg.
+    coverImageUrl: '/images/book-cover.jpg',
+    // Printed on that jacket.
+    publisher: "Writer's Pocket",
+    isbn: '978-93-7903-419-9',
+    // Left empty until supplied: price, publicationDate, formats, reviews, excerptSlugs.
   });
 
   await updateAbyss({
