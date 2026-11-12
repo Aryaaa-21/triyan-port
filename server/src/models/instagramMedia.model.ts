@@ -82,6 +82,13 @@ const instagramMediaSchema = new Schema(
     hidden: { type: Boolean, default: false },
     displayTitle: { type: String, default: '', maxlength: 200, trim: true },
     altText: { type: String, default: '', maxlength: 400, trim: true },
+    /**
+     * The writing inside the image, typed out line for line. Archive posts only; a
+     * carousel's slides are separated by a line holding `---`.
+     */
+    text: { type: String, default: '', maxlength: 20_000 },
+    /** The piece in the simplest words: the archive's reading, not the author's. */
+    explanation: { type: String, default: '', maxlength: 2000, trim: true },
 
     available: { type: Boolean, default: true },
     unavailableSince: { type: Date, default: null },

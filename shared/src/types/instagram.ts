@@ -57,6 +57,10 @@ export interface InstagramMediaDto {
   hidden: boolean;
   displayTitle: string;
   altText: string;
+  /** The writing inside the image, typed out; '' when there is none. Slides are split by a `---` line. */
+  text: string;
+  /** The piece in the simplest words: the archive's reading, not the author's. */
+  explanation: string;
   available: boolean;
   provider: InstagramProviderName;
   syncedAt: string;

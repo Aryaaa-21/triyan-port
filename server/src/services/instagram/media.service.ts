@@ -74,6 +74,8 @@ export const toDto = (doc: Lean): InstagramMediaDto => ({
   hidden: doc.hidden ?? false,
   displayTitle: doc.displayTitle ?? '',
   altText: doc.altText ?? '',
+  text: doc.text ?? '',
+  explanation: doc.explanation ?? '',
   available: doc.available ?? true,
   provider: doc.provider,
   syncedAt: new Date(doc.syncedAt ?? doc.timestamp).toISOString(),
