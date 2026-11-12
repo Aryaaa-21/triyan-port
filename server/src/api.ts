@@ -2,11 +2,12 @@ import { createApp } from './app.js';
 import { connectDatabase, disconnectDatabase, ensureIndexes } from './config/db.js';
 import { env } from './config/env.js';
 import { logger } from './config/logger.js';
+import { archiveMode } from './archive/store.js';
 
 const main = async (): Promise<void> => {
-  // Production must never run without a database. Development may: the API shell runs
-  // with no infrastructure at all, and /readyz reports the degraded state honestly.
-  if (env.NODE_ENV === 'production' && !env.MONGODB_URI) {
+  // Production runs with a database, or read-only from the archive file in the
+  // repository. With neither there would be nothing to serve.
+  if (env.NODE_ENV === 'production' && !env.MONGODB_URI && !archiveMode) {
     throw new Error('MONGODB_URI is required to run the API in production');
   }
   if (env.MONGODB_URI) {
@@ -15,8 +16,11 @@ const main = async (): Promise<void> => {
     await ensureIndexes();
   } else {
     logger.warn(
-      'MONGODB_URI is not set — starting without a database. Routes that need one will ' +
-        'fail and /readyz will report not-ready. Set it in server/.env to connect.',
+      archiveMode
+        ? 'MONGODB_URI is not set — serving the public pages read-only from the archive ' +
+            'file. The admin, contact form and waitlist need a database.'
+        : 'MONGODB_URI is not set — starting without a database. Routes that need one will ' +
+            'fail and /readyz will report not-ready. Set it in server/.env to connect.',
     );
   }
 

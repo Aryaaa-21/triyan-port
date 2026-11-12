@@ -5,7 +5,10 @@
   "buildCommand": "npm run build",
   "outputDirectory": "client/dist",
   "functions": {
-    "api/index.mjs": { "maxDuration": 30, "includeFiles": "client/dist/index.html" }
+    "api/index.mjs": {
+      "maxDuration": 30,
+      "includeFiles": "{client/dist/index.html,server/data/instagram-archive.json}"
+    }
   },
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api" },

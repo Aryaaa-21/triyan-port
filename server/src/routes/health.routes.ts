@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { databaseState } from '../config/db.js';
 import { env } from '../config/env.js';
 import { noStore } from '../utils/respond.js';
+import { archiveMode, archiveStore } from '../archive/store.js';
 
 export const healthRouter = Router();
 
@@ -22,12 +23,22 @@ healthRouter.get('/healthz', (_req, res) => {
 healthRouter.get('/readyz', (_req, res) => {
   const database = databaseState();
   const configured = Boolean(env.MONGODB_URI);
-  const ready = database === 'connected' || env.NODE_ENV === 'test';
+  // With no database configured the site reads the archive file, and that is ready too.
+  const ready = database === 'connected' || env.NODE_ENV === 'test' || archiveMode;
 
   noStore(res);
   res.status(ready ? 200 : 503).json({
     status: ready ? 'ready' : 'not-ready',
-    database,
-    ...(configured ? {} : { reason: 'MONGODB_URI is not configured' }),
+    database: archiveMode ? 'none' : database,
+    ...(archiveMode
+      ? {
+          source: 'archive-file',
+          writings: archiveStore().writings.length,
+          posts: archiveStore().media.length,
+          note: 'Read-only: the admin, contact form and waitlist need MONGODB_URI',
+        }
+      : configured
+        ? {}
+        : { reason: 'MONGODB_URI is not configured' }),
   });
 });

@@ -1,6 +1,7 @@
 import type { Request, RequestHandler } from 'express';
 import { Writing } from '../models/index.js';
 import { publicFilter } from '../services/writing.service.js';
+import { archiveMode, archiveStore } from '../archive/store.js';
 
 /** The site's own origin, as the visitor reached it (the site and API share one). */
 const origin = (req: Request) => `${req.protocol}://${req.get('host') ?? 'localhost'}`;
@@ -47,14 +48,16 @@ export const robotsTxt: RequestHandler = (req, res) => {
  */
 export const sitemapXml: RequestHandler = async (req, res) => {
   const site = origin(req);
-  const writings: { slug: string; updatedAt?: Date }[] = await Writing.find({
-    ...publicFilter(),
-    'seo.noindex': { $ne: true },
-  })
-    .select('slug updatedAt')
-    .sort({ publishedAt: -1 })
-    .lean()
-    .catch(() => []);
+  const writings: { slug: string; updatedAt?: Date | string }[] = archiveMode
+    ? archiveStore().writings.map((w) => ({ slug: w.slug, updatedAt: w.updatedAt }))
+    : await Writing.find({
+        ...publicFilter(),
+        'seo.noindex': { $ne: true },
+      })
+        .select('slug updatedAt')
+        .sort({ publishedAt: -1 })
+        .lean()
+        .catch(() => []);
   const urls = [
     ...STATIC_ROUTES.map(
       ([path, changefreq, priority]) =>
