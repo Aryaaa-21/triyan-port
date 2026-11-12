@@ -12,8 +12,7 @@ The literary home of **Triyan** — poet, writer, artist — and of **ABYSS**.
 | [`docs/SETUP.md`](docs/SETUP.md) | Running it locally |
 | [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) | Vercel (website), Railway (API), MongoDB Atlas |
 | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Product, technical, visual, data, API and deployment architecture |
-| [`docs/INSTAGRAM.md`](docs/INSTAGRAM.md) | Connecting the official Instagram API |
-| [`FINAL_AUDIT.md`](FINAL_AUDIT.md) · [`UI_UX_AUDIT.md`](UI_UX_AUDIT.md) | What is done, what is blocked, and the evidence |
+| [`docs/INSTAGRAM.md`](docs/INSTAGRAM.md) | The screenshot archive of @triyanwrites, and connecting the official Instagram API |
 
 ## Stack
 
@@ -26,7 +25,8 @@ A **MERN** app in an npm-workspaces monorepo:
   WebGL shader for the black hole (`client/`)
 - **Node** — 22
 - **shared** — zod schemas, taxonomy and types used by both
-- **Instagram** — official Instagram API with Instagram Login only. No scraping.
+- **Instagram** — the owner's screenshot archive of @triyanwrites, imported by script;
+  live syncing uses the official Instagram API with Instagram Login only.
 
 ## Quick start
 

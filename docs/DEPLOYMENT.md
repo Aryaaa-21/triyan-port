@@ -92,8 +92,9 @@ start without `MONGODB_URI`.
 - **If the database is down,** pages still render and show their empty states;
   `/readyz` says why.
 - **Rate limits** (global, login, contact) are kept in memory, per function instance.
-- **Instagram media links** come from Instagram's CDN and expire (see
-  `FINAL_AUDIT.md`).
+- **Instagram images** in the archive are files in `client/public/archive/instagram`,
+  deployed with the site. Posts from a later API sync would link to Instagram's CDN, and
+  those links expire (see `INSTAGRAM.md`).
 
 ## Checklist
 
