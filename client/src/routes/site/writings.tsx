@@ -3,7 +3,8 @@ import { CATEGORIES, getCategory, type CategoryKey, type WritingDto } from '@tri
 import { fetchWritings, type ArchiveQuery } from '@/features/writings/api';
 import { ArchiveSearch } from '@/features/writings/archive-search';
 import { WritingRow } from '@/features/writings/writing-row';
-import { ShelfStrip } from '@/features/writings/shelf-strip';
+import { ShelfCorner, ShelfStrip } from '@/features/writings/shelf-strip';
+import { Pager } from '@/features/writings/pager';
 import { CategoryPlate } from '@/components/art';
 import { ContentPending, Label } from '@/components/editorial';
 import { ApiError } from '@/lib/api';
@@ -82,131 +83,123 @@ export default function WritingsPage() {
           </p>
         </header>
 
-        {activeCategory && (
-          <section
-            aria-label={`${activeCategory.label} shelf`}
-            className="mt-16 grid gap-10 lg:grid-cols-12 lg:items-end lg:gap-8"
-          >
-            <CategoryPlate
-              category={activeCategory.key as CategoryKey}
-              className="aspect-[16/9] lg:col-span-8 lg:aspect-[21/9]"
-            />
-            <div className="lg:col-span-4">
-              <p className="font-mono text-2xs tracking-[0.18em] text-fg-subtle uppercase tabular-nums">
-                Shelf{' '}
-                {String(CATEGORIES.findIndex((c) => c.key === activeCategory.key) + 1).padStart(
-                  2,
-                  '0',
-                )}
-              </p>
-              <h2 className="mt-4 font-display text-[clamp(2.25rem,4vw,3.5rem)] leading-[1] font-light tracking-tight">
-                {activeCategory.label}
-              </h2>
-              <p className="mt-5 font-display text-xl leading-snug font-light text-fg-muted italic">
-                {activeCategory.description}
-              </p>
+        {/* With a shelf open, every shelf moves to the right corner and stays in view. */}
+        <div className={cn(activeCategory && 'lg:grid lg:grid-cols-12 lg:gap-8')}>
+          <div className={cn(activeCategory && 'min-w-0 lg:col-span-9')}>
+            {activeCategory && (
+              <section
+                aria-label={`${activeCategory.label} shelf`}
+                className="mt-16 grid gap-10 lg:grid-cols-12 lg:items-end lg:gap-8"
+              >
+                <CategoryPlate
+                  category={activeCategory.key as CategoryKey}
+                  className="aspect-[16/9] lg:col-span-8 lg:aspect-[21/9]"
+                />
+                <div className="lg:col-span-4">
+                  <p className="font-mono text-2xs tracking-[0.18em] text-fg-subtle uppercase tabular-nums">
+                    Shelf{' '}
+                    {String(CATEGORIES.findIndex((c) => c.key === activeCategory.key) + 1).padStart(
+                      2,
+                      '0',
+                    )}
+                  </p>
+                  <h2 className="mt-4 font-display text-[clamp(2.25rem,4vw,3.5rem)] leading-[1] font-light tracking-tight">
+                    {activeCategory.label}
+                  </h2>
+                  <p className="mt-5 font-display text-xl leading-snug font-light text-fg-muted italic">
+                    {activeCategory.description}
+                  </p>
+                </div>
+              </section>
+            )}
+
+            <div className={cn('mt-16', activeCategory && 'lg:hidden')}>
+              <ShelfStrip active={query.category} hrefFor={(key) => href({ category: key })} />
             </div>
-          </section>
-        )}
 
-        <div className="mt-16">
-          <ShelfStrip active={query.category} hrefFor={(key) => href({ category: key })} />
-        </div>
+            <div className="mt-16 grid gap-12 lg:grid-cols-12 lg:items-end lg:gap-8">
+              <div className="lg:col-span-6">
+                <ArchiveSearch initialQuery={query.q ?? ''} />
+              </div>
+              <nav aria-label="Filter by language" className="lg:col-span-4 lg:col-start-9">
+                <Label as="p">Language</Label>
+                <ul className="mt-4 flex flex-wrap gap-x-6 gap-y-3">
+                  {LANGUAGES.map((language) => (
+                    <li key={language.key}>
+                      <Filter
+                        href={href({
+                          language: query.language === language.key ? undefined : language.key,
+                        })}
+                        active={query.language === language.key}
+                      >
+                        {language.label}
+                      </Filter>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </div>
 
-        <div className="mt-16 grid gap-12 lg:grid-cols-12 lg:items-end lg:gap-8">
-          <div className="lg:col-span-6">
-            <ArchiveSearch initialQuery={query.q ?? ''} />
+            <div className="mt-20 flex items-baseline justify-between border-b border-border pb-4">
+              <p
+                className="font-mono text-2xs tracking-[0.18em] text-fg-subtle uppercase"
+                aria-live="polite"
+              >
+                {failed
+                  ? 'Archive unavailable'
+                  : `${total} ${total === 1 ? 'writing' : 'writings'}${activeCategory ? ` · ${activeCategory.label}` : ''}${query.q ? ` · “${query.q}”` : ''}`}
+              </p>
+              {filtered && (
+                <Link
+                  href="/writings"
+                  className="font-mono text-2xs tracking-[0.18em] text-fg-subtle uppercase no-underline hover:text-fg"
+                >
+                  Clear
+                </Link>
+              )}
+            </div>
+
+            {failed ? (
+              <div className="py-24">
+                <ContentPending label="Unreachable">
+                  Something failed between here and the library. The writing is safe; try again in a
+                  moment.
+                </ContentPending>
+              </div>
+            ) : writings.length === 0 ? (
+              <div className="py-24">
+                <ContentPending label={filtered ? 'Nothing found' : 'Content to be added'}>
+                  {filtered
+                    ? 'Nothing in the archive matches. Try fewer words, or another shelf.'
+                    : 'The archive is empty for now. Published writings will be gathered here.'}
+                </ContentPending>
+              </div>
+            ) : (
+              <ol className="archive-list">
+                {writings.map((writing, i) => (
+                  <li key={writing.slug}>
+                    <WritingRow writing={writing} index={(page - 1) * PAGE_SIZE + i + 1} />
+                  </li>
+                ))}
+              </ol>
+            )}
+
+            <Pager
+              page={page}
+              totalPages={totalPages}
+              total={total}
+              pageSize={PAGE_SIZE}
+              hrefFor={(n) => href({ page: n > 1 ? String(n) : undefined })}
+            />
           </div>
-          <nav aria-label="Filter by language" className="lg:col-span-4 lg:col-start-9">
-            <Label as="p">Language</Label>
-            <ul className="mt-4 flex flex-wrap gap-x-6 gap-y-3">
-              {LANGUAGES.map((language) => (
-                <li key={language.key}>
-                  <Filter
-                    href={href({
-                      language: query.language === language.key ? undefined : language.key,
-                    })}
-                    active={query.language === language.key}
-                  >
-                    {language.label}
-                  </Filter>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </div>
-
-        <div className="mt-20 flex items-baseline justify-between border-b border-border pb-4">
-          <p
-            className="font-mono text-2xs tracking-[0.18em] text-fg-subtle uppercase"
-            aria-live="polite"
-          >
-            {failed
-              ? 'Archive unavailable'
-              : `${total} ${total === 1 ? 'writing' : 'writings'}${activeCategory ? ` · ${activeCategory.label}` : ''}${query.q ? ` · “${query.q}”` : ''}`}
-          </p>
-          {filtered && (
-            <Link
-              href="/writings"
-              className="font-mono text-2xs tracking-[0.18em] text-fg-subtle uppercase no-underline hover:text-fg"
-            >
-              Clear
-            </Link>
+          {activeCategory && (
+            <aside className="mt-16 hidden lg:col-span-3 lg:block">
+              <div className="sticky top-28">
+                <ShelfCorner active={query.category} hrefFor={(key) => href({ category: key })} />
+              </div>
+            </aside>
           )}
         </div>
-
-        {failed ? (
-          <div className="py-24">
-            <ContentPending label="Unreachable">
-              Something failed between here and the library. The writing is safe; try again in a
-              moment.
-            </ContentPending>
-          </div>
-        ) : writings.length === 0 ? (
-          <div className="py-24">
-            <ContentPending label={filtered ? 'Nothing found' : 'Content to be added'}>
-              {filtered
-                ? 'Nothing in the archive matches. Try fewer words, or another shelf.'
-                : 'The archive is empty for now. Published writings will be gathered here.'}
-            </ContentPending>
-          </div>
-        ) : (
-          <ol className="archive-list">
-            {writings.map((writing, i) => (
-              <li key={writing.slug}>
-                <WritingRow writing={writing} index={(page - 1) * PAGE_SIZE + i + 1} />
-              </li>
-            ))}
-          </ol>
-        )}
-
-        {totalPages > 1 && (
-          <nav aria-label="Pages" className="mt-16 flex items-center justify-between">
-            {page > 1 ? (
-              <Link
-                href={href({ page: String(page - 1) })}
-                className="font-mono text-xs tracking-[0.2em] text-fg uppercase no-underline hover:text-accent"
-              >
-                ← Newer
-              </Link>
-            ) : (
-              <span />
-            )}
-            <span className="font-mono text-2xs text-fg-subtle tabular-nums">
-              {page} / {totalPages}
-            </span>
-            {page < totalPages ? (
-              <Link
-                href={href({ page: String(page + 1) })}
-                className="font-mono text-xs tracking-[0.2em] text-fg uppercase no-underline hover:text-accent"
-              >
-                Older →
-              </Link>
-            ) : (
-              <span />
-            )}
-          </nav>
-        )}
       </div>
     </main>
   );
