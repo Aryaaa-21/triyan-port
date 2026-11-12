@@ -32,7 +32,12 @@ export MONGODB_URI='mongodb+srv://…'    # the Atlas string
 export MONGODB_DB_NAME=triyan_prod
 ADMIN_SEED_PASSWORD='…' npm run seed:admin -w @triyan/server -- --email you@example.com
 npm run seed:content -w @triyan/server
+npm run import:instagram-archive -w @triyan/server
 ```
+
+The last command loads the @triyanwrites archive: the Instagram posts with their
+screenshots, and the writings that fill the Writings shelves. It is safe to run again
+after the archive data changes (see `INSTAGRAM.md`).
 
 ## 3. Vercel
 
@@ -99,7 +104,7 @@ start without `MONGODB_URI`.
 ## Checklist
 
 - [ ] Atlas cluster, user and network access
-- [ ] Admin and content seeded
+- [ ] Admin, content and the Instagram archive seeded
 - [ ] Vercel project imported, with `MONGODB_URI` and `MONGODB_DB_NAME`
 - [ ] `/readyz` reports `ready`
 - [ ] Sign in at `/admin/login` and publish a first writing
