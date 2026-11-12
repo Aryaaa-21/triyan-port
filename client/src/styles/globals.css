@@ -89,6 +89,8 @@
   html {
     -webkit-text-size-adjust: 100%;
     text-rendering: optimizeLegibility;
+    /* Nothing on the site is meant to be reached by scrolling the page sideways. */
+    overflow-x: clip;
   }
 
   body {
@@ -839,16 +841,13 @@
     transition: opacity 0.3s;
   }
 
-  .cursor[data-state='writing'] .cursor-label::after {
-    content: 'Read';
-  }
-
-  .cursor[data-state='view'] .cursor-label::after {
-    content: 'View';
-  }
-
-  /* Links: a hollow ring. */
+  /*
+   * Links, writings and images: a hollow ring. (The large filled disc that carried a
+   * "Read" / "View" label was removed at the owner's request.)
+   */
   .cursor[data-state='link'] .cursor-ring,
+  .cursor[data-state='writing'] .cursor-ring,
+  .cursor[data-state='view'] .cursor-ring,
   .cursor[data-state='magnetic'] .cursor-ring {
     width: 34px;
     height: 34px;
@@ -866,17 +865,6 @@
     height: 26px;
     background: transparent;
     border-style: dashed;
-  }
-
-  .cursor[data-state='writing'] .cursor-ring,
-  .cursor[data-state='view'] .cursor-ring {
-    width: 64px;
-    height: 64px;
-  }
-
-  .cursor[data-state='writing'] .cursor-label,
-  .cursor[data-state='view'] .cursor-label {
-    opacity: 1;
   }
 
   .cursor[data-pressed='true'] .cursor-ring {
@@ -902,5 +890,124 @@
 
   .section-gap {
     padding-block: var(--space-section);
+  }
+}
+
+/* A reader's review, shown as the screenshot of where it was posted. */
+.review-shot {
+  background: var(--review-paper);
+}
+
+/* The backdrop of a confirmation: the page stays visible, dimmed. */
+.confirm-dialog::backdrop {
+  background: color-mix(in srgb, var(--bg) 72%, transparent);
+  backdrop-filter: blur(3px);
+}
+
+/* An expandable question: the marker is ours, and turns when the answer is open. */
+.faq summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+.faq summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq[open] .faq-mark {
+  rotate: 45deg;
+}
+
+/*
+ * Print. A poem should print as a poem: ink on white, the words and their credit,
+ * and none of the site's furniture.
+ */
+@media print {
+  :root,
+  :root[data-theme] {
+    --bg: var(--print-paper);
+    --bg-raised: var(--print-paper);
+    --surface: var(--print-paper);
+    --fg: var(--print-ink);
+    --fg-muted: var(--print-ink);
+    --fg-subtle: var(--print-ink-soft);
+    --border: var(--print-rule);
+    --border-strong: var(--print-rule);
+    --accent: var(--print-ink);
+    --vignette: none;
+  }
+
+  @page {
+    margin: 18mm 16mm;
+  }
+
+  html,
+  body {
+    background: var(--print-paper) !important;
+    color: var(--print-ink) !important;
+    font-size: 11pt;
+  }
+
+  .site-header,
+  footer,
+  nav,
+  canvas,
+  video,
+  form,
+  button,
+  .scroll-progress,
+  .floating-actions,
+  .cookie-notice,
+  .film-grain,
+  [aria-hidden='true'] {
+    display: none !important;
+  }
+
+  /* Everything that waits to be scrolled into view is simply there on paper. */
+  .reveal,
+  .reveal > *,
+  .page-enter {
+    opacity: 1 !important;
+    translate: none !important;
+    filter: none !important;
+    clip-path: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
+
+  main {
+    padding: 0 !important;
+  }
+
+  a {
+    color: inherit !important;
+    text-decoration: none !important;
+  }
+
+  /* A link out of the site is no use on paper unless its address is printed. */
+  main a[href^='http']::after {
+    content: ' (' attr(href) ')';
+    font-size: 0.8em;
+    word-break: break-all;
+  }
+
+  img {
+    max-width: 100% !important;
+    break-inside: avoid;
+  }
+
+  h1,
+  h2,
+  h3 {
+    break-after: avoid;
+  }
+
+  p,
+  blockquote,
+  li,
+  figure {
+    break-inside: avoid;
+    orphans: 3;
+    widows: 3;
   }
 }

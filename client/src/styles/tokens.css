@@ -244,6 +244,15 @@
   --wind-over-soft: #c4c4c4;
   --wind-over-faint: #8c8c8c;
 
+  /* The sheet behind a screenshot of a shop review, which is always white. */
+  --review-paper: #ffffff;
+
+  /* Print: ink on paper, whichever theme was on screen. */
+  --print-paper: #ffffff;
+  --print-ink: #000000;
+  --print-ink-soft: #444444;
+  --print-rule: #bbbbbb;
+
   /* The companion cursor blends with `difference`, which needs pure ink in both themes. */
   --cursor-ink: #fff;
   --cursor-ink-inverse: #000;

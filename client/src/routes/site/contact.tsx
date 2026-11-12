@@ -28,9 +28,10 @@ export default function ContactPage() {
   );
 
   const channels: { label: string; value: string; href?: string; external?: boolean }[] = [
-    about?.links.email
-      ? { label: 'Email', value: about.links.email, href: `mailto:${about.links.email}` }
-      : { label: 'Email', value: 'To be added' },
+    // An address that has not been supplied is left out, not shown as a blank.
+    ...(about?.links.email
+      ? [{ label: 'Email', value: about.links.email, href: `mailto:${about.links.email}` }]
+      : []),
     ...(about?.links.literaryInstagram
       ? [
           {
@@ -45,7 +46,11 @@ export default function ContactPage() {
 
   return (
     <main id="main" className="gutter">
-      <Meta title="Contact" description="Write to Triyan." canonical="/contact" />
+      <Meta
+        title="Contact"
+        description="Write to Triyan — about the poetry, the book Leaving and Living, or the work to come. A message form and the Instagram account are here."
+        canonical="/contact"
+      />
       <div className="mx-auto max-w-[90rem] pt-16 pb-32 sm:pt-24">
         <header className="max-w-5xl">
           <Label as="p">Contact</Label>

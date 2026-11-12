@@ -237,7 +237,7 @@ function ArchiveMedia({ post, title }: { post: InstagramMediaDto; title: string 
       <ul
         tabIndex={0}
         aria-label={`${slides.length} slides. Scroll sideways to read them.`}
-        className="flex snap-x snap-mandatory items-start overflow-x-auto border border-border bg-white [scrollbar-width:thin]"
+        className="flex snap-x snap-mandatory items-start no-scrollbar overflow-x-auto border border-border bg-white"
       >
         {slides.map((slide, i) => (
           <li key={slide.mediaUrl} className="w-full shrink-0 snap-center">
@@ -253,7 +253,7 @@ function ArchiveMedia({ post, title }: { post: InstagramMediaDto; title: string 
         ))}
       </ul>
       <p className="mt-4 font-mono text-2xs tracking-[0.18em] text-fg-subtle uppercase">
-        {slides.length} slides · scroll sideways →
+        {slides.length} slides · swipe or scroll sideways →
       </p>
     </div>
   );

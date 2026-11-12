@@ -7,7 +7,7 @@ import { useEffect, useRef } from 'react';
  * mounts at all.
  *
  * States come from the nearest `data-cursor` attribute, or from the element type:
- *   link · writing ("Read") · view ("View", images) · nav · interactive · magnetic
+ *   link · writing · view (images) · nav · interactive · magnetic
  */
 type State = 'default' | 'link' | 'writing' | 'view' | 'nav' | 'interactive' | 'magnetic';
 
