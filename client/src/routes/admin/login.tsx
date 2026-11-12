@@ -10,6 +10,7 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
+  const [shown, setShown] = useState(false);
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -40,15 +41,27 @@ export default function AdminLoginPage() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-        <TextField
-          label="Password"
-          type="password"
-          name="password"
-          autoComplete="current-password"
-          required
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        <div className="relative">
+          <TextField
+            label="Password"
+            type={shown ? 'text' : 'password'}
+            name="password"
+            autoComplete="current-password"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="[&_input]:pr-16"
+          />
+          <button
+            type="button"
+            onClick={() => setShown((s) => !s)}
+            aria-pressed={shown}
+            aria-label={shown ? 'Hide password' : 'Show password'}
+            className="absolute right-0 bottom-3.5 font-mono text-2xs tracking-[0.18em] text-fg-subtle uppercase transition-colors hover:text-fg"
+          >
+            {shown ? 'Hide' : 'Show'}
+          </button>
+        </div>
 
         {error && (
           <p role="alert" className="font-ui text-xs text-ember">

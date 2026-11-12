@@ -61,6 +61,7 @@ export const postContact: RequestHandler = async (req, res, next) => {
     name: parsed.data.name,
     email: parsed.data.email,
     message: parsed.data.message,
+    source: parsed.data.source ?? '',
   });
   logger.info({ event: 'contact.submission' }, 'Contact message stored in the inbox');
 

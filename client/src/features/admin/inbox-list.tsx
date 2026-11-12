@@ -3,6 +3,7 @@ import { useState, useTransition } from 'react';
 import type { ContactMessageDto } from '@triyan/shared';
 import { adminApi, AdminError } from '@/features/admin/client';
 import { cn } from '@/lib/cn';
+import { useConfirm } from '@/components/ui/confirm';
 
 const button =
   'font-mono text-2xs tracking-[0.18em] uppercase text-fg-subtle hover:text-fg disabled:opacity-40';
@@ -11,6 +12,7 @@ export function InboxList({ messages }: { messages: ContactMessageDto[] }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState('');
+  const [confirm, confirmDialog] = useConfirm();
 
   const act = (fn: () => Promise<unknown>) => {
     setError('');
@@ -23,6 +25,7 @@ export function InboxList({ messages }: { messages: ContactMessageDto[] }) {
 
   return (
     <>
+      {confirmDialog}
       {error && (
         <p role="alert" className="mt-6 font-mono text-xs text-ember">
           {error}
@@ -51,6 +54,11 @@ export function InboxList({ messages }: { messages: ContactMessageDto[] }) {
             <p className="mt-4 max-w-prose font-reading text-base leading-prose whitespace-pre-wrap text-fg-muted">
               {m.message}
             </p>
+            {m.source && (
+              <p className="mt-3 font-mono text-2xs tracking-[0.12em] text-fg-subtle">
+                Arrived through: {m.source}
+              </p>
+            )}
             <div className="mt-4 flex gap-6">
               <a
                 href={`mailto:${m.email}?subject=${encodeURIComponent('Re: your message')}`}
@@ -70,10 +78,15 @@ export function InboxList({ messages }: { messages: ContactMessageDto[] }) {
                 type="button"
                 className={button}
                 disabled={pending}
-                onClick={() => {
-                  if (window.confirm('Delete this message? This cannot be undone.'))
-                    act(() => adminApi.deleteMessage(m._id));
-                }}
+                onClick={() =>
+                  void confirm({
+                    title: `Delete the message from ${m.name}?`,
+                    body: 'This cannot be undone.',
+                    confirmLabel: 'Delete',
+                  }).then((yes) => {
+                    if (yes) act(() => adminApi.deleteMessage(m._id));
+                  })
+                }
               >
                 Delete
               </button>

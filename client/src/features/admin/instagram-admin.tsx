@@ -1,4 +1,5 @@
 import { useRouter } from '@/lib/navigation';
+import { useConfirm } from '@/components/ui/confirm';
 import { useState, useTransition } from 'react';
 import {
   CATEGORIES,
@@ -37,10 +38,12 @@ const button =
   'border border-border-strong px-4 py-2 font-ui text-2xs tracking-widest uppercase hover:border-fg disabled:opacity-50';
 
 export function InstagramControls({ status }: { status: SyncStatusDto }) {
+  const [confirm, confirmDialog] = useConfirm();
   const { pending, message, error, run } = useAction();
 
   return (
     <section aria-label="Sync" className="mt-8 border border-border p-6">
+      {confirmDialog}
       <dl className="grid gap-x-8 gap-y-3 font-ui text-xs sm:grid-cols-3">
         <Row label="Provider">
           {status.provider}
@@ -98,12 +101,12 @@ export function InstagramControls({ status }: { status: SyncStatusDto }) {
           disabled={pending}
           onClick={() =>
             run(async () => {
-              if (
-                !window.confirm(
-                  'Reclassify every post that needs review? Manual corrections are kept.',
-                )
-              )
-                return;
+              const yes = await confirm({
+                title: 'Reclassify every post that needs review?',
+                body: 'Manual corrections are kept.',
+                confirmLabel: 'Reclassify',
+              });
+              if (!yes) return;
               const r = (await adminApi.reclassifyInstagram('NEEDS_REVIEW')).data;
               return `${r?.reclassified ?? 0} reclassified`;
             })

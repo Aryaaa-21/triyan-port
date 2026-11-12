@@ -13,6 +13,8 @@ export const contactSchema = z.object({
   name: z.string().trim().min(1, 'A name is required').max(80),
   email: emailSchema,
   message: z.string().trim().min(10, 'Say a little more').max(4000),
+  /** The campaign tags the sender arrived with, if any (see client lib/utm). */
+  source: z.string().trim().max(200).optional(),
   website: z.string().max(0).optional(),
 });
 

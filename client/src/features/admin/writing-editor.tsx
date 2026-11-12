@@ -1,4 +1,5 @@
 import { useRouter } from '@/lib/navigation';
+import { useConfirm } from '@/components/ui/confirm';
 import { useState } from 'react';
 import {
   CATEGORIES,
@@ -90,9 +91,16 @@ export function WritingEditor({ existing }: { existing?: WritingDto }) {
     }
   };
 
+  const [confirm, confirmDialog] = useConfirm();
+
   const remove = async () => {
     if (!existing) return;
-    if (!confirm(`Delete “${existing.title}”? This cannot be undone.`)) return;
+    const yes = await confirm({
+      title: `Delete “${existing.title}”?`,
+      body: 'This cannot be undone.',
+      confirmLabel: 'Delete',
+    });
+    if (!yes) return;
     try {
       await adminApi.remove(existing._id);
       router.replace('/admin');
@@ -103,6 +111,7 @@ export function WritingEditor({ existing }: { existing?: WritingDto }) {
 
   return (
     <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_320px]">
+      {confirmDialog}
       <div className="flex flex-col gap-6">
         <TextField
           label="Title"

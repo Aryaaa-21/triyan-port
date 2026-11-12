@@ -9,6 +9,8 @@ const contactMessageSchema = new Schema(
     name: { type: String, required: true, trim: true, maxlength: 80 },
     email: { type: String, required: true, trim: true, lowercase: true, maxlength: 254 },
     message: { type: String, required: true, maxlength: 4000 },
+    /** Campaign tags the sender arrived with, e.g. "instagram / book". */
+    source: { type: String, trim: true, maxlength: 200, default: '' },
     read: { type: Boolean, default: false },
   },
   { timestamps: true, versionKey: false },

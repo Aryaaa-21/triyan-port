@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { contactSchema } from '@triyan/shared';
 import { TextAreaField, TextField } from '@/components/ui/field';
 import { Button } from '@/components/ui/button';
+import { recallCampaign } from '@/lib/utm';
 
 type State = 'idle' | 'sending' | 'sent' | 'failed';
 
@@ -29,6 +30,7 @@ export function ContactForm({ deliverable = true }: { deliverable?: boolean }) {
       email: String(form.get('email') ?? ''),
       message: String(form.get('message') ?? ''),
       website: String(form.get('website') ?? ''),
+      ...(recallCampaign() ? { source: recallCampaign() } : {}),
     };
 
     const parsed = contactSchema.safeParse(candidate);
