@@ -60,9 +60,13 @@ after the archive data changes (see `INSTAGRAM.md`).
 4. **Deploy.** Check `https://<project>.vercel.app/readyz`: it should return
    `{"status":"ready","database":"connected"}`.
 
-Without `MONGODB_URI` the site still deploys and renders: the opening, the pages and
-the bio all show. Writings, the portrait, Instagram, the contact form and the
-waitlist stay empty until a database is connected.
+Without `MONGODB_URI` the site is complete but read-only. It serves the Writings and
+Instagram archives straight from `server/data/instagram-archive.json`, and the About,
+Book and ABYSS pages from the owner's seeded words (`server/src/content/seed.ts`), all
+of which are in the repository; pushing a change to them is enough to update the site.
+`/readyz` then reports `"source":"archive-file"`. What needs a database is everything
+that has to remember something: signing in to the admin, the contact inbox and the
+waitlist. Add `MONGODB_URI` and the whole API switches to the database.
 
 **From the command line instead of the dashboard:**
 
