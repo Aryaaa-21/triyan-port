@@ -239,6 +239,10 @@
   --wind-night-strong: #b5b5b5;
   --wind-night-soft: #6f6f6f;
   --wind-night-faint: #333333;
+  /* The site-wide cursor is blended by difference, so it is always drawn light. */
+  --wind-over-strong: #ffffff;
+  --wind-over-soft: #c4c4c4;
+  --wind-over-faint: #8c8c8c;
 
   /* The companion cursor blends with `difference`, which needs pure ink in both themes. */
   --cursor-ink: #fff;

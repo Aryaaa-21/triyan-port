@@ -15,7 +15,14 @@ import { useEffect, useRef, type RefObject } from 'react';
  *
  * It fills its container (which must be positioned). Pass `containerRef`, or place
  * it directly inside the element it should cover.
+ *
+ * With `fixed` it covers the whole window instead and follows the pointer across every
+ * page. One canvas then sits over black sections and paper ones alike, so it is drawn
+ * in white and blended by difference: light on dark, ink on light, with no theme lookup.
  */
+
+/** White and two greys from the tokens: under `mix-blend-mode: difference` they invert the page beneath. */
+const FIXED_TOKENS = ['--wind-over-strong', '--wind-over-soft', '--wind-over-faint'];
 
 export interface WindStreamConfig {
   /** Streams spawned per qualifying mouse move. */
@@ -35,6 +42,8 @@ export interface WindStreamCursorProps {
   containerRef?: RefObject<HTMLElement | null>;
   config?: WindStreamConfig;
   className?: string;
+  /** Cover the window rather than a container: the site-wide cursor. */
+  fixed?: boolean;
 }
 
 interface Point {
@@ -62,6 +71,7 @@ export default function WindStreamCursor({
   containerRef,
   config,
   className,
+  fixed = false,
 }: WindStreamCursorProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const configRef = useRef<WindStreamConfig | undefined>(config);
@@ -72,8 +82,13 @@ export default function WindStreamCursor({
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    const container = containerRef?.current ?? canvas?.parentElement ?? null;
+    const container = fixed
+      ? document.documentElement
+      : (containerRef?.current ?? canvas?.parentElement ?? null);
     if (!canvas || !container) return;
+    /** Where pointer events are heard: the whole window, or just the container. */
+    const surface: Window | HTMLElement = fixed ? window : container;
+    const origin = () => (fixed ? { left: 0, top: 0 } : container.getBoundingClientRect());
 
     const canAnimate =
       window.matchMedia('(pointer: fine)').matches &&
@@ -96,7 +111,7 @@ export default function WindStreamCursor({
     /** The greys come from CSS, resolved for this container, so themes apply. */
     const readPalette = () => {
       const styles = getComputedStyle(container);
-      palette = ['--wind-strong', '--wind-soft', '--wind-faint'].map(
+      palette = (fixed ? FIXED_TOKENS : ['--wind-strong', '--wind-soft', '--wind-faint']).map(
         (name) => styles.getPropertyValue(name).trim() || styles.color,
       );
     };
@@ -108,13 +123,14 @@ export default function WindStreamCursor({
 
     const resize = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = Math.round(container.offsetWidth * dpr);
-      canvas.height = Math.round(container.offsetHeight * dpr);
+      canvas.width = Math.round((fixed ? window.innerWidth : container.offsetWidth) * dpr);
+      canvas.height = Math.round((fixed ? window.innerHeight : container.offsetHeight) * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
     resize();
     const ro = new ResizeObserver(resize);
     ro.observe(container);
+    if (fixed) window.addEventListener('resize', resize);
 
     const spawn = (x: number, y: number, vx: number, vy: number, alpha: number, tone?: number) => {
       streams.push({
@@ -134,7 +150,7 @@ export default function WindStreamCursor({
 
     const onMove = (e: MouseEvent) => {
       const { count = 2, minSpeed = 2.5, pointerAnim = true } = configRef.current ?? {};
-      const r = container.getBoundingClientRect();
+      const r = origin();
       const nx = e.clientX - r.left;
       const ny = e.clientY - r.top;
       const dx = nx - mx;
@@ -161,7 +177,7 @@ export default function WindStreamCursor({
 
     const onClick = (e: MouseEvent) => {
       if (configRef.current?.clickAnim === false) return;
-      const r = container.getBoundingClientRect();
+      const r = origin();
       const cx = e.clientX - r.left;
       const cy = e.clientY - r.top;
       // The burst mixes all three greys, where the colour version mixed hues.
@@ -178,9 +194,11 @@ export default function WindStreamCursor({
       pointer = false;
     };
 
-    container.addEventListener('mousemove', onMove);
+    const move = onMove as EventListener;
+    const click = onClick as EventListener;
+    surface.addEventListener('mousemove', move);
+    surface.addEventListener('click', click);
     container.addEventListener('mouseleave', onLeave);
-    container.addEventListener('click', onClick);
 
     function loop() {
       const {
@@ -251,15 +269,16 @@ export default function WindStreamCursor({
     }
 
     return () => {
-      container.removeEventListener('mousemove', onMove);
+      surface.removeEventListener('mousemove', move);
+      surface.removeEventListener('click', click);
       container.removeEventListener('mouseleave', onLeave);
-      container.removeEventListener('click', onClick);
+      window.removeEventListener('resize', resize);
       scheme.removeEventListener('change', readPalette);
       themeObserver.disconnect();
       ro.disconnect();
       cancelAnimationFrame(raf);
     };
-  }, [containerRef]);
+  }, [containerRef, fixed]);
 
   return (
     <canvas
@@ -267,12 +286,13 @@ export default function WindStreamCursor({
       aria-hidden="true"
       className={className}
       style={{
-        position: 'absolute',
+        position: fixed ? 'fixed' : 'absolute',
         inset: 0,
         width: '100%',
         height: '100%',
         pointerEvents: 'none',
-        zIndex: 35,
+        zIndex: fixed ? 45 : 35,
+        ...(fixed ? { mixBlendMode: 'difference' as const } : {}),
       }}
     />
   );
