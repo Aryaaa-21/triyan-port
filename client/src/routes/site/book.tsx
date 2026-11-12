@@ -88,12 +88,73 @@ export default function BookPage() {
     ...(book.publisher ? { publisher: { '@type': 'Organization', name: book.publisher } } : {}),
     ...(book.publicationDate ? { datePublished: book.publicationDate } : {}),
     ...(book.coverImageUrl ? { image: book.coverImageUrl } : {}),
+    ...(book.rating
+      ? {
+          aggregateRating: {
+            '@type': 'AggregateRating',
+            ratingValue: book.rating.value,
+            ratingCount: book.rating.count,
+            bestRating: '5',
+          },
+        }
+      : {}),
   };
+
+  // Older saved copies of the book carry only the single link.
+  const shops =
+    book.purchaseLinks?.length > 0
+      ? book.purchaseLinks
+      : book.purchaseUrl
+        ? [{ label: 'the shop', url: book.purchaseUrl }]
+        : [];
+  const edition = [book.price, ...book.formats].filter(Boolean).join(' · ');
+  const reviewDate = (iso?: string | null) =>
+    iso
+      ? new Date(iso).toLocaleDateString('en-GB', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric',
+          timeZone: 'UTC',
+        })
+      : '';
+
+  // Answers come only from what the book record holds; an unknown fact asks no question.
+  const shopNames = shops.map((shop) => shop.label).join(' and ');
+  const questions = [
+    shops.length > 0 && [
+      'Where can I buy the book?',
+      `${book.title} is available on ${shopNames}. The links are above, under “Where to buy”.`,
+    ],
+    (book.formats.length > 0 || book.price) && [
+      'What edition is it, and what does it cost?',
+      [
+        book.formats.length > 0
+          ? `It is published as a ${book.formats.join(' and ').toLowerCase()}`
+          : '',
+        book.publisher ? ` by ${book.publisher}` : '',
+        book.price
+          ? `${book.formats.length > 0 ? ', at' : 'The printed price is'} ${book.price}`
+          : '',
+        '. Shops may show their own price.',
+      ].join(''),
+    ],
+    book.description && ['What is the book about?', book.description],
+    book.audience && ['Who is it written for?', `${book.audience}`],
+    [
+      'Can I read some of the writing first?',
+      'Yes. The Writings page holds the published pieces, sorted by shelf, each with a short note in simple words.',
+    ],
+    [
+      'How do I reach Triyan about the book?',
+      'Through the Contact page, or on Instagram at @triyanwrites.',
+    ],
+  ].filter(Boolean) as [string, string][];
 
   const facts = [
     book.publisher && ['Publisher', book.publisher],
     book.publicationDate && ['Published', new Date(book.publicationDate).getFullYear().toString()],
     book.formats.length > 0 && ['Formats', book.formats.join(', ')],
+    book.price && ['Price', book.price],
     book.isbn && ['ISBN', book.isbn],
   ].filter(Boolean) as [string, string][];
 
@@ -149,11 +210,13 @@ export default function BookPage() {
               </p>
             )}
             <div className="mt-12 flex flex-wrap gap-x-10 gap-y-2">
-              <ArrowLink href="#excerpts">Read</ArrowLink>
-              {book.purchaseUrl ? (
-                <ArrowLink href={book.purchaseUrl} external>
-                  Buy
-                </ArrowLink>
+              {excerpts.length > 0 ? (
+                <ArrowLink href="#excerpts">Read</ArrowLink>
+              ) : (
+                <ArrowLink href="/writings">Read the writings</ArrowLink>
+              )}
+              {shops.length > 0 ? (
+                <ArrowLink href="#buy">Buy</ArrowLink>
               ) : (
                 <span className="py-2 font-mono text-xs tracking-[0.2em] text-fg-subtle uppercase">
                   Availability to be announced
@@ -172,6 +235,55 @@ export default function BookPage() {
             )}
           </div>
         </section>
+
+        {/* ------------------------------------------------------------- buy */}
+        {shops.length > 0 && (
+          <section id="buy" aria-labelledby="buy-heading" className="mt-32 scroll-mt-24 lg:mt-44">
+            <SectionIntro label="Where to buy" className="mb-12" />
+            <div className="grid gap-12 lg:grid-cols-12 lg:gap-8">
+              <div className="lg:col-span-4">
+                <h2
+                  id="buy-heading"
+                  className="font-display text-[clamp(2.25rem,4.5vw,3.75rem)] leading-[1.02] font-light tracking-tight"
+                >
+                  Take it <span className="text-fg-muted italic">home.</span>
+                </h2>
+                {edition && (
+                  <p className="mt-6 font-mono text-xs tracking-[0.2em] text-fg-subtle uppercase">
+                    {edition}
+                  </p>
+                )}
+              </div>
+              <ul className="border-t border-border lg:col-span-7 lg:col-start-6">
+                {shops.map((shop) => (
+                  <li key={shop.url} className="border-b border-border">
+                    <a
+                      href={shop.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      data-cursor="view"
+                      className="group flex items-baseline justify-between gap-6 py-8 no-underline transition-colors duration-500 hover:text-accent"
+                    >
+                      <span className="font-display text-[clamp(2rem,4.5vw,3.5rem)] leading-none font-light tracking-tight">
+                        <span className="mr-4 align-middle font-mono text-2xs tracking-[0.2em] text-fg-subtle uppercase">
+                          Buy on
+                        </span>
+                        {shop.label}
+                      </span>
+                      <span
+                        aria-hidden="true"
+                        className="font-mono text-xl transition-transform duration-500 ease-void group-hover:translate-x-1 group-hover:-translate-y-1"
+                      >
+                        ↗
+                      </span>
+                      <span className="sr-only">(opens in a new tab)</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </section>
+        )}
 
         {/* ---------------------------------------------------------- jacket */}
         {book.coverImageUrl === BOOK_COVER && (
@@ -259,16 +371,16 @@ export default function BookPage() {
         </section>
 
         {/* -------------------------------------------------------- excerpts */}
-        <section
-          id="excerpts"
-          aria-labelledby="excerpts-heading"
-          className="mt-40 scroll-mt-24 lg:mt-56"
-        >
-          <SectionIntro label="Excerpts" className="mb-16" />
-          <h2 id="excerpts-heading" className="sr-only">
-            Excerpts
-          </h2>
-          {excerpts.length > 0 ? (
+        {excerpts.length > 0 && (
+          <section
+            id="excerpts"
+            aria-labelledby="excerpts-heading"
+            className="mt-40 scroll-mt-24 lg:mt-56"
+          >
+            <SectionIntro label="Excerpts" className="mb-16" />
+            <h2 id="excerpts-heading" className="sr-only">
+              Excerpts
+            </h2>
             <ul className="space-y-32">
               {excerpts.map((w) => (
                 <li key={w.slug} className="mx-auto measure-poem">
@@ -284,18 +396,8 @@ export default function BookPage() {
                 </li>
               ))}
             </ul>
-          ) : (
-            <div className="lg:ml-[33%]">
-              <ContentPending>
-                Selected passages from the book will be set here. Until then, the{' '}
-                <Link href="/writings" className="underline">
-                  archive
-                </Link>{' '}
-                holds the published writing.
-              </ContentPending>
-            </div>
-          )}
-        </section>
+          </section>
+        )}
 
         {/* --------------------------------------------------------- reviews */}
         <section aria-labelledby="reviews-heading" className="mt-28 lg:mt-36">
@@ -303,18 +405,65 @@ export default function BookPage() {
           <h2 id="reviews-heading" className="sr-only">
             Reader reviews
           </h2>
+          {book.rating && (
+            <a
+              href={book.rating.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group mb-16 flex flex-wrap items-baseline gap-x-6 gap-y-2 no-underline"
+            >
+              <span className="font-display text-[clamp(3.5rem,8vw,6.5rem)] leading-none font-light tracking-tight">
+                {book.rating.value}
+                <span className="text-fg-subtle"> / 5</span>
+              </span>
+              <span className="font-mono text-xs tracking-[0.2em] text-fg-subtle uppercase transition-colors duration-500 group-hover:text-fg">
+                <span aria-hidden="true" className="mr-3 text-accent">
+                  ★★★★★
+                </span>
+                {book.rating.count} ratings on {book.rating.source} ↗
+              </span>
+            </a>
+          )}
           {book.reviews.length > 0 ? (
-            <ul className="grid gap-16 md:grid-cols-2">
+            <ul className="gap-x-10 md:columns-2">
               {book.reviews.map((review, index) => (
-                <li key={index}>
-                  <blockquote className="font-display text-3xl leading-snug font-light">
-                    “{review.quote}”
-                  </blockquote>
-                  {review.attribution && (
-                    <Label as="p" className="mt-6">
-                      {review.attribution}
-                      {review.source ? ` · ${review.source}` : ''}
-                    </Label>
+                <li key={index} className="mb-14 break-inside-avoid">
+                  {review.imageUrl ? (
+                    <Reveal variant="blur">
+                      <figure>
+                        {/* The review exactly as the reader posted it. */}
+                        <div className="review-shot overflow-hidden rounded-sm border border-border p-3 sm:p-5">
+                          <img
+                            src={review.imageUrl}
+                            alt={`Review by ${review.attribution ?? 'a reader'}${
+                              review.title ? `, titled “${review.title}”` : ''
+                            }: ${review.quote}`}
+                            width={review.imageWidth}
+                            height={review.imageHeight}
+                            loading="lazy"
+                            decoding="async"
+                            className="h-auto w-full"
+                          />
+                        </div>
+                        <figcaption className="mt-5 font-mono text-2xs tracking-[0.18em] text-fg-subtle uppercase">
+                          {[review.attribution, review.source, reviewDate(review.publishedAt)]
+                            .filter(Boolean)
+                            .join(' · ')}
+                        </figcaption>
+                      </figure>
+                    </Reveal>
+                  ) : (
+                    <>
+                      <blockquote className="font-display text-3xl leading-snug font-light">
+                        “{review.quote}”
+                      </blockquote>
+                      {review.attribution && (
+                        <Label as="p" className="mt-6">
+                          {review.attribution}
+                          {review.source ? ` · ${review.source}` : ''}
+                        </Label>
+                      )}
+                    </>
                   )}
                 </li>
               ))}
@@ -328,6 +477,39 @@ export default function BookPage() {
           )}
         </section>
 
+        {/* ------------------------------------------------------- questions */}
+        {questions.length > 0 && (
+          <section aria-labelledby="faq-heading" className="mt-28 lg:mt-36">
+            <SectionIntro label="Questions" className="mb-12" />
+            <div className="grid gap-10 lg:grid-cols-12 lg:gap-8">
+              <h2
+                id="faq-heading"
+                className="font-display text-[clamp(2.25rem,4.5vw,3.75rem)] leading-[1.02] font-light tracking-tight lg:col-span-4"
+              >
+                Before you <span className="text-fg-muted italic">buy.</span>
+              </h2>
+              <div className="border-t border-border lg:col-span-7 lg:col-start-6">
+                {questions.map(([question, answer]) => (
+                  <details key={question} className="faq group border-b border-border">
+                    <summary className="flex items-baseline justify-between gap-6 py-6 font-display text-2xl leading-snug font-light transition-colors hover:text-accent">
+                      {question}
+                      <span
+                        aria-hidden="true"
+                        className="faq-mark font-mono text-lg text-fg-subtle transition-[rotate] duration-500"
+                      >
+                        +
+                      </span>
+                    </summary>
+                    <p className="max-w-xl pb-8 font-reading text-lg leading-prose text-fg-muted">
+                      {answer}
+                    </p>
+                  </details>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* ------------------------------------------------------------- end */}
         <section className="mt-40 grid gap-12 border-t border-border pt-20 lg:mt-56 lg:grid-cols-12 lg:gap-8">
           <div className="lg:col-span-7">
@@ -337,10 +519,14 @@ export default function BookPage() {
             </p>
           </div>
           <div className="lg:col-span-4 lg:col-start-9 lg:pt-14">
-            {book.purchaseUrl ? (
-              <ArrowLink href={book.purchaseUrl} external>
-                Buy the book
-              </ArrowLink>
+            {shops.length > 0 ? (
+              <div className="flex flex-col items-start gap-1">
+                {shops.map((shop) => (
+                  <ArrowLink key={shop.url} href={shop.url} external>
+                    Buy on {shop.label}
+                  </ArrowLink>
+                ))}
+              </div>
             ) : (
               <ContentPending label="Availability">
                 Publishing and distribution details will be announced here.

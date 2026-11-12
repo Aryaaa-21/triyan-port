@@ -37,6 +37,8 @@ export const SEED_ABOUT = {
   },
 };
 
+const AMAZON_URL = 'https://amzn.in/d/09HNrhpE';
+
 export const SEED_BOOK = {
   title: 'Leaving and Living',
   description: [
@@ -46,9 +48,12 @@ export const SEED_BOOK = {
     'People who feel deeply, question existence, find themselves in silence, and recognise emotions that are difficult to explain.',
   salesLine:
     "If you've ever felt something you couldn't explain, perhaps you'll find a part of yourself within these pages.",
-  // Q36–Q37: publishing, distribution and Amazon availability are 'to be confirmed',
-  // so no purchase link is shown until they are.
-  purchaseUrl: '',
+  // Where the book is sold. The first is also the single 'Buy' link.
+  purchaseUrl: AMAZON_URL,
+  purchaseLinks: [
+    { label: 'Amazon', url: AMAZON_URL },
+    { label: 'Flipkart', url: 'https://dl.flipkart.com/s/6Rldf_NNNN' },
+  ],
   published: true,
   // The owner's jacket artwork: the front panel, cut from the full wrap in
   // client/public/images/book-jacket.jpg.
@@ -56,7 +61,54 @@ export const SEED_BOOK = {
   // Printed on that jacket.
   publisher: "Writer's Pocket",
   isbn: '978-93-7903-419-9',
-  // Left empty until supplied: price, publicationDate, formats, reviews, excerptSlugs.
+  // As listed by the shops (and the price as printed on the jacket).
+  price: '₹222',
+  publicationDate: '2026-10-21T00:00:00.000Z',
+  formats: ['Paperback'],
+  // Amazon's own figures, read from the listing on 12 November 2026.
+  rating: { value: '5.0', count: 5, source: 'Amazon', url: AMAZON_URL },
+  // Readers' reviews on Amazon, word for word, each with a screenshot of the original.
+  reviews: [
+    {
+      quote: [
+        "The first poetry book that I ever bought and it's worth every penny.",
+        'The book doesn\'t follow any sequence, "looks" to be an easy read but it hits hard if you ponder upon it.',
+        'It makes you think what is love? is it longing? is it enjoying? is it a memory? is it the hope of meeting again?',
+        'Love can be so one-sided yet multi-dimensional.',
+        'You can read 20-30 pages on a whim & at the same time just 3 pages can be so much over-whelming if you are able to resonate with the emotions put in.',
+      ].join('\n\n'),
+      title: 'Love can be so one-sided yet multi-dimensional',
+      attribution: 'adarsh',
+      source: 'Amazon · Verified Purchase',
+      publishedAt: '2026-11-02T00:00:00.000Z',
+      imageUrl: '/images/reviews/amazon-review-1.webp',
+      imageWidth: 1400,
+      imageHeight: 834,
+    },
+    {
+      quote:
+        'Impeccably written poems, the gorgeous coverr and great paper qualityyy!! Absolutelyy adoree it and alsoo very excitedd to readd it furtherrr',
+      title: 'Great addition to your collection😋',
+      attribution: 'Sanskriti',
+      source: 'Amazon',
+      publishedAt: '2026-10-31T00:00:00.000Z',
+      imageUrl: '/images/reviews/amazon-review-2.webp',
+      imageWidth: 1400,
+      imageHeight: 350,
+    },
+    {
+      quote:
+        "this book is so good and it's written by my favorite writer, he's just not a writer he's a person who describes our feelings by beautiful words, he's a person who helps us feel things, he's a person for whom im really proud of, he's literally so talented he is perfect, i recommend y'all to buy this book and read it... this book feels like you're back home and it helps in healing after a cruel moment, I'm proud of you tri you'll make it so big one day. :)",
+      title: "it's the best book that feels like a safe place",
+      attribution: 'utkarsh',
+      source: 'Amazon',
+      publishedAt: '2026-10-29T00:00:00.000Z',
+      imageUrl: '/images/reviews/amazon-review-3.webp',
+      imageWidth: 1400,
+      imageHeight: 470,
+    },
+  ],
+  // Left empty until supplied: excerptSlugs.
 };
 
 export const SEED_ABYSS = {

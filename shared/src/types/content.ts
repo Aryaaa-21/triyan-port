@@ -65,7 +65,21 @@ export interface BookDto {
   price: string;
   publicationDate: string | null;
   formats: string[];
-  reviews: { quote: string; attribution?: string; source?: string }[];
+  /** Every shop that sells the book, in the order they are offered. */
+  purchaseLinks: { label: string; url: string }[];
+  /** The shop's own standing for the book, e.g. Amazon's star average. */
+  rating: { value: string; count: number; source: string; url: string } | null;
+  reviews: {
+    quote: string;
+    title?: string;
+    attribution?: string;
+    source?: string;
+    publishedAt?: string | null;
+    /** A screenshot of the review as the reader posted it. */
+    imageUrl?: string;
+    imageWidth?: number;
+    imageHeight?: number;
+  }[];
   excerptSlugs: string[];
   published: boolean;
 }
@@ -108,6 +122,7 @@ export interface ContactMessageDto {
   name: string;
   email: string;
   message: string;
+  source?: string;
   read: boolean;
   createdAt: string;
 }

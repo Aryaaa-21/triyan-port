@@ -67,7 +67,13 @@ export function BookFeature({ book }: { book: BookDto | null }) {
             )}
             <div className="mt-12 flex flex-wrap gap-x-10 gap-y-2">
               <ArrowLink href="/book">Explore the book</ArrowLink>
-              {book.purchaseUrl ? (
+              {book.purchaseLinks?.length > 0 ? (
+                book.purchaseLinks.map((shop) => (
+                  <ArrowLink key={shop.url} href={shop.url} external tone="quiet">
+                    Buy on {shop.label}
+                  </ArrowLink>
+                ))
+              ) : book.purchaseUrl ? (
                 <ArrowLink href={book.purchaseUrl} external tone="quiet">
                   Buy
                 </ArrowLink>

@@ -12,11 +12,34 @@ import { Schema, model, type InferSchemaType, type Model } from 'mongoose';
 const reviewSchema = new Schema(
   {
     quote: { type: String, required: true, maxlength: 2000 },
+    title: { type: String, trim: true, maxlength: 200 },
+    /** A screenshot of the review as posted, kept beside the words for proof. */
+    imageUrl: { type: String, trim: true },
+    imageWidth: { type: Number },
+    imageHeight: { type: Number },
     attribution: { type: String, trim: true, maxlength: 120 },
     source: { type: String, trim: true, maxlength: 200 },
     publishedAt: { type: Date, default: null },
   },
   { _id: true, timestamps: true },
+);
+
+const purchaseLinkSchema = new Schema(
+  {
+    label: { type: String, required: true, trim: true, maxlength: 60 },
+    url: { type: String, required: true, trim: true, maxlength: 600 },
+  },
+  { _id: false },
+);
+
+const ratingSchema = new Schema(
+  {
+    value: { type: String, trim: true, maxlength: 10 },
+    count: { type: Number, min: 0 },
+    source: { type: String, trim: true, maxlength: 60 },
+    url: { type: String, trim: true, maxlength: 600 },
+  },
+  { _id: false },
 );
 
 const bookSchema = new Schema(
@@ -39,7 +62,12 @@ const bookSchema = new Schema(
     salesLine: { type: String, maxlength: 400, default: '' },
 
     coverImageUrl: { type: String, trim: true, default: '' },
+    /** The first shop — kept for anything that wants a single link. */
     purchaseUrl: { type: String, trim: true, default: '' },
+    /** Every shop that sells the book. */
+    purchaseLinks: { type: [purchaseLinkSchema], default: [] },
+    /** A shop's own rating of the book, copied as shown there. */
+    rating: { type: ratingSchema, default: null },
 
     /** Unconfirmed metadata. Empty until the owner supplies it — never guessed. */
     publisher: { type: String, trim: true, default: '' },

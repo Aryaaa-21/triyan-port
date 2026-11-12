@@ -424,6 +424,8 @@ const BOOK_DEFAULTS: BookDto = {
   salesLine: '',
   coverImageUrl: '',
   purchaseUrl: '',
+  purchaseLinks: [],
+  rating: null,
   publisher: '',
   isbn: '',
   price: '',
