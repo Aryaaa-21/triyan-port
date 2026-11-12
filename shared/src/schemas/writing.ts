@@ -28,6 +28,8 @@ export const writingInputSchema = z.object({
   slug: slugSchema.optional(),
   content: z.string().min(1, 'A writing cannot be empty').max(60_000),
   excerpt: z.string().max(400).optional(),
+  explanation: z.string().max(2000).optional(),
+  instagramUrl: z.union([z.url(), z.literal('')]).optional(),
   language: languageKeySchema.default('UNKNOWN'),
   contentType: contentTypeKeySchema.default('POEM'),
   primaryCategory: categoryKeySchema.optional(),

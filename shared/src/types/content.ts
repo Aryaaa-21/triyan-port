@@ -14,6 +14,10 @@ export interface WritingDto {
   title: string;
   content: string;
   excerpt: string;
+  /** The piece in the simplest words: the archive's reading, not the author's. */
+  explanation: string;
+  /** The Instagram post it was first published as; '' when there is none. */
+  instagramUrl: string;
   language: LanguageKey;
   contentType: ContentTypeKey;
   primaryCategory: CategoryKey | null;

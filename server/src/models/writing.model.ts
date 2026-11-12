@@ -49,6 +49,14 @@ const writingSchema = new Schema(
 
     excerpt: { type: String, maxlength: 400, trim: true },
 
+    /**
+     * The piece put in the simplest words, for a reader who wants a way in. It is the
+     * archive's reading of the piece, not the author's, and is always shown as such.
+     */
+    explanation: { type: String, maxlength: 2000, trim: true, default: '' },
+    /** The Instagram post this piece was first published as, when there is one. */
+    instagramUrl: { type: String, trim: true, default: '' },
+
     language: { type: String, enum: LANGUAGE_KEYS, default: 'UNKNOWN', index: true },
     contentType: { type: String, enum: CONTENT_TYPE_KEYS, default: 'POEM' },
 
