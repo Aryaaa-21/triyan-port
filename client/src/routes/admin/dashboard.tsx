@@ -33,6 +33,12 @@ export default function AdminDashboard() {
             Inbox
           </Link>
           <Link
+            href="/admin/subscribers"
+            className="font-ui text-xs tracking-widest text-fg-muted uppercase no-underline hover:text-fg"
+          >
+            Subscribers
+          </Link>
+          <Link
             href="/admin/instagram"
             className="font-ui text-xs tracking-widest text-fg-muted uppercase no-underline hover:text-fg"
           >

@@ -85,6 +85,8 @@ const writingSchema = new Schema(
     status: { type: String, enum: WRITING_STATUSES, default: 'DRAFT', required: true },
     featured: { type: Boolean, default: false },
     publishedAt: { type: Date, default: null },
+    /** When this piece was emailed to subscribers. A piece is announced at most once. */
+    notifiedAt: { type: Date, default: null },
 
     /** Book-exclusive writings must never become public through any channel (spec §33). */
     bookExclusive: { type: Boolean, default: false },

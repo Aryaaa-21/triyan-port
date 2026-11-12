@@ -7,12 +7,23 @@ import {
   LANGUAGE_KEYS,
   THEME_KEYS,
   humanizeKey,
+  type AnnouncementResult,
   type WritingDto,
 } from '@triyan/shared';
 import { adminApi, AdminError } from '@/features/admin/client';
 import { Button } from '@/components/ui/button';
 import { TextField } from '@/components/ui/field';
 import { Prose } from '@/components/ui/prose';
+
+/** "Emailed to 12 subscribers", with the failures mentioned only when there are some. */
+const sentNote = (result: AnnouncementResult | undefined): string => {
+  if (!result) return 'Emailed to subscribers';
+  if (result.total === 0) return 'No confirmed subscribers yet, so no email was sent';
+  const people = `${result.sent} ${result.sent === 1 ? 'subscriber' : 'subscribers'}`;
+  return result.failed > 0
+    ? `Emailed to ${people}; ${result.failed} could not be delivered`
+    : `Emailed to ${people}`;
+};
 
 /**
  * The writing editor.
@@ -43,6 +54,9 @@ export function WritingEditor({ existing }: { existing?: WritingDto }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [saved, setSaved] = useState('');
+  // Emailing subscribers is a choice made per piece, never automatic.
+  const [notify, setNotify] = useState(false);
+  const announced = existing?.notifiedAt ?? null;
 
   const toggle = (list: string[], set: (next: string[]) => void, value: string) =>
     set(list.includes(value) ? list.filter((v) => v !== value) : [...list, value]);
@@ -80,7 +94,19 @@ export function WritingEditor({ existing }: { existing?: WritingDto }) {
       const id = result.data?._id ?? existing?._id;
       if (then === 'publish' && id) await adminApi.publish(id);
 
-      setSaved(then === 'publish' ? 'Published' : 'Draft saved');
+      let note = then === 'publish' ? 'Published' : 'Draft saved';
+      if (then === 'publish' && id && notify && !announced) {
+        // The piece is live either way; say separately how the emailing went.
+        try {
+          note = `Published · ${sentNote((await adminApi.announce(id)).data)}`;
+        } catch (cause) {
+          setError(
+            `Published, but not emailed: ${cause instanceof AdminError ? cause.message : 'the email could not be sent'}`,
+          );
+        }
+        setNotify(false);
+      }
+      setSaved(note);
 
       if (!existing && id) router.replace(`/admin/writings/${id}`);
       else router.refresh();
@@ -92,6 +118,28 @@ export function WritingEditor({ existing }: { existing?: WritingDto }) {
   };
 
   const [confirm, confirmDialog] = useConfirm();
+
+  /** For a piece that is already live: email it now, after asking. */
+  const announceNow = async () => {
+    if (!existing) return;
+    const yes = await confirm({
+      title: `Email “${existing.title}” to subscribers?`,
+      body: 'Every confirmed subscriber gets one email with the opening lines and a link. This can be done once per writing.',
+      confirmLabel: 'Send',
+    });
+    if (!yes) return;
+    setBusy(true);
+    setError('');
+    setSaved('');
+    try {
+      setSaved(sentNote((await adminApi.announce(existing._id)).data));
+      router.refresh();
+    } catch (cause) {
+      setError(cause instanceof AdminError ? cause.message : 'The email could not be sent');
+    } finally {
+      setBusy(false);
+    }
+  };
 
   const remove = async () => {
     if (!existing) return;
@@ -173,6 +221,40 @@ export function WritingEditor({ existing }: { existing?: WritingDto }) {
           </p>
         )}
         {saved && <p className="font-ui text-xs text-accent">{saved}</p>}
+
+        {/* Telling subscribers: a tick before publishing, or a button once it is live. */}
+        <div className="border-l border-border-strong py-1 pl-5">
+          {announced ? (
+            <p className="font-ui text-xs text-fg-subtle">
+              Emailed to subscribers on{' '}
+              {new Date(announced).toLocaleDateString('en-GB', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+              })}
+              .
+            </p>
+          ) : existing?.status === 'PUBLISHED' ? (
+            <button
+              type="button"
+              disabled={busy}
+              onClick={() => void announceNow()}
+              className="font-mono text-2xs tracking-[0.18em] text-fg uppercase transition-colors hover:text-accent disabled:opacity-40"
+            >
+              Email this to subscribers →
+            </button>
+          ) : (
+            <label className="flex cursor-pointer items-center gap-3 font-ui text-sm text-fg-muted">
+              <input
+                type="checkbox"
+                checked={notify}
+                onChange={(e) => setNotify(e.target.checked)}
+                className="size-4 accent-current"
+              />
+              Email this to subscribers when I publish
+            </label>
+          )}
+        </div>
 
         <div className="flex flex-wrap gap-3">
           <Button variant="outline" disabled={busy} onClick={() => void save()}>

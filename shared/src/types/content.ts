@@ -12,6 +12,8 @@ export interface WritingDto {
   _id: string;
   slug: string;
   title: string;
+  /** When it was emailed to subscribers, if it has been. */
+  notifiedAt?: string | null;
   content: string;
   excerpt: string;
   /** The piece in the simplest words: the archive's reading, not the author's. */
@@ -115,6 +117,8 @@ export interface SiteSettingsDto {
    * transport yet). EMAIL: sent on. NONE: nowhere — the form must stay closed.
    */
   contactDelivery: 'NONE' | 'EMAIL' | 'INBOX';
+  /** Whether readers can sign up for emails about new writings (needs the database). */
+  newsletterEnabled?: boolean;
 }
 
 export interface ContactMessageDto {
@@ -125,6 +129,34 @@ export interface ContactMessageDto {
   source?: string;
   read: boolean;
   createdAt: string;
+}
+
+export type SubscriberStatus = 'PENDING' | 'ACTIVE' | 'UNSUBSCRIBED';
+
+/** Someone who asked to be emailed about new writings. */
+export interface SubscriberDto {
+  _id: string;
+  email: string;
+  status: SubscriberStatus;
+  consentAt: string;
+  confirmedAt: string | null;
+  createdAt: string;
+}
+
+/** What the admin sees above the list. */
+export interface SubscriberSummary {
+  active: number;
+  pending: number;
+  unsubscribed: number;
+  /** False until an email provider is configured on the server. */
+  mailEnabled: boolean;
+}
+
+/** The outcome of emailing one writing to the list. */
+export interface AnnouncementResult {
+  total: number;
+  sent: number;
+  failed: number;
 }
 
 export interface WaitlistSubscriberDto {

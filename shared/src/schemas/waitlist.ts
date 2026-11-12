@@ -18,5 +18,13 @@ export const contactSchema = z.object({
   website: z.string().max(0).optional(),
 });
 
+/** Signing up to be emailed when a new writing is published. */
+export const subscribeSchema = z.object({
+  email: emailSchema,
+  consent: z.literal(true, { error: 'Tick the box to say yes' }),
+  website: z.string().max(0).optional(),
+});
+
+export type SubscribeInput = z.infer<typeof subscribeSchema>;
 export type WaitlistInput = z.infer<typeof waitlistSchema>;
 export type ContactInput = z.infer<typeof contactSchema>;

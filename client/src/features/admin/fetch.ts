@@ -5,6 +5,8 @@
 export interface AdminFetchResult<T> {
   status: number;
   data: T | null;
+  /** Whatever the API sent beside the data (counts, paging), when it sent any. */
+  meta?: unknown;
 }
 
 export const adminFetch = async <T>(path: string): Promise<AdminFetchResult<T>> => {
@@ -15,8 +17,8 @@ export const adminFetch = async <T>(path: string): Promise<AdminFetchResult<T>> 
       cache: 'no-store',
     });
     if (!response.ok) return { status: response.status, data: null };
-    const body = (await response.json()) as { data?: T };
-    return { status: response.status, data: body.data ?? null };
+    const body = (await response.json()) as { data?: T; meta?: unknown };
+    return { status: response.status, data: body.data ?? null, meta: body.meta };
   } catch {
     return { status: 503, data: null };
   }

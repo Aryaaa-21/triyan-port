@@ -53,6 +53,16 @@ const envSchema = z
     CLOUDINARY_API_KEY: z.string().optional(),
     CLOUDINARY_API_SECRET: z.string().optional(),
 
+    /**
+     * Email. `none` sends nothing: sign-ups are still collected, and announcements are
+     * refused with a clear message until a provider is configured.
+     */
+    EMAIL_PROVIDER: z.enum(['none', 'resend', 'brevo']).default('none'),
+    RESEND_API_KEY: z.string().optional(),
+    BREVO_API_KEY: z.string().optional(),
+    /** The sender, e.g. `Triyan Writes <hello@example.com>`. Must be verified with the provider. */
+    EMAIL_FROM: z.string().optional(),
+
     SYNC_ENABLED: z
       .enum(['true', 'false'])
       .default('false')
@@ -78,6 +88,15 @@ const envSchema = z
       require('INSTAGRAM_APP_ID', 'when INSTAGRAM_PROVIDER=graph');
       require('INSTAGRAM_APP_SECRET', 'when INSTAGRAM_PROVIDER=graph');
       require('INSTAGRAM_ACCESS_TOKEN', 'when INSTAGRAM_PROVIDER=graph');
+    }
+
+    if (value.EMAIL_PROVIDER === 'resend') {
+      require('RESEND_API_KEY', 'when EMAIL_PROVIDER=resend');
+      require('EMAIL_FROM', 'when EMAIL_PROVIDER=resend');
+    }
+    if (value.EMAIL_PROVIDER === 'brevo') {
+      require('BREVO_API_KEY', 'when EMAIL_PROVIDER=brevo');
+      require('EMAIL_FROM', 'when EMAIL_PROVIDER=brevo');
     }
 
     if (value.MEDIA_PROVIDER === 'cloudinary') {

@@ -1,5 +1,6 @@
 import type {
   AdminUserDto,
+  AnnouncementResult,
   InstagramMediaDto,
   PageMeta,
   SyncStatusDto,
@@ -118,6 +119,12 @@ export const adminApi = {
     call<null>(`/admin/inbox/${id}`, { method: 'PATCH', body: JSON.stringify({ read }) }),
 
   deleteMessage: (id: string) => call<null>(`/admin/inbox/${id}`, { method: 'DELETE' }),
+
+  deleteSubscriber: (id: string) => call<null>(`/admin/subscribers/${id}`, { method: 'DELETE' }),
+
+  /** Emails a published writing to every confirmed subscriber. Once per writing. */
+  announce: (id: string) =>
+    call<AnnouncementResult>(`/admin/writings/${id}/announce`, { method: 'POST' }),
 
   refreshInstagram: (id: string) =>
     call<InstagramMediaDto>(`/admin/instagram/${id}/refresh`, { method: 'POST' }),

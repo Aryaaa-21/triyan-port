@@ -24,7 +24,11 @@ export const getAbyssContent: RequestHandler = async (_req, res) => {
 export const getSettingsContent: RequestHandler = async (_req, res) => {
   publicCache(res, 300);
   // Messages are delivered to the admin inbox (there is no email transport yet).
-  ok(res, { ...(await getSettings()), contactDelivery: 'INBOX' as const });
+  ok(res, {
+    ...(await getSettings()),
+    contactDelivery: 'INBOX' as const,
+    newsletterEnabled: true,
+  });
 };
 
 /**

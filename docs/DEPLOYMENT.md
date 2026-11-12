@@ -89,6 +89,30 @@ NODE_ENV=production MONGODB_URI='…' MONGODB_DB_NAME=triyan_prod PORT=8080 npm 
 Express serves `client/dist` and the API from one origin. In production it refuses to
 start without `MONGODB_URI`.
 
+## Email: telling subscribers about a new writing
+
+Readers can leave their address in the footer ("New writings, by email"). The owner
+decides, per writing, whether to email it: a tick-box before publishing, or a button on a
+piece that is already live. Each writing can be sent once. Subscribers are listed at
+`/admin/subscribers`.
+
+Nothing is sent until an email provider is connected. Until then sign-ups are still
+kept. To connect one, set these on the host (Vercel / Render) and redeploy:
+
+| Variable | Value |
+|---|---|
+| `EMAIL_PROVIDER` | `resend` or `brevo` |
+| `RESEND_API_KEY` *or* `BREVO_API_KEY` | the key from that provider |
+| `EMAIL_FROM` | a sender that provider has verified, e.g. `Triyan Writes <hello@your-domain.com>` |
+| `PUBLIC_SITE_URL` | the site's real address — the links inside the emails are built from it |
+
+With a provider connected, a new subscriber first receives a confirmation link and is
+only added after opening it. Every email carries an unsubscribe link.
+
+On Vercel a function has a time limit, so very large lists (thousands) should move to a
+long-running host such as Render, or to the provider's own broadcast tool (the list can
+be exported as CSV from the admin).
+
 ## How it behaves in production
 
 - **The site is a React app.**

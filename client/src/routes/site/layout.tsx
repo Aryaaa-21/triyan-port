@@ -1,7 +1,7 @@
 import { Outlet, useLoaderData, useLocation, useNavigation } from 'react-router';
 import { SiteHeader } from '@/components/site/site-header';
 import { SiteFooter } from '@/components/site/site-footer';
-import { fetchAboutSafely } from '@/features/content/api';
+import { fetchAboutSafely, fetchSettings } from '@/features/content/api';
 import { Cursor } from '@/components/motion/cursor';
 import WindStreamCursor from '@/components/ui/wind-stream-cursor';
 import { ArtDefs } from '@/components/art';
@@ -17,9 +17,17 @@ import { useEffect } from 'react';
  * The public shell. Admin lives in its own route group with no header or footer,
  * so the two surfaces cannot drift into each other.
  */
-export const loader = () => fetchAboutSafely();
+export const loader = async () => {
+  const [about, settings] = await Promise.all([
+    fetchAboutSafely(),
+    fetchSettings()
+      .then((r) => r.data)
+      .catch(() => null),
+  ]);
+  return { about, newsletter: Boolean(settings?.newsletterEnabled) };
+};
 
-/** The about record only feeds the footer's links: no need to refetch it on every page. */
+/** These only feed the footer: no need to refetch them on every page. */
 export const shouldRevalidate = () => false;
 
 /** Archive pages show their own quiet skeleton while the next one loads. */
@@ -31,7 +39,7 @@ const pendingFor = (path: string) =>
   ) : null;
 
 export default function SiteLayout() {
-  const about = useLoaderData<typeof loader>();
+  const { about, newsletter } = useLoaderData<typeof loader>();
   const { pathname } = useLocation();
   const navigation = useNavigation();
   const pendingPath = navigation.state === 'loading' ? navigation.location.pathname : null;
@@ -57,6 +65,7 @@ export default function SiteLayout() {
           </div>
         </div>
         <SiteFooter
+          newsletter={newsletter}
           {...(about?.links.literaryInstagram
             ? { literaryInstagram: about.links.literaryInstagram }
             : {})}

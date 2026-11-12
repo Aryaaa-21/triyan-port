@@ -35,5 +35,8 @@ export type { InstagramSyncStateAttrs } from './instagramSyncState.model.js';
 export { ContactMessage } from './contactMessage.model.js';
 export type { ContactMessageAttrs } from './contactMessage.model.js';
 
+export { Subscriber } from './subscriber.model.js';
+export type { SubscriberAttrs } from './subscriber.model.js';
+
 export { WaitlistSubscriber } from './waitlistSubscriber.model.js';
 export type { WaitlistSubscriberAttrs } from './waitlistSubscriber.model.js';

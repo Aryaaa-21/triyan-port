@@ -457,6 +457,7 @@ const SETTINGS_DEFAULTS: SiteSettingsDto = {
   introEnabled: true,
   contactFormEnabled: false,
   contactDelivery: 'NONE',
+  newsletterEnabled: false,
 };
 
 /** With nowhere to keep a message, the contact form is closed and says so. */
@@ -464,4 +465,5 @@ export const archiveSettings = (): SiteSettingsDto => ({
   ...filled(SETTINGS_DEFAULTS, SEED_SETTINGS),
   contactFormEnabled: false,
   contactDelivery: 'NONE',
+  newsletterEnabled: false,
 });

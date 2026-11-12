@@ -10,7 +10,7 @@ import {
 } from './archive/store.js';
 
 /** The site's fixed pages (the React router knows them; this mirrors it for status codes). */
-const FIXED = /^\/(?:writings|about|book|abyss|instagram|contact|admin(?:\/.*)?)?\/?$/;
+const FIXED = /^\/(?:writings|about|book|abyss|instagram|contact|subscription|admin(?:\/.*)?)?\/?$/;
 
 /**
  * Whether a path is a real page of the site, so the app is served with 200 and
