@@ -33,20 +33,20 @@ describe('SiteHeader', () => {
     const current = screen.getAllByRole('link', { name: 'Writings' })[0];
     expect(current?.getAttribute('aria-current')).toBe('page');
 
-    const menu = screen.getByRole('button', { name: 'Menu' });
+    const menu = screen.getByRole('button', { name: 'Open menu' });
     expect(menu.getAttribute('aria-expanded')).toBe('false');
 
     fireEvent.click(menu);
     const dialog = screen.getByRole('dialog', { name: 'Navigation' });
     expect(dialog.getAttribute('aria-modal')).toBe('true');
-    expect(screen.getByRole('button', { name: 'Close' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Close menu' })).toBeTruthy();
   });
 
   it('closes the mobile panel on Escape', async () => {
     const { SiteHeader } = await import('./site-header');
     render(<SiteHeader />);
 
-    fireEvent.click(screen.getByRole('button', { name: 'Menu' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Open menu' }));
     expect(screen.queryByRole('dialog')).toBeTruthy();
 
     fireEvent.keyDown(document, { key: 'Escape' });

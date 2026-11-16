@@ -96,9 +96,10 @@ export function SiteHeader() {
             onClick={() => setOpen(true)}
             aria-expanded={open}
             aria-controls="mobile-nav"
-            className="-my-2 py-2 font-mono text-2xs tracking-[0.18em] text-fg uppercase"
+            aria-label="Open menu"
+            className="burger -my-2 -mr-2 p-2 text-fg"
           >
-            Menu
+            <BurgerLines />
           </button>
         </div>
       </div>
@@ -124,9 +125,10 @@ export function SiteHeader() {
                 ref={closeRef}
                 type="button"
                 onClick={() => setOpen(false)}
-                className="-my-2 py-2 pl-4 font-mono text-2xs tracking-[0.18em] text-fg uppercase"
+                aria-label="Close menu"
+                className="burger burger-x -my-2 -mr-2 p-2 text-fg"
               >
-                Close
+                <BurgerLines />
               </button>
             </div>
 
@@ -193,5 +195,16 @@ function MenuLink({
         {label === 'ABYSS' ? 'abyss' : label}
       </span>
     </Link>
+  );
+}
+
+/** Three lines; inside `.burger-x` they fold into a cross (see `.burger` in globals.css). */
+function BurgerLines() {
+  return (
+    <span aria-hidden="true" className="burger-lines">
+      <span />
+      <span />
+      <span />
+    </span>
   );
 }

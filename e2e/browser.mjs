@@ -185,7 +185,7 @@ check(
 await page.setViewportSize({ width: 375, height: 800 });
 await page.goto(BASE + '/');
 await hydrated(page);
-await page.getByRole('button', { name: 'Menu' }).click();
+await page.getByRole('button', { name: 'Open menu' }).click();
 await page
   .getByRole('dialog', { name: 'Navigation' })
   .getByRole('link', { name: 'Instagram' })

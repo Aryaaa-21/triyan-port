@@ -284,6 +284,19 @@
     }
   }
 
+  @keyframes burger-fold {
+    from {
+      transform: none;
+    }
+  }
+
+  @keyframes burger-fade {
+    from {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
   @keyframes page-in {
     from {
       opacity: 0;
@@ -370,6 +383,73 @@
     .menu-item {
       animation: page-in 0.7s var(--curve-void) both;
       animation-delay: calc(var(--menu-step, 0) * 45ms + 80ms);
+    }
+  }
+
+  /* The mobile menu button: three lines that fold into a cross inside the open panel. */
+  .burger-lines {
+    position: relative;
+    display: block;
+    width: 1.5rem;
+    height: 0.875rem;
+  }
+
+  .burger-lines > span {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 1.5px;
+    background: currentColor;
+    transform-origin: center;
+    transition:
+      transform 0.45s var(--curve-void),
+      opacity 0.3s var(--curve-void),
+      width 0.45s var(--curve-void);
+  }
+
+  .burger-lines > span:nth-child(1) {
+    top: 0;
+  }
+  .burger-lines > span:nth-child(2) {
+    top: calc(50% - 0.75px);
+    width: 66%;
+  }
+  .burger-lines > span:nth-child(3) {
+    bottom: 0;
+  }
+
+  .burger:hover .burger-lines > span:nth-child(2) {
+    width: 100%;
+  }
+
+  .burger[aria-expanded='true'] .burger-lines > span:nth-child(1),
+  .burger-x .burger-lines > span:nth-child(1) {
+    transform: translateY(calc(0.4375rem - 0.75px)) rotate(45deg);
+  }
+  .burger[aria-expanded='true'] .burger-lines > span:nth-child(2),
+  .burger-x .burger-lines > span:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  .burger[aria-expanded='true'] .burger-lines > span:nth-child(3),
+  .burger-x .burger-lines > span:nth-child(3) {
+    transform: translateY(calc(-0.4375rem + 0.75px)) rotate(-45deg);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    /* The panel's own button mounts already crossed, so it plays the fold on entry. */
+    .burger-x .burger-lines > span:nth-child(1),
+    .burger-x .burger-lines > span:nth-child(3) {
+      animation: burger-fold 0.5s var(--curve-void) both;
+    }
+    .burger-x .burger-lines > span:nth-child(2) {
+      animation: burger-fade 0.35s var(--curve-void) both;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .burger-lines > span {
+      transition: none;
     }
   }
 
