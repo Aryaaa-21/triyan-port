@@ -1,6 +1,6 @@
 {
  "account": "triyanwrites",
- "capturedAt": "2026-11-12",
+ "capturedAt": "2026-11-16",
  "classifierVersion": "claude-image-read-1",
  "posts": [
   {
@@ -18750,6 +18750,341 @@
     "confidence": 0.7
    },
    "explanation": "When he dies, the writer would ask God for one last wish: to live his time with the person again, to be 18, young, trusting and full of love, when their eyes were everything to him. But it feels like too much to ask, so he just dies."
+  },
+  {
+   "code": "DfpDz4uhqXs",
+   "kind": "post",
+   "timestamp": "2026-11-12T12:30:08.000Z",
+   "caption": "",
+   "displayTitle": "Love eventually dies, with you.",
+   "altText": "Love eventually dies, with you.",
+   "text": "Love eventually dies, with you.",
+   "hidden": false,
+   "slides": [
+    {
+     "url": "/archive/instagram/DfpDz4uhqXs-1.webp",
+     "thumbUrl": "/archive/instagram/DfpDz4uhqXs-1.thumb.webp",
+     "width": 1000,
+     "height": 826
+    }
+   ],
+   "classification": {
+    "primaryCategory": "ABSENCE_LOSS",
+    "secondaryCategories": [
+     "LOVE_LONGING",
+     "MORTALITY_NOTHINGNESS"
+    ],
+    "themes": [
+     "love",
+     "death",
+     "loss"
+    ],
+    "emotions": [
+     "sadness",
+     "acceptance"
+    ],
+    "language": "ENGLISH",
+    "confidence": 0.75
+   },
+   "explanation": "The love doesn't end when the person leaves. It goes on until the writer himself dies, and only then does it die too."
+  },
+  {
+   "code": "DfrpGmUhEe0",
+   "kind": "post",
+   "timestamp": "2026-11-13T12:34:28.000Z",
+   "caption": "",
+   "displayTitle": "put a curse on me, let me never be the same without you.",
+   "altText": "put a curse on me, let me never be the same without you.",
+   "text": "put a curse on me, let me\nnever be the same without you.",
+   "hidden": false,
+   "slides": [
+    {
+     "url": "/archive/instagram/DfrpGmUhEe0-1.webp",
+     "thumbUrl": "/archive/instagram/DfrpGmUhEe0-1.thumb.webp",
+     "width": 1000,
+     "height": 826
+    }
+   ],
+   "classification": {
+    "primaryCategory": "LOVE_LONGING",
+    "secondaryCategories": [
+     "ABSENCE_LOSS"
+    ],
+    "themes": [
+     "love",
+     "separation",
+     "identity"
+    ],
+    "emotions": [
+     "love",
+     "longing"
+    ],
+    "language": "ENGLISH",
+    "confidence": 0.75
+   },
+   "explanation": "The writer asks to be cursed so that, without this person, he can never go back to who he was. Losing them should change him forever."
+  },
+  {
+   "code": "DfotgxQhED1",
+   "kind": "reel",
+   "timestamp": "2026-11-13T14:02:10.000Z",
+   "caption": "If loving you",
+   "displayTitle": "If loving you",
+   "altText": "If loving you was a prayer, then I would pray until your eyes finally gazed upon this filthy soul. There is a strange beauty in praying even after the answer has refused you. You do not stop because you did not receive what you asked for, you pray harder. Perhaps that's exactly how love is you cling to it despite knowing you can never make it yours. It's all hope until it's your love.",
+   "text": "If loving you\nwas a prayer,\nthen I would pray until\nyour eyes finally gazed\nupon this filthy soul.\nThere is a strange beauty in praying even\nafter the answer has refused you. You do\nnot stop because you did not receive what\nyou asked for, you pray harder. Perhaps\nthat's exactly how love is you cling to it\ndespite knowing you can never make it yours.\nIt's all hope until it's your love.",
+   "hidden": false,
+   "slides": [
+    {
+     "url": "/archive/instagram/DfotgxQhED1-1.webp",
+     "thumbUrl": "/archive/instagram/DfotgxQhED1-1.thumb.webp",
+     "width": 1000,
+     "height": 1282
+    }
+   ],
+   "classification": {
+    "primaryCategory": "LOVE_LONGING",
+    "secondaryCategories": [
+     "HOPE_DESPAIR",
+     "PHILOSOPHICAL_REFLECTIONS"
+    ],
+    "themes": [
+     "unrequited-love",
+     "faith",
+     "hope",
+     "longing"
+    ],
+    "emotions": [
+     "longing",
+     "hope",
+     "love"
+    ],
+    "language": "ENGLISH",
+    "confidence": 0.75
+   },
+   "explanation": "Loving someone who doesn't love back is like praying to a God who has already said no: you don't stop, you pray harder. Love is holding on even when you know it will never be yours."
+  },
+  {
+   "code": "DfuNZYZhtF-",
+   "kind": "post",
+   "timestamp": "2026-11-14T12:30:05.000Z",
+   "caption": "",
+   "displayTitle": "All this love only to become heartless.",
+   "altText": "All this love only to become heartless.",
+   "text": "All this love only to become heartless.",
+   "hidden": false,
+   "slides": [
+    {
+     "url": "/archive/instagram/DfuNZYZhtF--1.webp",
+     "thumbUrl": "/archive/instagram/DfuNZYZhtF--1.thumb.webp",
+     "width": 1000,
+     "height": 826
+    }
+   ],
+   "classification": {
+    "primaryCategory": "GRIEF_MELANCHOLY",
+    "secondaryCategories": [
+     "LOVE_LONGING",
+     "HUMAN_CONDITION"
+    ],
+    "themes": [
+     "love",
+     "suffering",
+     "loss"
+    ],
+    "emotions": [
+     "sadness",
+     "despair"
+    ],
+    "language": "ENGLISH",
+    "confidence": 0.75
+   },
+   "explanation": "After loving so much, all that is left is a heart that can't feel anymore. Too much love, given and lost, made the writer cold."
+  },
+  {
+   "code": "Dfr8yFvhDUJ",
+   "kind": "reel",
+   "timestamp": "2026-11-14T15:04:02.000Z",
+   "caption": "Moon",
+   "displayTitle": "I still think you",
+   "altText": "I still think you love me, just like I still think the moon follows us. Isn't it funny how we create our own delusions to survive the grief, because what used to make us happy isn't there to make us smile anymore?",
+   "text": "I still think you\nlove me,\njust like I still think\nthe moon follows us.\nIsn't it funny how\nwe create our own\ndelusions to survive the grief,\nbecause what used to make\nus happy isn't there to\nmake us smile anymore?",
+   "hidden": false,
+   "slides": [
+    {
+     "url": "/archive/instagram/Dfr8yFvhDUJ-1.webp",
+     "thumbUrl": "/archive/instagram/Dfr8yFvhDUJ-1.thumb.webp",
+     "width": 1000,
+     "height": 1282
+    }
+   ],
+   "classification": {
+    "primaryCategory": "GRIEF_MELANCHOLY",
+    "secondaryCategories": [
+     "ABSENCE_LOSS",
+     "LOVE_LONGING"
+    ],
+    "themes": [
+     "grief",
+     "love",
+     "loss",
+     "memory"
+    ],
+    "emotions": [
+     "grief",
+     "sadness",
+     "longing"
+    ],
+    "language": "ENGLISH",
+    "confidence": 0.75
+   },
+   "explanation": "Believing someone still loves you is like a child believing the moon follows them. We tell ourselves such small lies to get through grief, because the thing that made us happy is gone."
+  },
+  {
+   "code": "DfwyNlcM1-R",
+   "kind": "post",
+   "timestamp": "2026-11-15T12:30:16.000Z",
+   "caption": "",
+   "displayTitle": "Let's keep a little secret, you never left and I never died.",
+   "altText": "Let's keep a little secret, you never left and I never died.",
+   "text": "Let's keep a little secret,\nyou never left and I never died.",
+   "hidden": false,
+   "slides": [
+    {
+     "url": "/archive/instagram/DfwyNlcM1-R-1.webp",
+     "thumbUrl": "/archive/instagram/DfwyNlcM1-R-1.thumb.webp",
+     "width": 1000,
+     "height": 826
+    }
+   ],
+   "classification": {
+    "primaryCategory": "ABSENCE_LOSS",
+    "secondaryCategories": [
+     "MORTALITY_NOTHINGNESS",
+     "LOVE_LONGING"
+    ],
+    "themes": [
+     "loss",
+     "separation",
+     "death",
+     "memory"
+    ],
+    "emotions": [
+     "longing",
+     "sadness"
+    ],
+    "language": "ENGLISH",
+    "confidence": 0.75
+   },
+   "explanation": "The writer asks the person to pretend together: that they never left, and that their leaving didn't kill something inside him."
+  },
+  {
+   "code": "DfuuEeGB0Ns",
+   "kind": "reel",
+   "timestamp": "2026-11-15T15:00:45.000Z",
+   "caption": "Ok",
+   "displayTitle": "I do not hope you'll",
+   "altText": "I do not hope you'll remember my face forever. I only hope that when my name wanders through your mind years from now, it will not feel like the name of a stranger who happened to pass by, but like a room you once lived in, because for a brief and terrible moment, we mistook each other for home.",
+   "text": "I do not hope you'll\nremember my face forever.\nI only hope that when my\nname wanders through your\nmind years from now,\nit will not feel like\nthe name of a stranger\nwho happened to pass by,\nbut like a room you once lived in,\nbecause for a brief\nand terrible moment,\nwe mistook each other for home.",
+   "hidden": false,
+   "slides": [
+    {
+     "url": "/archive/instagram/DfuuEeGB0Ns-1.webp",
+     "thumbUrl": "/archive/instagram/DfuuEeGB0Ns-1.thumb.webp",
+     "width": 1000,
+     "height": 1282
+    }
+   ],
+   "classification": {
+    "primaryCategory": "ABSENCE_LOSS",
+    "secondaryCategories": [
+     "LOVE_LONGING",
+     "HUMAN_CONDITION"
+    ],
+    "themes": [
+     "memory",
+     "time",
+     "nostalgia",
+     "separation"
+    ],
+    "emotions": [
+     "nostalgia",
+     "longing",
+     "acceptance"
+    ],
+    "language": "ENGLISH",
+    "confidence": 0.75
+   },
+   "explanation": "He doesn't need to be remembered forever. He only hopes that, years later, his name feels to them like a place they once lived, not a stranger, because for a short time they were each other's home."
+  },
+  {
+   "code": "DfzXAZ_BKmB",
+   "kind": "post",
+   "timestamp": "2026-11-16T12:30:16.000Z",
+   "caption": "",
+   "displayTitle": "the air feels less like oxygen more like you.",
+   "altText": "the air feels less like oxygen more like you.",
+   "text": "the air feels less like oxygen more like you.",
+   "hidden": false,
+   "slides": [
+    {
+     "url": "/archive/instagram/DfzXAZ_BKmB-1.webp",
+     "thumbUrl": "/archive/instagram/DfzXAZ_BKmB-1.thumb.webp",
+     "width": 1000,
+     "height": 826
+    }
+   ],
+   "classification": {
+    "primaryCategory": "LOVE_LONGING",
+    "secondaryCategories": [],
+    "themes": [
+     "love",
+     "longing"
+    ],
+    "emotions": [
+     "love",
+     "longing"
+    ],
+    "language": "ENGLISH",
+    "confidence": 0.75
+   },
+   "explanation": "The person has become as necessary as air. Breathing feels like being with them."
+  },
+  {
+   "code": "DfxXgADhYgp",
+   "kind": "reel",
+   "timestamp": "2026-11-16T15:09:57.000Z",
+   "caption": "Immeasurable",
+   "displayTitle": "perhaps the cruelest realization is this",
+   "altText": "perhaps the cruelest realization is this— that most people do not intend to hurt you. They simply choose themselves in moments where you hoped they would choose you. And that difference, so small in action, becomes immeasurable in consequence.",
+   "text": "perhaps the cruelest realization is this—\nthat most people do not intend to hurt you.\nThey simply choose themselves in moments\nwhere you hoped they would choose you.\nAnd that difference,\nso small in action,\nbecomes immeasurable in consequence.",
+   "hidden": false,
+   "slides": [
+    {
+     "url": "/archive/instagram/DfxXgADhYgp-1.webp",
+     "thumbUrl": "/archive/instagram/DfxXgADhYgp-1.thumb.webp",
+     "width": 1000,
+     "height": 845
+    }
+   ],
+   "classification": {
+    "primaryCategory": "HUMAN_CONDITION",
+    "secondaryCategories": [
+     "PHILOSOPHICAL_REFLECTIONS",
+     "ABSENCE_LOSS"
+    ],
+    "themes": [
+     "human-nature",
+     "love",
+     "suffering"
+    ],
+    "emotions": [
+     "sadness",
+     "acceptance"
+    ],
+    "language": "ENGLISH",
+    "confidence": 0.75
+   },
+   "explanation": "Most people who hurt us don't mean to. They just put themselves first at the moment we needed them to put us first. That small choice leaves a huge wound."
   }
  ],
  "writings": [
@@ -29599,6 +29934,251 @@
    ],
    "explanation": "We are made of broken pieces of the people and things we loved. What we loved stays in us, in pieces.",
    "instagramUrl": "https://www.instagram.com/p/Dfmh9PbhEi7/"
+  },
+  {
+   "slug": "love-eventually-dies-with-you",
+   "title": "Love eventually dies, with you.",
+   "content": "Love eventually dies, with you.",
+   "publishedAt": "2026-11-12T12:30:08.000Z",
+   "contentType": "APHORISM",
+   "language": "ENGLISH",
+   "primaryCategory": "ABSENCE_LOSS",
+   "secondaryCategories": [
+    "LOVE_LONGING",
+    "MORTALITY_NOTHINGNESS"
+   ],
+   "themes": [
+    "love",
+    "death",
+    "loss"
+   ],
+   "emotions": [
+    "sadness",
+    "acceptance"
+   ],
+   "sources": [
+    "DfpDz4uhqXs"
+   ],
+   "explanation": "The love doesn't end when the person leaves. It goes on until the writer himself dies, and only then does it die too.",
+   "instagramUrl": "https://www.instagram.com/p/DfpDz4uhqXs/"
+  },
+  {
+   "slug": "put-a-curse-on-me-let-me-never-be-the-same-without-you",
+   "title": "put a curse on me, let me never be the same without you.",
+   "content": "put a curse on me, let me\nnever be the same without you.",
+   "publishedAt": "2026-11-13T12:34:28.000Z",
+   "contentType": "POEM",
+   "language": "ENGLISH",
+   "primaryCategory": "LOVE_LONGING",
+   "secondaryCategories": [
+    "ABSENCE_LOSS"
+   ],
+   "themes": [
+    "love",
+    "separation",
+    "identity"
+   ],
+   "emotions": [
+    "love",
+    "longing"
+   ],
+   "sources": [
+    "DfrpGmUhEe0"
+   ],
+   "explanation": "The writer asks to be cursed so that, without this person, he can never go back to who he was. Losing them should change him forever.",
+   "instagramUrl": "https://www.instagram.com/p/DfrpGmUhEe0/"
+  },
+  {
+   "slug": "if-loving-you",
+   "title": "If loving you",
+   "content": "If loving you\nwas a prayer,\nthen I would pray until\nyour eyes finally gazed\nupon this filthy soul.\nThere is a strange beauty in praying even\nafter the answer has refused you. You do\nnot stop because you did not receive what\nyou asked for, you pray harder. Perhaps\nthat's exactly how love is you cling to it\ndespite knowing you can never make it yours.\nIt's all hope until it's your love.",
+   "publishedAt": "2026-11-13T14:02:10.000Z",
+   "contentType": "POEM",
+   "language": "ENGLISH",
+   "primaryCategory": "LOVE_LONGING",
+   "secondaryCategories": [
+    "HOPE_DESPAIR",
+    "PHILOSOPHICAL_REFLECTIONS"
+   ],
+   "themes": [
+    "unrequited-love",
+    "faith",
+    "hope",
+    "longing"
+   ],
+   "emotions": [
+    "longing",
+    "hope",
+    "love"
+   ],
+   "sources": [
+    "DfotgxQhED1"
+   ],
+   "explanation": "Loving someone who doesn't love back is like praying to a God who has already said no: you don't stop, you pray harder. Love is holding on even when you know it will never be yours.",
+   "instagramUrl": "https://www.instagram.com/reel/DfotgxQhED1/"
+  },
+  {
+   "slug": "all-this-love-only-to-become-heartless",
+   "title": "All this love only to become heartless.",
+   "content": "All this love only to become heartless.",
+   "publishedAt": "2026-11-14T12:30:05.000Z",
+   "contentType": "APHORISM",
+   "language": "ENGLISH",
+   "primaryCategory": "GRIEF_MELANCHOLY",
+   "secondaryCategories": [
+    "LOVE_LONGING",
+    "HUMAN_CONDITION"
+   ],
+   "themes": [
+    "love",
+    "suffering",
+    "loss"
+   ],
+   "emotions": [
+    "sadness",
+    "despair"
+   ],
+   "sources": [
+    "DfuNZYZhtF-"
+   ],
+   "explanation": "After loving so much, all that is left is a heart that can't feel anymore. Too much love, given and lost, made the writer cold.",
+   "instagramUrl": "https://www.instagram.com/p/DfuNZYZhtF-/"
+  },
+  {
+   "slug": "i-still-think-you",
+   "title": "I still think you",
+   "content": "I still think you\nlove me,\njust like I still think\nthe moon follows us.\nIsn't it funny how\nwe create our own\ndelusions to survive the grief,\nbecause what used to make\nus happy isn't there to\nmake us smile anymore?",
+   "publishedAt": "2026-11-14T15:04:02.000Z",
+   "contentType": "POEM",
+   "language": "ENGLISH",
+   "primaryCategory": "GRIEF_MELANCHOLY",
+   "secondaryCategories": [
+    "ABSENCE_LOSS",
+    "LOVE_LONGING"
+   ],
+   "themes": [
+    "grief",
+    "love",
+    "loss",
+    "memory"
+   ],
+   "emotions": [
+    "grief",
+    "sadness",
+    "longing"
+   ],
+   "sources": [
+    "Dfr8yFvhDUJ"
+   ],
+   "explanation": "Believing someone still loves you is like a child believing the moon follows them. We tell ourselves such small lies to get through grief, because the thing that made us happy is gone.",
+   "instagramUrl": "https://www.instagram.com/reel/Dfr8yFvhDUJ/"
+  },
+  {
+   "slug": "let-s-keep-a-little-secret-you-never-left-and-i-never-died",
+   "title": "Let's keep a little secret, you never left and I never died.",
+   "content": "Let's keep a little secret,\nyou never left and I never died.",
+   "publishedAt": "2026-11-15T12:30:16.000Z",
+   "contentType": "POEM",
+   "language": "ENGLISH",
+   "primaryCategory": "ABSENCE_LOSS",
+   "secondaryCategories": [
+    "MORTALITY_NOTHINGNESS",
+    "LOVE_LONGING"
+   ],
+   "themes": [
+    "loss",
+    "separation",
+    "death",
+    "memory"
+   ],
+   "emotions": [
+    "longing",
+    "sadness"
+   ],
+   "sources": [
+    "DfwyNlcM1-R"
+   ],
+   "explanation": "The writer asks the person to pretend together: that they never left, and that their leaving didn't kill something inside him.",
+   "instagramUrl": "https://www.instagram.com/p/DfwyNlcM1-R/"
+  },
+  {
+   "slug": "i-do-not-hope-you-ll",
+   "title": "I do not hope you'll",
+   "content": "I do not hope you'll\nremember my face forever.\nI only hope that when my\nname wanders through your\nmind years from now,\nit will not feel like\nthe name of a stranger\nwho happened to pass by,\nbut like a room you once lived in,\nbecause for a brief\nand terrible moment,\nwe mistook each other for home.",
+   "publishedAt": "2026-11-15T15:00:45.000Z",
+   "contentType": "POEM",
+   "language": "ENGLISH",
+   "primaryCategory": "ABSENCE_LOSS",
+   "secondaryCategories": [
+    "LOVE_LONGING",
+    "HUMAN_CONDITION"
+   ],
+   "themes": [
+    "memory",
+    "time",
+    "nostalgia",
+    "separation"
+   ],
+   "emotions": [
+    "nostalgia",
+    "longing",
+    "acceptance"
+   ],
+   "sources": [
+    "DfuuEeGB0Ns"
+   ],
+   "explanation": "He doesn't need to be remembered forever. He only hopes that, years later, his name feels to them like a place they once lived, not a stranger, because for a short time they were each other's home.",
+   "instagramUrl": "https://www.instagram.com/reel/DfuuEeGB0Ns/"
+  },
+  {
+   "slug": "the-air-feels-less-like-oxygen-more-like-you",
+   "title": "the air feels less like oxygen more like you.",
+   "content": "the air feels less like oxygen more like you.",
+   "publishedAt": "2026-11-16T12:30:16.000Z",
+   "contentType": "APHORISM",
+   "language": "ENGLISH",
+   "primaryCategory": "LOVE_LONGING",
+   "secondaryCategories": [],
+   "themes": [
+    "love",
+    "longing"
+   ],
+   "emotions": [
+    "love",
+    "longing"
+   ],
+   "sources": [
+    "DfzXAZ_BKmB"
+   ],
+   "explanation": "The person has become as necessary as air. Breathing feels like being with them.",
+   "instagramUrl": "https://www.instagram.com/p/DfzXAZ_BKmB/"
+  },
+  {
+   "slug": "perhaps-the-cruelest-realization-is-this-2",
+   "title": "perhaps the cruelest realization is this",
+   "content": "perhaps the cruelest realization is this—\nthat most people do not intend to hurt you.\nThey simply choose themselves in moments\nwhere you hoped they would choose you.\nAnd that difference,\nso small in action,\nbecomes immeasurable in consequence.",
+   "publishedAt": "2026-11-16T15:09:57.000Z",
+   "contentType": "POEM",
+   "language": "ENGLISH",
+   "primaryCategory": "HUMAN_CONDITION",
+   "secondaryCategories": [
+    "PHILOSOPHICAL_REFLECTIONS",
+    "ABSENCE_LOSS"
+   ],
+   "themes": [
+    "human-nature",
+    "love",
+    "suffering"
+   ],
+   "emotions": [
+    "sadness",
+    "acceptance"
+   ],
+   "sources": [
+    "DfxXgADhYgp"
+   ],
+   "explanation": "Most people who hurt us don't mean to. They just put themselves first at the moment we needed them to put us first. That small choice leaves a huge wound.",
+   "instagramUrl": "https://www.instagram.com/reel/DfxXgADhYgp/"
   }
  ]
 }
