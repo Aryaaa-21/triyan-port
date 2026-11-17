@@ -34,19 +34,18 @@ export default function AbyssPage() {
       />
       {/* ------------------------------------------------------------ mark */}
       <section className="gutter relative isolate flex min-h-[92svh] flex-col justify-end pb-20">
-        {/* The owner's abyss logo above the name. Its own black ground melts into the page. */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 top-0 bottom-[38%] flex items-center justify-center"
-        >
+        {/* The galaxy behind the mark, fading into the page's black beneath the name. */}
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
           <img
-            src="/images/abyss-logo.jpg"
+            src="/images/abyss-galaxy.webp"
             alt=""
-            width={493}
-            height={556}
+            width={860}
+            height={710}
             decoding="async"
-            className="abyss-logo h-[min(52svh,30rem)] w-auto mix-blend-screen select-none"
+            fetchPriority="high"
+            className="h-full w-full object-cover object-[50%_40%] select-none"
           />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/10 to-black" />
         </div>
         <FilmGrain />
         <div className="relative mx-auto w-full max-w-[90rem]">
