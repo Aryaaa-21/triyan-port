@@ -1112,3 +1112,16 @@
     scale: 1.12;
   }
 }
+
+/* Day / night switch: the new theme grows from the toggle as a circle (theme-toggle.tsx). */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* While the circle grows, nothing else fades, so the edge between the worlds stays crisp. */
+.theme-switching,
+.theme-switching * {
+  transition: none !important;
+}

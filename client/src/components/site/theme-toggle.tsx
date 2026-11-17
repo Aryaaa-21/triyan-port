@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from 'react';
+import { flushSync } from 'react-dom';
 import {
   type Theme,
   applyTheme,
@@ -27,10 +28,43 @@ export function ThemeToggle({ className }: { className?: string }) {
   );
   const night = theme !== 'manuscript';
 
-  const flip = () => {
+  const flip = (event: React.MouseEvent<HTMLButtonElement>) => {
     const next: Theme = night ? 'manuscript' : 'void';
-    applyTheme(next);
-    storeTheme(next);
+    const change = () => {
+      applyTheme(next);
+      storeTheme(next);
+    };
+
+    // The new world spreads out from the switch as a growing circle. Without view
+    // transitions, or under reduced motion, it simply changes.
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce || typeof document.startViewTransition !== 'function') {
+      change();
+      return;
+    }
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+    const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+
+    const root = document.documentElement;
+    root.classList.add('theme-switching');
+    const transition = document.startViewTransition(() => flushSync(change));
+    void transition.ready
+      .then(() => {
+        root.animate(
+          {
+            clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`],
+          },
+          {
+            duration: 750,
+            easing: 'cubic-bezier(0.7, 0, 0.2, 1)',
+            pseudoElement: '::view-transition-new(root)',
+          },
+        );
+      })
+      .catch(() => {});
+    void transition.finished.finally(() => root.classList.remove('theme-switching'));
   };
 
   return (
