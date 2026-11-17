@@ -1,7 +1,5 @@
-/** Who built the site. Shown at the foot of every page and on /credits. */
+/** Who built the site, credited at the foot of every page and in the menu. */
 export const MAKER = {
-  handle: '@arya',
-  name: 'Arya Bhagat',
+  name: 'Arya',
   url: 'https://aryabhagat.vercel.app',
-  display: 'aryabhagat.vercel.app',
 } as const;

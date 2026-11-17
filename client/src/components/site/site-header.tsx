@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { NAV_LINKS } from './nav-links';
 import { ThemeToggle } from './theme-toggle';
-import { MAKER } from './credit';
 import { cn } from '@/lib/cn';
 
 /**
@@ -153,28 +152,9 @@ export function SiteHeader() {
             </nav>
 
             <div className="gutter flex items-end justify-between gap-6 border-t border-border py-6">
-              <div>
-                <p className="max-w-[14rem] font-display text-lg leading-snug font-light text-fg-muted italic">
-                  soul is deeper than the abyss
-                </p>
-                <p className="mt-4 flex flex-wrap gap-x-4 gap-y-2 font-mono text-2xs tracking-[0.18em] uppercase">
-                  <Link
-                    href="/credits"
-                    aria-current={isActive('/credits') ? 'page' : undefined}
-                    className="text-fg no-underline"
-                  >
-                    Credits
-                  </Link>
-                  <a
-                    href={MAKER.url}
-                    target="_blank"
-                    rel="noopener"
-                    className="text-fg-subtle no-underline"
-                  >
-                    Made by {MAKER.handle} ↗
-                  </a>
-                </p>
-              </div>
+              <p className="max-w-[14rem] font-display text-lg leading-snug font-light text-fg-muted italic">
+                soul is deeper than the abyss
+              </p>
               <ThemeToggle />
             </div>
           </div>,

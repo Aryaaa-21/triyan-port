@@ -96,34 +96,17 @@ export function SiteFooter({ literaryInstagram, email, newsletter = false }: Foo
         </div>
 
         {/* Credit: who made the site. */}
-        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <p className="font-mono text-2xs tracking-[0.18em] text-fg-subtle uppercase">
-            Made by{' '}
-            <a
-              href={MAKER.url}
-              target="_blank"
-              rel="noopener"
-              className="text-fg no-underline transition-colors hover:text-accent"
-            >
-              {MAKER.handle}
-            </a>
-            {' · '}
-            <a
-              href={MAKER.url}
-              target="_blank"
-              rel="noopener"
-              className="text-fg-muted normal-case no-underline transition-colors hover:text-fg"
-            >
-              {MAKER.display} ↗
-            </a>
-          </p>
-          <Link
-            href="/credits"
-            className="font-mono text-2xs tracking-[0.18em] text-fg-subtle uppercase no-underline transition-colors hover:text-fg"
+        <p className="mt-6 font-mono text-2xs tracking-[0.18em] text-fg-subtle uppercase">
+          Made by{' '}
+          <a
+            href={MAKER.url}
+            target="_blank"
+            rel="noopener"
+            className="text-fg no-underline transition-colors hover:text-accent"
           >
-            Credits
-          </Link>
-        </div>
+            {MAKER.name}
+          </a>
+        </p>
       </div>
     </footer>
   );

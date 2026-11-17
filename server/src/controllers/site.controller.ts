@@ -14,7 +14,6 @@ const STATIC_ROUTES: [path: string, changefreq: string, priority: string][] = [
   ['/instagram', 'daily', '0.6'],
   ['/abyss', 'monthly', '0.6'],
   ['/contact', 'yearly', '0.4'],
-  ['/credits', 'yearly', '0.3'],
 ];
 
 const escapeXml = (value: string) =>
