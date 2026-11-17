@@ -1091,3 +1091,24 @@
     widows: 3;
   }
 }
+
+/* ABYSS opening: the galaxy, which the scroll falls into (see features/abyss/galaxy.tsx). */
+.galaxy-image {
+  transform: scale(var(--galaxy-zoom, 1));
+  transform-origin: 50% 50%;
+  filter: brightness(calc(1 - 0.35 * var(--galaxy-progress, 0)));
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .galaxy-image {
+    animation: galaxy-arrive 2.4s var(--curve-void) both;
+  }
+}
+
+@keyframes galaxy-arrive {
+  from {
+    opacity: 0;
+    scale: 1.12;
+  }
+}

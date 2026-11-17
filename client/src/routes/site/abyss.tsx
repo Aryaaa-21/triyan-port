@@ -4,6 +4,7 @@ import { SplitText } from '@/components/motion/split-text';
 import { Reveal } from '@/components/ui/reveal';
 import { ShirtSilhouette } from '@/features/abyss/silhouette';
 import { Waitlist } from '@/features/abyss/waitlist';
+import { GalaxyBackground } from '@/features/abyss/galaxy';
 import { FilmGrain } from '@/components/ui/film-grain';
 import { ABYSS_DIFFERENT, ABYSS_FEELING, ABYSS_FOR, ABYSS_WHY, VENTURES } from '@/content/triyan';
 import { useLoaderData } from 'react-router';
@@ -34,19 +35,7 @@ export default function AbyssPage() {
       />
       {/* ------------------------------------------------------------ mark */}
       <section className="gutter relative isolate flex min-h-[92svh] flex-col justify-end pb-20">
-        {/* The galaxy behind the mark, fading into the page's black beneath the name. */}
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
-          <img
-            src="/images/abyss-galaxy.webp"
-            alt=""
-            width={860}
-            height={710}
-            decoding="async"
-            fetchPriority="high"
-            className="h-full w-full object-cover object-[50%_40%] select-none"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/10 to-black" />
-        </div>
+        <GalaxyBackground />
         <FilmGrain />
         <div className="relative mx-auto w-full max-w-[90rem]">
           <h1 className="font-abyss pb-[1.1em] pl-[0.18em] text-[clamp(3.5rem,12vw,10.5rem)] leading-[1.15] font-normal whitespace-nowrap">
