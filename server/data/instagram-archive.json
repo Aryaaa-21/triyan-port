@@ -1,6 +1,6 @@
 {
  "account": "triyanwrites",
- "capturedAt": "2026-11-16",
+ "capturedAt": "2026-11-17",
  "classifierVersion": "claude-image-read-1",
  "posts": [
   {
@@ -19085,6 +19085,42 @@
     "confidence": 0.75
    },
    "explanation": "Most people who hurt us don't mean to. They just put themselves first at the moment we needed them to put us first. That small choice leaves a huge wound."
+  },
+  {
+   "code": "Df17yqIhM1i",
+   "kind": "post",
+   "timestamp": "2026-11-17T12:30:11.000Z",
+   "caption": "",
+   "displayTitle": "you are the poison I take willingly.",
+   "altText": "you are the poison I take willingly.",
+   "text": "you are the poison I take willingly.",
+   "hidden": false,
+   "slides": [
+    {
+     "url": "/archive/instagram/Df17yqIhM1i-1.webp",
+     "thumbUrl": "/archive/instagram/Df17yqIhM1i-1.thumb.webp",
+     "width": 1000,
+     "height": 826
+    }
+   ],
+   "classification": {
+    "primaryCategory": "LOVE_LONGING",
+    "secondaryCategories": [
+     "GRIEF_MELANCHOLY"
+    ],
+    "themes": [
+     "love",
+     "suffering",
+     "longing"
+    ],
+    "emotions": [
+     "love",
+     "longing"
+    ],
+    "language": "ENGLISH",
+    "confidence": 0.75
+   },
+   "explanation": "The writer knows this love hurts him, but he keeps choosing it anyway."
   }
  ],
  "writings": [
@@ -30179,6 +30215,32 @@
    ],
    "explanation": "Most people who hurt us don't mean to. They just put themselves first at the moment we needed them to put us first. That small choice leaves a huge wound.",
    "instagramUrl": "https://www.instagram.com/reel/DfxXgADhYgp/"
+  },
+  {
+   "slug": "you-are-the-poison-i-take-willingly",
+   "title": "you are the poison I take willingly.",
+   "content": "you are the poison I take willingly.",
+   "publishedAt": "2026-11-17T12:30:11.000Z",
+   "contentType": "APHORISM",
+   "language": "ENGLISH",
+   "primaryCategory": "LOVE_LONGING",
+   "secondaryCategories": [
+    "GRIEF_MELANCHOLY"
+   ],
+   "themes": [
+    "love",
+    "suffering",
+    "longing"
+   ],
+   "emotions": [
+    "love",
+    "longing"
+   ],
+   "sources": [
+    "Df17yqIhM1i"
+   ],
+   "explanation": "The writer knows this love hurts him, but he keeps choosing it anyway.",
+   "instagramUrl": "https://www.instagram.com/p/Df17yqIhM1i/"
   }
  ]
 }
