@@ -1,6 +1,7 @@
 import Link from '@/lib/link';
 import { NAV_LINKS } from './nav-links';
 import { SubscribeForm } from '@/features/newsletter/subscribe-form';
+import { MAKER } from './credit';
 
 interface FooterProps {
   literaryInstagram?: string;
@@ -92,6 +93,36 @@ export function SiteFooter({ literaryInstagram, email, newsletter = false }: Foo
           <p className="font-display text-base font-light text-fg-subtle italic">
             soul is deeper than the abyss
           </p>
+        </div>
+
+        {/* Credit: who made the site. */}
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="font-mono text-2xs tracking-[0.18em] text-fg-subtle uppercase">
+            Made by{' '}
+            <a
+              href={MAKER.url}
+              target="_blank"
+              rel="noopener"
+              className="text-fg no-underline transition-colors hover:text-accent"
+            >
+              {MAKER.handle}
+            </a>
+            {' · '}
+            <a
+              href={MAKER.url}
+              target="_blank"
+              rel="noopener"
+              className="text-fg-muted normal-case no-underline transition-colors hover:text-fg"
+            >
+              {MAKER.display} ↗
+            </a>
+          </p>
+          <Link
+            href="/credits"
+            className="font-mono text-2xs tracking-[0.18em] text-fg-subtle uppercase no-underline transition-colors hover:text-fg"
+          >
+            Credits
+          </Link>
         </div>
       </div>
     </footer>

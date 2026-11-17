@@ -51,6 +51,7 @@ export const routes: RouteObject[] = [
               { path: 'instagram', ...page(() => import('./routes/site/instagram')) },
               { path: 'instagram/:id', ...page(() => import('./routes/site/instagram-post')) },
               { path: 'contact', ...page(() => import('./routes/site/contact')) },
+              { path: 'credits', ...page(() => import('./routes/site/credits')) },
               { path: 'subscription', ...page(() => import('./routes/site/subscription')) },
               { path: '*', Component: NotFound },
             ],
