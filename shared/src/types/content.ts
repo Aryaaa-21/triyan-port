@@ -8,6 +8,18 @@ import type {
 } from '../taxonomy.js';
 
 /** A writing as the API serialises it. Dates are ISO strings over the wire. */
+/** How readers responded to a writing's Instagram post, refreshed daily. */
+export interface WritingEngagement {
+  likes: number;
+  comments: number;
+  shares: number;
+  /** Plays, for reels; 0 when Instagram does not show them. */
+  views: number;
+  /** The ranking used by the Most loved shelf. */
+  score: number;
+  updatedAt: string;
+}
+
 export interface WritingDto {
   _id: string;
   slug: string;
@@ -39,6 +51,8 @@ export interface WritingDto {
   };
   createdAt: string;
   updatedAt: string;
+  /** Present when the piece's Instagram numbers are known. */
+  engagement?: WritingEngagement;
 }
 
 export interface SitemapEntry {

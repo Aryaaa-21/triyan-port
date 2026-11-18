@@ -13,7 +13,7 @@ import {
   writingStatusSchema,
 } from './common.js';
 
-export const WRITING_SORTS = ['newest', 'oldest', 'title', 'relevance'] as const;
+export const WRITING_SORTS = ['newest', 'oldest', 'title', 'relevance', 'popular'] as const;
 
 export const seoSchema = z.object({
   title: z.string().max(70).optional(),

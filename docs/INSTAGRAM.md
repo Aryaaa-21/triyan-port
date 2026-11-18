@@ -87,3 +87,19 @@ and run `npm run sync:instagram -w @triyan/server -- FULL` once. No code changes
 - Long-lived tokens expire after 60 days. Expiry is detected and reported as
   `TOKEN_EXPIRED` in the admin, but automatic token refresh is not built.
 - `@triyxnn` (personal account) is deliberately not synced.
+
+## Most loved (engagement)
+
+The Writings page has a **Most loved** shelf (`/writings?shelf=loved`, API `sort=popular`):
+the 50 pieces whose Instagram posts drew the most response. It is not shown on the homepage.
+
+- Each post in `server/data/instagram-archive.json` carries `engagement`:
+  `{ likes, comments, shares, views, updatedAt }` (views are reel plays).
+- Score = likes + 5 × comments + 3 × shares + 0.05 × views (`server/src/archive/engagement.ts`),
+  summed over a writing's source posts. It is read from the file in both modes.
+- **Daily refresh** runs on the owner's PC: the Windows scheduled task
+  *Triyan - Most loved refresh* (10 PM, or at next login) runs
+  `Desktop\Triyan\instagram\scan-tool\daily-engagement.ps1`. It reads the numbers with the
+  scan tool's signed-in Chrome (posts from the last 45 days, plus a different seventh of the
+  older ones each day), merges them with `npm run apply:engagement -w @triyan/server -- <file>`,
+  then commits and pushes, so Vercel redeploys. Logs: `scan-tool\logs\`.

@@ -3,7 +3,7 @@ import { CATEGORIES, getCategory, type CategoryKey, type WritingDto } from '@tri
 import { fetchWritings, type ArchiveQuery } from '@/features/writings/api';
 import { ArchiveSearch } from '@/features/writings/archive-search';
 import { WritingRow } from '@/features/writings/writing-row';
-import { ShelfCorner, ShelfStrip } from '@/features/writings/shelf-strip';
+import { LovedPlate, ShelfCorner, ShelfStrip } from '@/features/writings/shelf-strip';
 import { Pager } from '@/features/writings/pager';
 import { InterestPopup } from '@/features/newsletter/interest-popup';
 import { useMatches } from 'react-router';
@@ -30,10 +30,12 @@ export async function loader({ request }: LoaderFunctionArgs) {
     new URL(request.url).searchParams,
   );
   const query: ArchiveQuery = {};
-  for (const key of ['q', 'category', 'language', 'themes', 'page'] as const) {
+  for (const key of ['q', 'shelf', 'category', 'language', 'themes', 'page'] as const) {
     const value = first(params[key]);
     if (value) query[key] = value;
   }
+  if (query.shelf !== 'loved') delete query.shelf;
+  if (query.shelf) delete query.category;
 
   let writings: WritingDto[] = [];
   let total = 0;
@@ -55,7 +57,8 @@ export default function WritingsPage() {
   const { query, writings, total, totalPages, failed } = useLoaderData<typeof loader>();
 
   const page = Math.max(1, Number(query.page ?? 1) || 1);
-  const filtered = Boolean(query.q || query.category || query.language || query.themes);
+  const loved = query.shelf === 'loved';
+  const filtered = Boolean(query.q || query.category || query.language || query.themes || loved);
 
   /** Builds a URL from the current filters with some changed. Changing a filter resets paging. */
   const href = (change: Partial<ArchiveQuery>) => {
@@ -67,6 +70,14 @@ export default function WritingsPage() {
   };
 
   const activeCategory = query.category ? getCategory(query.category) : undefined;
+  const shelfOpen = Boolean(activeCategory || loved);
+  // Choosing a category closes Most loved, and the other way round.
+  const categoryHref = (key: string | undefined) => href({ category: key, shelf: undefined });
+  const lovedHref = href({ shelf: loved ? undefined : 'loved', category: undefined });
+  const lovedUpdated = writings
+    .map((w) => w.engagement?.updatedAt ?? '')
+    .sort()
+    .at(-1);
 
   // The shell's loader knows whether the site can keep addresses at all.
   const canSubscribe = useMatches().some(
@@ -92,8 +103,8 @@ export default function WritingsPage() {
         </header>
 
         {/* With a shelf open, every shelf moves to the right corner and stays in view. */}
-        <div className={cn(activeCategory && 'lg:grid lg:grid-cols-12 lg:gap-8')}>
-          <div className={cn(activeCategory && 'min-w-0 lg:col-span-9')}>
+        <div className={cn(shelfOpen && 'lg:grid lg:grid-cols-12 lg:gap-8')}>
+          <div className={cn(shelfOpen && 'min-w-0 lg:col-span-9')}>
             {activeCategory && (
               <section
                 aria-label={`${activeCategory.label} shelf`}
@@ -121,8 +132,42 @@ export default function WritingsPage() {
               </section>
             )}
 
-            <div className={cn('mt-16', activeCategory && 'lg:hidden')}>
-              <ShelfStrip active={query.category} hrefFor={(key) => href({ category: key })} />
+            {loved && (
+              <section
+                aria-label="Most loved shelf"
+                className="mt-16 grid gap-10 lg:grid-cols-12 lg:items-end lg:gap-8"
+              >
+                <LovedPlate className="aspect-[16/9] lg:col-span-8 lg:aspect-[21/9]" large />
+                <div className="lg:col-span-4">
+                  <p className="font-mono text-2xs tracking-[0.18em] text-fg-subtle uppercase">
+                    Shelf 00
+                  </p>
+                  <h2 className="mt-4 font-display text-[clamp(2.25rem,4vw,3.5rem)] leading-[1] font-light tracking-tight">
+                    Most loved
+                  </h2>
+                  <p className="mt-5 font-display text-xl leading-snug font-light text-fg-muted italic">
+                    The pieces readers answered most: likes, comments and shares on Instagram.
+                  </p>
+                  {lovedUpdated && (
+                    <p className="mt-5 font-mono text-2xs tracking-[0.18em] text-fg-subtle uppercase">
+                      Updated daily · last{' '}
+                      {new Date(lovedUpdated).toLocaleDateString('en-GB', {
+                        day: 'numeric',
+                        month: 'long',
+                      })}
+                    </p>
+                  )}
+                </div>
+              </section>
+            )}
+
+            <div className={cn('mt-16', shelfOpen && 'lg:hidden')}>
+              <ShelfStrip
+                active={query.category}
+                loved={loved}
+                lovedHref={lovedHref}
+                hrefFor={categoryHref}
+              />
             </div>
 
             <div className="mt-16 grid gap-12 lg:grid-cols-12 lg:items-end lg:gap-8">
@@ -155,7 +200,7 @@ export default function WritingsPage() {
               >
                 {failed
                   ? 'Archive unavailable'
-                  : `${total} ${total === 1 ? 'writing' : 'writings'}${activeCategory ? ` · ${activeCategory.label}` : ''}${query.q ? ` · “${query.q}”` : ''}`}
+                  : `${total} ${total === 1 ? 'writing' : 'writings'}${loved ? ' · Most loved' : ''}${activeCategory ? ` · ${activeCategory.label}` : ''}${query.q ? ` · “${query.q}”` : ''}`}
               </p>
               {filtered && (
                 <Link
@@ -186,7 +231,11 @@ export default function WritingsPage() {
               <ol className="archive-list">
                 {writings.map((writing, i) => (
                   <li key={writing.slug}>
-                    <WritingRow writing={writing} index={(page - 1) * PAGE_SIZE + i + 1} />
+                    <WritingRow
+                      writing={writing}
+                      index={(page - 1) * PAGE_SIZE + i + 1}
+                      showEngagement={loved}
+                    />
                   </li>
                 ))}
               </ol>
@@ -200,10 +249,15 @@ export default function WritingsPage() {
               hrefFor={(n) => href({ page: n > 1 ? String(n) : undefined })}
             />
           </div>
-          {activeCategory && (
+          {shelfOpen && (
             <aside className="mt-16 hidden lg:col-span-3 lg:block">
               <div className="sticky top-28">
-                <ShelfCorner active={query.category} hrefFor={(key) => href({ category: key })} />
+                <ShelfCorner
+                  active={query.category}
+                  loved={loved}
+                  lovedHref={lovedHref}
+                  hrefFor={categoryHref}
+                />
               </div>
             </aside>
           )}

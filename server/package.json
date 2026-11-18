@@ -16,7 +16,8 @@
     "dev:db": "tsx src/scripts/dev-db.ts",
     "seed:content": "tsx --env-file-if-exists=.env src/scripts/seed-content.ts",
     "sync:instagram": "tsx --env-file-if-exists=.env src/scripts/sync-instagram.ts",
-    "import:instagram-archive": "tsx --env-file-if-exists=.env src/scripts/import-instagram-archive.ts"
+    "import:instagram-archive": "tsx --env-file-if-exists=.env src/scripts/import-instagram-archive.ts",
+    "apply:engagement": "tsx src/scripts/apply-engagement.ts"
   },
   "dependencies": {
     "@node-rs/argon2": "^2.2.2",

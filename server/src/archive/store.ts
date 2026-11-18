@@ -1,7 +1,5 @@
 import { createHash } from 'node:crypto';
 import { existsSync, readFileSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import type {
   AboutDto,
   AbyssDto,
@@ -17,6 +15,8 @@ import { CONFIDENCE_REVIEW_THRESHOLD } from '@triyan/shared';
 import { env, isTest } from '../config/env.js';
 import { SEED_ABOUT, SEED_ABYSS, SEED_BOOK, SEED_SETTINGS } from '../content/seed.js';
 import { deriveExcerpt, RELATED_WEIGHTS } from '../services/writing.service.js';
+import { rankByEngagement, writingEngagement } from './engagement.js';
+import { ARCHIVE_FILE_CANDIDATES } from './paths.js';
 
 /**
  * The site without a database.
@@ -84,14 +84,7 @@ export interface ArchiveFile {
   writings?: ArchiveWriting[];
 }
 
-const here = dirname(fileURLToPath(import.meta.url));
-
-/** The archive file: beside the function on Vercel, beside this package elsewhere. */
-export const ARCHIVE_FILE_CANDIDATES = [
-  resolve(process.cwd(), 'server/data/instagram-archive.json'),
-  resolve(process.cwd(), 'data/instagram-archive.json'),
-  resolve(here, '../../data/instagram-archive.json'),
-];
+export { ARCHIVE_FILE_CANDIDATES };
 
 const archiveFilePath = (): string | undefined => ARCHIVE_FILE_CANDIDATES.find(existsSync);
 
@@ -248,7 +241,8 @@ export const listArchiveWritings = (store: ArchiveStore, query: WritingQuery) =>
     return true;
   });
 
-  if (query.sort === 'oldest') items = [...items].reverse();
+  if (query.sort === 'popular') items = rankByEngagement(items, writingEngagement());
+  else if (query.sort === 'oldest') items = [...items].reverse();
   else if (query.sort === 'title') {
     items = [...items].sort((a, b) => a.title.localeCompare(b.title));
   } else if (terms.length) {

@@ -13,7 +13,28 @@ const LANGUAGE_LABEL: Record<string, string> = {
  * category, language, year — that comes alive under the pointer. On a phone it
  * becomes a compact block with a full-width touch target.
  */
-export function WritingRow({ writing, index }: { writing: WritingDto; index: number }) {
+/** 30500 → "30.5K". */
+const compact = (n: number) =>
+  new Intl.NumberFormat('en', { notation: 'compact', maximumFractionDigits: 1 }).format(n);
+
+export function WritingRow({
+  writing,
+  index,
+  showEngagement = false,
+}: {
+  writing: WritingDto;
+  index: number;
+  showEngagement?: boolean;
+}) {
+  const e = showEngagement ? writing.engagement : undefined;
+  const stats = e
+    ? [
+        e.views ? `${compact(e.views)} views` : '',
+        `${compact(e.likes)} likes`,
+        e.comments ? `${compact(e.comments)} comments` : '',
+        e.shares ? `${compact(e.shares)} shares` : '',
+      ].filter(Boolean)
+    : [];
   const category = writing.primaryCategory ? getCategory(writing.primaryCategory) : null;
   const year = writing.publishedAt ? new Date(writing.publishedAt).getFullYear() : null;
   const language = LANGUAGE_LABEL[writing.language] ?? '';
@@ -40,6 +61,13 @@ export function WritingRow({ writing, index }: { writing: WritingDto; index: num
         <span className="mt-3 block font-mono text-2xs tracking-[0.18em] text-fg-subtle uppercase md:hidden">
           {[category?.label, language, year].filter(Boolean).join(' · ')}
         </span>
+        {stats.length > 0 && (
+          <span className="mt-3 flex flex-wrap gap-x-4 gap-y-1 font-mono text-2xs tracking-[0.14em] text-fg uppercase tabular-nums">
+            {stats.map((s) => (
+              <span key={s}>{s}</span>
+            ))}
+          </span>
+        )}
         {writing.excerpt && (
           <span className="archive-excerpt mt-3 block max-w-xl font-reading text-base leading-prose text-fg-subtle">
             {writing.excerpt}

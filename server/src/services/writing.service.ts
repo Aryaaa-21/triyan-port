@@ -1,4 +1,5 @@
 import type { QueryFilter, SortOrder } from 'mongoose';
+import { rankByEngagement, writingEngagement } from '../archive/engagement.js';
 
 // Mongoose 9 renamed FilterQuery to QueryFilter. Aliased so the call sites read the
 // way the rest of the codebase talks about them.
@@ -68,6 +69,22 @@ export const listWritings = async (
 ): Promise<PagedWritings> => {
   const filter = buildFilter(query, base);
   const skip = (query.page - 1) * query.limit;
+
+  // Most loved: the numbers live in the archive file, so rank in memory. The archive
+  // is a few hundred pieces, well within one query.
+  if (query.sort === 'popular') {
+    const ranked = rankByEngagement(
+      (await Writing.find(filter).lean()) as (WritingAttrs & { slug: string })[],
+      writingEngagement(),
+    );
+    return {
+      items: ranked.slice(skip, skip + query.limit),
+      total: ranked.length,
+      page: query.page,
+      limit: query.limit,
+      totalPages: Math.max(1, Math.ceil(ranked.length / query.limit)),
+    };
+  }
 
   // Text search ranks by relevance unless an explicit order was requested.
   const useRelevance = Boolean(query.q) && (query.sort === 'relevance' || query.sort === 'newest');
